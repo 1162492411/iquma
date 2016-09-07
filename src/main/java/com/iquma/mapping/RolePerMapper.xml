@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iquma.dao.RolePerMapper">
+  <resultMap id="BaseResultMap" type="com.iquma.pojo.RolePerKey">
+    <id column="rid" jdbcType="TINYINT" property="rid" />
+    <id column="pid" jdbcType="TINYINT" property="pid" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="com.iquma.pojo.RolePerKey">
+    delete from user_roleperinfo
+    where rid = #{rid,jdbcType=TINYINT}
+      and pid = #{pid,jdbcType=TINYINT}
+  </delete>
+  <insert id="insert" parameterType="com.iquma.pojo.RolePerKey">
+    insert into user_roleperinfo (rid, pid)
+    values (#{rid,jdbcType=TINYINT}, #{pid,jdbcType=TINYINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.iquma.pojo.RolePerKey">
+    insert into user_roleperinfo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="rid != null">
+        rid,
+      </if>
+      <if test="pid != null">
+        pid,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="rid != null">
+        #{rid,jdbcType=TINYINT},
+      </if>
+      <if test="pid != null">
+        #{pid,jdbcType=TINYINT},
+      </if>
+    </trim>
+  </insert>
+</mapper>
