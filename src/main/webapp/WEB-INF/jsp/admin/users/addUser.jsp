@@ -17,9 +17,9 @@
     <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
     <meta http-equiv="description" content="This is my page">
     <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/css/bootstrap.min.css">
-    <script src="${pageContext.request.contextPath}/js/jquery-3.1.0.min.js"></script>
-    <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+          href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
+    <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
 
 </head>
 
@@ -50,7 +50,7 @@
                 <input type="email" class="form-control" name="email" placeholder="安全邮箱"/>
             </div>
             <%-- 用户状态 --%>
-            <input type="hidden" name="isBlock" value="0" />
+            <input type="hidden" name="isBlock" value="0"/>
             <!-- 按钮 -->
             <div class="form-group" id="buttonPanel">
                 <input type="submit" class="btn btn-primary" value="添加"/>

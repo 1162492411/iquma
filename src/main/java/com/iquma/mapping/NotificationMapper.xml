@@ -1,93 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.iquma.dao.NotificationMapper">
-  <resultMap id="BaseResultMap" type="com.iquma.pojo.Notification">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="uid" jdbcType="VARCHAR" property="uid" />
-    <result column="content" jdbcType="VARCHAR" property="content" />
-    <result column="ntftime" jdbcType="TIMESTAMP" property="ntftime" />
-    <result column="isnew" jdbcType="BIT" property="isnew" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, uid, content, ntftime, isnew
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from user_ntfinfo
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from user_ntfinfo
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.iquma.pojo.Notification">
-    insert into user_ntfinfo (id, uid, content, 
-      ntftime, isnew)
-    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, 
-      #{ntftime,jdbcType=TIMESTAMP}, #{isnew,jdbcType=BIT})
-  </insert>
-  <insert id="insertSelective" parameterType="com.iquma.pojo.Notification">
-    insert into user_ntfinfo
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="uid != null">
-        uid,
-      </if>
-      <if test="content != null">
-        content,
-      </if>
-      <if test="ntftime != null">
-        ntftime,
-      </if>
-      <if test="isnew != null">
-        isnew,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="uid != null">
-        #{uid,jdbcType=VARCHAR},
-      </if>
-      <if test="content != null">
-        #{content,jdbcType=VARCHAR},
-      </if>
-      <if test="ntftime != null">
-        #{ntftime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="isnew != null">
-        #{isnew,jdbcType=BIT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Notification">
-    update user_ntfinfo
-    <set>
-      <if test="uid != null">
-        uid = #{uid,jdbcType=VARCHAR},
-      </if>
-      <if test="content != null">
+    <resultMap id="BaseResultMap" type="com.iquma.pojo.Notification">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uid" jdbcType="VARCHAR" property="uid"/>
+        <result column="content" jdbcType="VARCHAR" property="content"/>
+        <result column="ntftime" jdbcType="TIMESTAMP" property="ntftime"/>
+        <result column="isnew" jdbcType="BIT" property="isnew"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, uid, content, ntftime, isnew
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_ntfinfo
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from user_ntfinfo
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.iquma.pojo.Notification">
+        insert into user_ntfinfo (id, uid, content,
+        ntftime, isnew)
+        values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR},
+        #{ntftime,jdbcType=TIMESTAMP}, #{isnew,jdbcType=BIT})
+    </insert>
+    <insert id="insertSelective" parameterType="com.iquma.pojo.Notification">
+        insert into user_ntfinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uid != null">
+                uid,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="ntftime != null">
+                ntftime,
+            </if>
+            <if test="isnew != null">
+                isnew,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="uid != null">
+                #{uid,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="ntftime != null">
+                #{ntftime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isnew != null">
+                #{isnew,jdbcType=BIT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Notification">
+        update user_ntfinfo
+        <set>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=VARCHAR},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=VARCHAR},
+            </if>
+            <if test="ntftime != null">
+                ntftime = #{ntftime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="isnew != null">
+                isnew = #{isnew,jdbcType=BIT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Notification">
+        update user_ntfinfo
+        set uid = #{uid,jdbcType=VARCHAR},
         content = #{content,jdbcType=VARCHAR},
-      </if>
-      <if test="ntftime != null">
         ntftime = #{ntftime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="isnew != null">
-        isnew = #{isnew,jdbcType=BIT},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Notification">
-    update user_ntfinfo
-    set uid = #{uid,jdbcType=VARCHAR},
-      content = #{content,jdbcType=VARCHAR},
-      ntftime = #{ntftime,jdbcType=TIMESTAMP},
-      isnew = #{isnew,jdbcType=BIT}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+        isnew = #{isnew,jdbcType=BIT}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 </mapper>

@@ -52,9 +52,9 @@ public class Operation {
     public void setOptime(Date optime) {
         this.optime = optime;
     }
-    
-    public String toString(){
-    	return "[记录id : " + id + ",操作人id : " + uid + ",操作对象id : " + obid + ",所用权限 : " + perid 
-    			+ ",操作时间 : " + optime + "]";
+
+    public String toString() {
+        return "[记录id : " + id + ",操作人id : " + uid + ",操作对象id : " + obid + ",所用权限 : " + perid
+                + ",操作时间 : " + optime + "]";
     }
 }

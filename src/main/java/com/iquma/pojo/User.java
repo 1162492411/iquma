@@ -19,13 +19,13 @@ public class User {
 
     private Integer appCount;
 
-    public User(){
+    public User() {
 
     }
 
-    public User(String id, String name){
+    public User(String id, String name) {
         super();
-        this.id = id ;
+        this.id = id;
         this.name = name;
     }
 
@@ -49,7 +49,6 @@ public class User {
         this.prestige = prestige;
         this.appCount = appCount;
     }
-
 
 
     public String getId() {
@@ -124,7 +123,7 @@ public class User {
         this.appCount = appCount;
     }
 
-    public String toString(){
+    public String toString() {
         return "[编号 : " + id + ", 角色 : " + rid + ", 昵称 : " + name + ", 密码 : "
                 + pass + ", 头像 : " + avatar + ", 邮箱 : " + email + ", 账户状态 : "
                 + isBlock + ", 威望 : " + prestige + ", 获赞 :" + appCount + "]";

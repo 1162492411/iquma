@@ -52,10 +52,10 @@ public class Notification {
     public void setIsnew(Boolean isnew) {
         this.isnew = isnew;
     }
-    
-    public String toString(){
-    	return "[记录id : " + id + ",通知用户 : " + uid + ",通知内容 : " + content +
-    			",通知时间 : " + ntftime + ",通知状态 : " + isnew + "]";
+
+    public String toString() {
+        return "[记录id : " + id + ",通知用户 : " + uid + ",通知内容 : " + content +
+                ",通知时间 : " + ntftime + ",通知状态 : " + isnew + "]";
     }
-    
+
 }

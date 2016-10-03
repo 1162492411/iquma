@@ -1,82 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.iquma.dao.FavoriteMapper">
-  <resultMap id="BaseResultMap" type="com.iquma.pojo.Favorite">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="uid" jdbcType="VARCHAR" property="uid" />
-    <result column="obid" jdbcType="INTEGER" property="obid" />
-    <result column="favtime" jdbcType="TIMESTAMP" property="favtime" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, uid, obid, favtime
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from user_favinfo
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from user_favinfo
-    where id = #{id,jdbcType=INTEGER}
-  </delete>
-  <insert id="insert" parameterType="com.iquma.pojo.Favorite">
-    insert into user_favinfo (id, uid, obid, 
-      favtime)
-    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=VARCHAR}, #{obid,jdbcType=INTEGER}, 
-      #{favtime,jdbcType=TIMESTAMP})
-  </insert>
-  <insert id="insertSelective" parameterType="com.iquma.pojo.Favorite">
-    insert into user_favinfo
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="uid != null">
-        uid,
-      </if>
-      <if test="obid != null">
-        obid,
-      </if>
-      <if test="favtime != null">
-        favtime,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="uid != null">
-        #{uid,jdbcType=VARCHAR},
-      </if>
-      <if test="obid != null">
-        #{obid,jdbcType=INTEGER},
-      </if>
-      <if test="favtime != null">
-        #{favtime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Favorite">
-    update user_favinfo
-    <set>
-      <if test="uid != null">
-        uid = #{uid,jdbcType=VARCHAR},
-      </if>
-      <if test="obid != null">
+    <resultMap id="BaseResultMap" type="com.iquma.pojo.Favorite">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uid" jdbcType="VARCHAR" property="uid"/>
+        <result column="obid" jdbcType="INTEGER" property="obid"/>
+        <result column="favtime" jdbcType="TIMESTAMP" property="favtime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, uid, obid, favtime
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_favinfo
+        where id = #{id,jdbcType=INTEGER}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from user_favinfo
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+    <insert id="insert" parameterType="com.iquma.pojo.Favorite">
+        insert into user_favinfo (id, uid, obid,
+        favtime)
+        values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=VARCHAR}, #{obid,jdbcType=INTEGER},
+        #{favtime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="com.iquma.pojo.Favorite">
+        insert into user_favinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="uid != null">
+                uid,
+            </if>
+            <if test="obid != null">
+                obid,
+            </if>
+            <if test="favtime != null">
+                favtime,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="uid != null">
+                #{uid,jdbcType=VARCHAR},
+            </if>
+            <if test="obid != null">
+                #{obid,jdbcType=INTEGER},
+            </if>
+            <if test="favtime != null">
+                #{favtime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Favorite">
+        update user_favinfo
+        <set>
+            <if test="uid != null">
+                uid = #{uid,jdbcType=VARCHAR},
+            </if>
+            <if test="obid != null">
+                obid = #{obid,jdbcType=INTEGER},
+            </if>
+            <if test="favtime != null">
+                favtime = #{favtime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Favorite">
+        update user_favinfo
+        set uid = #{uid,jdbcType=VARCHAR},
         obid = #{obid,jdbcType=INTEGER},
-      </if>
-      <if test="favtime != null">
-        favtime = #{favtime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Favorite">
-    update user_favinfo
-    set uid = #{uid,jdbcType=VARCHAR},
-      obid = #{obid,jdbcType=INTEGER},
-      favtime = #{favtime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+        favtime = #{favtime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 </mapper>

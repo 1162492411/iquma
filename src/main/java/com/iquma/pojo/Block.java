@@ -62,9 +62,9 @@ public class Block {
     public void setReason(String reason) {
         this.reason = reason == null ? null : reason.trim();
     }
-    
-    public String toString(){
-    	return "[记录id : " + id + ",封禁id : " + uid + "操作者id : " + opid + ",起始时间 : " + starttime
-    			 + ",结束时间 : " + endtime + ",封禁原因 : " + reason + "]";
+
+    public String toString() {
+        return "[记录id : " + id + ",封禁id : " + uid + "操作者id : " + opid + ",起始时间 : " + starttime
+                + ",结束时间 : " + endtime + ",封禁原因 : " + reason + "]";
     }
 }

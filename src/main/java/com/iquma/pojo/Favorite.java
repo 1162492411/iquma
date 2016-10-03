@@ -42,8 +42,8 @@ public class Favorite {
     public void setFavtime(Date favtime) {
         this.favtime = favtime;
     }
-    
-    public String toString(){
-    	return "[记录id : " + id + ",用户id : " + uid + ",话题id : " + obid + ",收藏时间 : "+ favtime + "]";
+
+    public String toString() {
+        return "[记录id : " + id + ",用户id : " + uid + ",话题id : " + obid + ",收藏时间 : " + favtime + "]";
     }
 }

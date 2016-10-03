@@ -20,8 +20,8 @@ public class RolePerKey {
     public void setPid(Byte pid) {
         this.pid = pid;
     }
-    
-    public String toString(){
-    	return "[角色id : " + rid + ",权限id : " + pid + "]";
+
+    public String toString() {
+        return "[角色id : " + rid + ",权限id : " + pid + "]";
     }
 }

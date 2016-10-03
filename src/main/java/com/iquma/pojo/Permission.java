@@ -20,8 +20,8 @@ public class Permission {
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
     }
-    
-    public String toString(){
-    	return "[权限id : " + id + ", 权限名称 : " + name + "]";
+
+    public String toString() {
+        return "[权限id : " + id + ", 权限名称 : " + name + "]";
     }
 }

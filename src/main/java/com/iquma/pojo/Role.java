@@ -20,8 +20,8 @@ public class Role {
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
     }
-    
-    public String toString(){
-    	return "[角色id : " + id + ", 角色名称 : " + name + "]";
+
+    public String toString() {
+        return "[角色id : " + id + ", 角色名称 : " + name + "]";
     }
 }

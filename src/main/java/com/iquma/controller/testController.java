@@ -1,11 +1,13 @@
 package com.iquma.controller;
 
 import com.iquma.service.RoleService;
+import com.iquma.service.TopicService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -18,13 +20,18 @@ public class testController {
     @Resource
     private RoleService roleService;
 
+    @Resource
+    private TopicService topicService;
+
     @RequestMapping("/allRoles")
-    public String toShowAllRoles(Model model){
+    public String toShowAllRoles(Model model) {
         Map roleList = this.roleService.getAllRoles();
-        for(int i = 0; i<roleList.size();i++){
+        for (int i = 0; i < roleList.size(); i++) {
             System.out.println("获取到的数据为" + roleList.get(i));
         }
         model.addAllAttributes(roleList);
         return "role/main";
     }
+
+
 }

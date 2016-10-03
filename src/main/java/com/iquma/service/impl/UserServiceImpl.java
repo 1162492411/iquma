@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -17,55 +18,56 @@ import com.iquma.service.UserService;
 public class UserServiceImpl implements UserService {
 
 
-	@Autowired
-	private UserMapper userMapper;
+    @Resource
+    private UserMapper userMapper;
+    private static int SUPER_ADMIN_ID = 1;//最高权限的超级管理员的角色Id
+    private static int SUPER_STUDENT_ID = 3;//最高级别的学生的角色Id
 
-	//@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, readOnly = true, timeout = 3)
-	public User getUserById(String id) {
-		return this.userMapper.selectByPrimaryKey(id);
-	}
+    //@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, readOnly = true, timeout = 3)
+    public User getUserById(String id) {
+        return this.userMapper.selectByPrimaryKey(id);
+    }
 
-	@Override
-	public ArrayList getAllUsers() {
-		return this.userMapper.getAllUsers();
-	}
+    @Override
+    public ArrayList getAllUsers() {
+        return this.userMapper.getAllUsers();
+    }
 
 
-	public boolean insert(User user) {
-		return this.userMapper.insert(user) > 0;
-	}
+    public boolean insert(User user) {
+        return this.userMapper.insert(user) > 0;
+    }
 
-	@Override
-	public boolean validatorUserPass(String id, String pass) {
-		return this.getUserById(id).getPass().equals(pass);
-	}
+    @Override
+    public boolean validatorUserPass(String id, String pass) {
+        return this.getUserById(id).getPass().equals(pass);
+    }
 
-	@Override
-	public boolean isAdmin(String id) {
-		return this.getUserById(id).getRid() >= 1 && this.getUserById(id).getRid() <= 3;
-	}
+    @Override
+    public boolean isAdmin(String id) {
+        return this.getUserById(id).getRid() >= SUPER_ADMIN_ID && this.getUserById(id).getRid() <= SUPER_STUDENT_ID;
+    }
 
-	@Override
-	public boolean validatorEmail(String id, String email) {
-		return this.getUserById(id).getEmail().equals(email);
-	}
+    @Override
+    public boolean validatorEmail(String id, String email) {
+        return this.getUserById(id).getEmail().equals(email);
+    }
 
-	@Override
-	public boolean validatorUserStatus(String id) {
-		return this.getUserById(id).getIsBlock();
-	}
+    @Override
+    public boolean validatorUserStatus(String id) {
+        return this.getUserById(id).getIsBlock();
+    }
 
-	@Override
-	public boolean blockUser(String id) {
-		return this.userMapper.blockByPrimaryKey(id);
+    @Override
+    public boolean blockUser(String id) {
+        return this.userMapper.blockByPrimaryKey(id);
 
-	}
+    }
 
-	//更新用户信息
-	public boolean updateUser(User record) {
-		return this.userMapper.updateByPrimaryKeySelective(record) > 0;
-	}
-
+    //更新用户信息
+    public boolean updateUser(User record) {
+        return this.userMapper.updateByPrimaryKeySelective(record) > 0;
+    }
 
 
 }

@@ -42,8 +42,8 @@ public class Suclog {
     public void setLoginip(String loginip) {
         this.loginip = loginip == null ? null : loginip.trim();
     }
-    
-    public String toString(){
-    	return "[记录id : " + id + ",账户id : " + uid + ",登录时间 : " + logintime + ",登录IP : " + loginip + "]";
+
+    public String toString() {
+        return "[记录id : " + id + ",账户id : " + uid + ",登录时间 : " + logintime + ",登录IP : " + loginip + "]";
     }
 }

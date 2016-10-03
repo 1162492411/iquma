@@ -20,8 +20,8 @@ public class WeightKey {
     public void setTypeid(Byte typeid) {
         this.typeid = typeid;
     }
-    
-    public String toString(){
-    	return "[账户 : " + uid + ",类别 : " + typeid + "";
+
+    public String toString() {
+        return "[账户 : " + uid + ",类别 : " + typeid + "";
     }
 }

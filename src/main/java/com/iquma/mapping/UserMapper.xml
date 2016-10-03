@@ -1,150 +1,150 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.iquma.dao.UserMapper">
-  <resultMap id="BaseResultMap" type="com.iquma.pojo.User">
-    <id column="id" jdbcType="VARCHAR" property="id" />
-    <result column="rid" jdbcType="TINYINT" property="rid" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="pass" jdbcType="VARCHAR" property="pass" />
-    <result column="avatar" jdbcType="VARCHAR" property="avatar" />
-    <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="isBlock" jdbcType="BIT" property="isBlock" />
-    <result column="prestige" jdbcType="INTEGER" property="prestige" />
-    <result column="appCount" jdbcType="INTEGER" property="appCount" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, rid, name, pass, avatar, email, isBlock, prestige, appCount
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from user_basinfo
-    where id = #{id,jdbcType=VARCHAR}
-  </select>
+    <resultMap id="BaseResultMap" type="com.iquma.pojo.User">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="rid" jdbcType="TINYINT" property="rid"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="pass" jdbcType="VARCHAR" property="pass"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="isBlock" jdbcType="BIT" property="isBlock"/>
+        <result column="prestige" jdbcType="INTEGER" property="prestige"/>
+        <result column="appCount" jdbcType="INTEGER" property="appCount"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        id, rid, name, pass, avatar, email, isBlock, prestige, appCount
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_basinfo
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
 
-  <select id="getAllUsers" resultMap="BaseResultMap" >
-    select * from user_basinfo
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from user_basinfo
-    where id = #{id,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="com.iquma.pojo.User">
-    insert into user_basinfo (id, rid, name,
-    pass, avatar, email,
-    isBlock, prestige, appCount
-    )
-    values (#{id,jdbcType=VARCHAR}, #{rid,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR},
-    #{pass,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
-    #{isBlock,jdbcType=BIT}, #{prestige,jdbcType=INTEGER}, #{appCount,jdbcType=INTEGER}
-    )
-  </insert>
-  <insert id="insertSelective" parameterType="com.iquma.pojo.User">
-    insert into user_basinfo
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="rid != null">
-        rid,
-      </if>
-      <if test="name != null">
-        name,
-      </if>
-      <if test="pass != null">
-        pass,
-      </if>
-      <if test="avatar != null">
-        avatar,
-      </if>
-      <if test="email != null">
-        email,
-      </if>
-      <if test="isBlock != null">
-        isBlock,
-      </if>
-      <if test="prestige != null">
-        prestige,
-      </if>
-      <if test="appCount != null">
-        appCount,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=VARCHAR},
-      </if>
-      <if test="rid != null">
-        #{rid,jdbcType=TINYINT},
-      </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="pass != null">
-        #{pass,jdbcType=VARCHAR},
-      </if>
-      <if test="avatar != null">
-        #{avatar,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
-        #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="isBlock != null">
-        #{isBlock,jdbcType=BIT},
-      </if>
-      <if test="prestige != null">
-        #{prestige,jdbcType=INTEGER},
-      </if>
-      <if test="appCount != null">
-        #{appCount,jdbcType=INTEGER},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.User">
-    update user_basinfo
-    <set>
-      <if test="rid != null">
-        rid = #{rid,jdbcType=TINYINT},
-      </if>
-      <if test="name != null">
+    <select id="getAllUsers" resultMap="BaseResultMap">
+        select * from user_basinfo
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from user_basinfo
+        where id = #{id,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="com.iquma.pojo.User">
+        insert into user_basinfo (id, rid, name,
+        pass, avatar, email,
+        isBlock, prestige, appCount
+        )
+        values (#{id,jdbcType=VARCHAR}, #{rid,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR},
+        #{pass,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
+        #{isBlock,jdbcType=BIT}, #{prestige,jdbcType=INTEGER}, #{appCount,jdbcType=INTEGER}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.iquma.pojo.User">
+        insert into user_basinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="rid != null">
+                rid,
+            </if>
+            <if test="name != null">
+                name,
+            </if>
+            <if test="pass != null">
+                pass,
+            </if>
+            <if test="avatar != null">
+                avatar,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="isBlock != null">
+                isBlock,
+            </if>
+            <if test="prestige != null">
+                prestige,
+            </if>
+            <if test="appCount != null">
+                appCount,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="rid != null">
+                #{rid,jdbcType=TINYINT},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="pass != null">
+                #{pass,jdbcType=VARCHAR},
+            </if>
+            <if test="avatar != null">
+                #{avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="isBlock != null">
+                #{isBlock,jdbcType=BIT},
+            </if>
+            <if test="prestige != null">
+                #{prestige,jdbcType=INTEGER},
+            </if>
+            <if test="appCount != null">
+                #{appCount,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.User">
+        update user_basinfo
+        <set>
+            <if test="rid != null">
+                rid = #{rid,jdbcType=TINYINT},
+            </if>
+            <if test="name != null">
+                name = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="pass != null">
+                pass = #{pass,jdbcType=VARCHAR},
+            </if>
+            <if test="avatar != null">
+                avatar = #{avatar,jdbcType=VARCHAR},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="isBlock != null">
+                isBlock = #{isBlock,jdbcType=BIT},
+            </if>
+            <if test="prestige != null">
+                prestige = #{prestige,jdbcType=INTEGER},
+            </if>
+            <if test="appCount != null">
+                appCount = #{appCount,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.User">
+        update user_basinfo
+        set rid = #{rid,jdbcType=TINYINT},
         name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="pass != null">
         pass = #{pass,jdbcType=VARCHAR},
-      </if>
-      <if test="avatar != null">
         avatar = #{avatar,jdbcType=VARCHAR},
-      </if>
-      <if test="email != null">
         email = #{email,jdbcType=VARCHAR},
-      </if>
-      <if test="isBlock != null">
         isBlock = #{isBlock,jdbcType=BIT},
-      </if>
-      <if test="prestige != null">
         prestige = #{prestige,jdbcType=INTEGER},
-      </if>
-      <if test="appCount != null">
-        appCount = #{appCount,jdbcType=INTEGER},
-      </if>
-    </set>
-    where id = #{id,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.User">
-    update user_basinfo
-    set rid = #{rid,jdbcType=TINYINT},
-    name = #{name,jdbcType=VARCHAR},
-    pass = #{pass,jdbcType=VARCHAR},
-    avatar = #{avatar,jdbcType=VARCHAR},
-    email = #{email,jdbcType=VARCHAR},
-    isBlock = #{isBlock,jdbcType=BIT},
-    prestige = #{prestige,jdbcType=INTEGER},
-    appCount = #{appCount,jdbcType=INTEGER}
-    where id = #{id,jdbcType=VARCHAR}
-  </update>
+        appCount = #{appCount,jdbcType=INTEGER}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
 
-  <update id="blockByPrimaryKey" parameterType="java.lang.String" >
-    update user_basinfo
-    set isBlock=true where id = #{id,jdbcType=VARCHAR}
-  </update>
+    <update id="blockByPrimaryKey" parameterType="java.lang.String">
+        update user_basinfo
+        set isBlock=true where id = #{id,jdbcType=VARCHAR}
+    </update>
 </mapper>

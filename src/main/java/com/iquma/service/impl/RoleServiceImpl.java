@@ -2,8 +2,9 @@ package com.iquma.service.impl;
 
 import com.iquma.dao.RoleMapper;
 import com.iquma.service.RoleService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Map;
 @Service
 public class RoleServiceImpl implements RoleService {
 
-    @Autowired
+    @Resource
     private RoleMapper roleMapper;
 
 
@@ -20,7 +21,6 @@ public class RoleServiceImpl implements RoleService {
     public Map getAllRoles() {
         return this.roleMapper.getAllRoles();
     }
-
 
 
 }

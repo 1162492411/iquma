@@ -1,7 +1,7 @@
-<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
 <%
     String path = request.getContextPath();
-    String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -10,17 +10,11 @@
     <base href="<%=basePath%>">
 
     <title>My JSP 'blockUser.jsp' starting page</title>
-
-    <meta http-equiv="pragma" content="no-cache">
-    <meta http-equiv="cache-control" content="no-cache">
-    <meta http-equiv="expires" content="0">
-    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
-    <meta http-equiv="description" content="This is my page">
     <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/css/bootstrap.min.css">
-    <script src="${pageContext.request.contextPath}/js/jquery-3.1.0.min.js"></script>
-    <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
-    <script type="text/javascript" >
+          href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
+    <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
         function formateParameters() {
             var startTimeStr = document.getElementById("startTime").value;
             var startTime = new Date(startTimeStr);
@@ -48,25 +42,25 @@
             <input type="text" name="uid" class="form-control" placeholder="用户id"/>
         </div>
         <!--操作者id -->
-        <input type="hidden" name="opid" class="form-control" value="${uid}" />
+        <input type="hidden" name="opid" class="form-control" value="${uid}"/>
         <!-- 起始时间 -->
         <div class="form-group" id="startTimePanel">
             <label>起始时间</label>
-            <input type="text" name="startTime" id="startTime" class="form-control" placeholder="起始时间" />
+            <input type="text" name="startTime" id="startTime" class="form-control" placeholder="起始时间"/>
         </div>
         <!-- 终止时间 -->
-        <div class="form-group" id="endTimePanel" >
+        <div class="form-group" id="endTimePanel">
             <label>结束时间</label>
-            <input type="text" name="endTime" id="endTime" class="form-control" placeholder="结束时间" />
+            <input type="text" name="endTime" id="endTime" class="form-control" placeholder="结束时间"/>
         </div>
         <!-- 封禁原因 -->
         <div class="form-group" id="reasonPanel">
             <label>封禁原因</label>
-            <input type="text" name="reason" class="form-control" placeholder="封禁原因" />
+            <input type="text" name="reason" class="form-control" placeholder="封禁原因"/>
         </div>
         <div id="buttonPanel">
-            <input type="button" class="btn btn-primary" value="更新" onclick="formateParameters()" />
-            <input type="reset" class="btn btn-default" value="重设" />
+            <input type="button" class="btn btn-primary" value="更新" onclick="formateParameters()"/>
+            <input type="reset" class="btn btn-default" value="重设"/>
         </div>
     </div>
 

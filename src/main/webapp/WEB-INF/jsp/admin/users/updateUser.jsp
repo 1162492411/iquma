@@ -1,7 +1,7 @@
-<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
 <%
     String path = request.getContextPath();
-    String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
 %>
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -10,16 +10,10 @@
     <base href="<%=basePath%>">
 
     <title>My JSP 'updateUserp.jsp' starting page</title>
-
-    <meta http-equiv="pragma" content="no-cache">
-    <meta http-equiv="cache-control" content="no-cache">
-    <meta http-equiv="expires" content="0">
-    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
-    <meta http-equiv="description" content="This is my page">
     <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/css/bootstrap.min.css">
-    <script src="${pageContext.request.contextPath}/js/jquery-3.1.0.min.js"></script>
-    <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+          href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
+    <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
 
 </head>
 
@@ -32,7 +26,8 @@
             <!-- 用户id -->
             <div class="form-group" id="idPanel">
                 <label>用户id</label>
-                <input type="text" class="form-control" name="id" value="${user.id}" placeholder="用户id" readonly="readonly"/>
+                <input type="text" class="form-control" name="id" value="${user.id}" placeholder="用户id"
+                       readonly="readonly"/>
             </div>
             <%--用户昵称 --%>
             <div class="form-group" id="namePanel">
@@ -52,13 +47,14 @@
             <%-- 用户状态 --%>
             <div class="form-group" id="isBlockPanel">
                 <label>用户状态</label>
-                <input type="text" class="form-control" name="isBlock" value="${user.isBlock}" placeholder="用户状态" readonly="readonly" />
+                <input type="text" class="form-control" name="isBlock" value="${user.isBlock}" placeholder="用户状态"
+                       readonly="readonly"/>
             </div>
 
             <!-- 按钮 -->
             <div class="form-group" id="buttonPanel">
-                <input type="submit" class="btn btn-primary" value="更新" />
-                <input type="reset" class="btn btn-default" value="重设" />
+                <input type="submit" class="btn btn-primary" value="更新"/>
+                <input type="reset" class="btn btn-default" value="重设"/>
             </div>
         </div>
     </div>

@@ -1,71 +1,71 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.iquma.dao.WeightMapper">
-  <resultMap id="BaseResultMap" type="com.iquma.pojo.Weight">
-    <id column="uid" jdbcType="VARCHAR" property="uid" />
-    <id column="typeid" jdbcType="TINYINT" property="typeid" />
-    <result column="typeweight" jdbcType="TINYINT" property="typeweight" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    uid, typeid, typeweight
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="com.iquma.pojo.WeightKey" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from user_weiinfo
-    where uid = #{uid,jdbcType=VARCHAR}
-      and typeid = #{typeid,jdbcType=TINYINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="com.iquma.pojo.WeightKey">
-    delete from user_weiinfo
-    where uid = #{uid,jdbcType=VARCHAR}
-      and typeid = #{typeid,jdbcType=TINYINT}
-  </delete>
-  <insert id="insert" parameterType="com.iquma.pojo.Weight">
-    insert into user_weiinfo (uid, typeid, typeweight
-      )
-    values (#{uid,jdbcType=VARCHAR}, #{typeid,jdbcType=TINYINT}, #{typeweight,jdbcType=TINYINT}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.iquma.pojo.Weight">
-    insert into user_weiinfo
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="uid != null">
-        uid,
-      </if>
-      <if test="typeid != null">
-        typeid,
-      </if>
-      <if test="typeweight != null">
-        typeweight,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="uid != null">
-        #{uid,jdbcType=VARCHAR},
-      </if>
-      <if test="typeid != null">
-        #{typeid,jdbcType=TINYINT},
-      </if>
-      <if test="typeweight != null">
-        #{typeweight,jdbcType=TINYINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Weight">
-    update user_weiinfo
-    <set>
-      <if test="typeweight != null">
-        typeweight = #{typeweight,jdbcType=TINYINT},
-      </if>
-    </set>
-    where uid = #{uid,jdbcType=VARCHAR}
-      and typeid = #{typeid,jdbcType=TINYINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Weight">
-    update user_weiinfo
-    set typeweight = #{typeweight,jdbcType=TINYINT}
-    where uid = #{uid,jdbcType=VARCHAR}
-      and typeid = #{typeid,jdbcType=TINYINT}
-  </update>
+    <resultMap id="BaseResultMap" type="com.iquma.pojo.Weight">
+        <id column="uid" jdbcType="VARCHAR" property="uid"/>
+        <id column="typeid" jdbcType="TINYINT" property="typeid"/>
+        <result column="typeweight" jdbcType="TINYINT" property="typeweight"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        uid, typeid, typeweight
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="com.iquma.pojo.WeightKey" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_weiinfo
+        where uid = #{uid,jdbcType=VARCHAR}
+        and typeid = #{typeid,jdbcType=TINYINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="com.iquma.pojo.WeightKey">
+        delete from user_weiinfo
+        where uid = #{uid,jdbcType=VARCHAR}
+        and typeid = #{typeid,jdbcType=TINYINT}
+    </delete>
+    <insert id="insert" parameterType="com.iquma.pojo.Weight">
+        insert into user_weiinfo (uid, typeid, typeweight
+        )
+        values (#{uid,jdbcType=VARCHAR}, #{typeid,jdbcType=TINYINT}, #{typeweight,jdbcType=TINYINT}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="com.iquma.pojo.Weight">
+        insert into user_weiinfo
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uid != null">
+                uid,
+            </if>
+            <if test="typeid != null">
+                typeid,
+            </if>
+            <if test="typeweight != null">
+                typeweight,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uid != null">
+                #{uid,jdbcType=VARCHAR},
+            </if>
+            <if test="typeid != null">
+                #{typeid,jdbcType=TINYINT},
+            </if>
+            <if test="typeweight != null">
+                #{typeweight,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Weight">
+        update user_weiinfo
+        <set>
+            <if test="typeweight != null">
+                typeweight = #{typeweight,jdbcType=TINYINT},
+            </if>
+        </set>
+        where uid = #{uid,jdbcType=VARCHAR}
+        and typeid = #{typeid,jdbcType=TINYINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Weight">
+        update user_weiinfo
+        set typeweight = #{typeweight,jdbcType=TINYINT}
+        where uid = #{uid,jdbcType=VARCHAR}
+        and typeid = #{typeid,jdbcType=TINYINT}
+    </update>
 </mapper>

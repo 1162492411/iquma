@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iquma.dao.TopicMapper">
+  <resultMap id="BaseResultMap" type="com.iquma.pojo.Topic">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="sid" jdbcType="TINYINT" property="sid" />
+    <result column="tid" jdbcType="TINYINT" property="tid" />
+    <result column="aid" jdbcType="VARCHAR" property="aid" />
+    <result column="addTime" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="reTime" jdbcType="TIMESTAMP" property="reTime" />
+    <result column="viewCount" jdbcType="INTEGER" property="viewCount" />
+    <result column="rateCount" jdbcType="INTEGER" property="rateCount" />
+    <result column="isBlock" jdbcType="BIT" property="isBlock" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.iquma.pojo.Topic">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, tid, aid, addTime, reTime, viewCount, rateCount, isBlock
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from topic_topinfo
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from topic_topinfo
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.iquma.pojo.Topic">
+    insert into topic_topinfo (id, title, tid, 
+      aid, addTime, reTime, 
+      viewCount, rateCount, isBlock, 
+      content)
+    values (#{id,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{tid,jdbcType=TINYINT}, 
+      #{aid,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, #{reTime,jdbcType=TIMESTAMP}, 
+      #{viewCount,jdbcType=INTEGER}, #{rateCount,jdbcType=INTEGER}, #{isBlock,jdbcType=BIT}, 
+      #{content,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.iquma.pojo.Topic">
+    insert into topic_topinfo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="title != null">
+        title,
+      </if>
+      <if test="tid != null">
+        tid,
+      </if>
+      <if test="aid != null">
+        aid,
+      </if>
+      <if test="addTime != null">
+        addTime,
+      </if>
+      <if test="reTime != null">
+        reTime,
+      </if>
+      <if test="viewCount != null">
+        viewCount,
+      </if>
+      <if test="rateCount != null">
+        rateCount,
+      </if>
+      <if test="isBlock != null">
+        isBlock,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="title != null">
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="tid != null">
+        #{tid,jdbcType=TINYINT},
+      </if>
+      <if test="aid != null">
+        #{aid,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reTime != null">
+        #{reTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="viewCount != null">
+        #{viewCount,jdbcType=INTEGER},
+      </if>
+      <if test="rateCount != null">
+        #{rateCount,jdbcType=INTEGER},
+      </if>
+      <if test="isBlock != null">
+        #{isBlock,jdbcType=BIT},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Topic">
+    update topic_topinfo
+    <set>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="tid != null">
+        tid = #{tid,jdbcType=TINYINT},
+      </if>
+      <if test="aid != null">
+        aid = #{aid,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        addTime = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="reTime != null">
+        reTime = #{reTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="viewCount != null">
+        viewCount = #{viewCount,jdbcType=INTEGER},
+      </if>
+      <if test="rateCount != null">
+        rateCount = #{rateCount,jdbcType=INTEGER},
+      </if>
+      <if test="isBlock != null">
+        isBlock = #{isBlock,jdbcType=BIT},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.iquma.pojo.Topic">
+    update topic_topinfo
+    set title = #{title,jdbcType=VARCHAR},
+      tid = #{tid,jdbcType=TINYINT},
+      aid = #{aid,jdbcType=VARCHAR},
+      addTime = #{addTime,jdbcType=TIMESTAMP},
+      reTime = #{reTime,jdbcType=TIMESTAMP},
+      viewCount = #{viewCount,jdbcType=INTEGER},
+      rateCount = #{rateCount,jdbcType=INTEGER},
+      isBlock = #{isBlock,jdbcType=BIT},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Topic">
+    update topic_topinfo
+    set title = #{title,jdbcType=VARCHAR},
+      tid = #{tid,jdbcType=TINYINT},
+      aid = #{aid,jdbcType=VARCHAR},
+      addTime = #{addTime,jdbcType=TIMESTAMP},
+      reTime = #{reTime,jdbcType=TIMESTAMP},
+      viewCount = #{viewCount,jdbcType=INTEGER},
+      rateCount = #{rateCount,jdbcType=INTEGER},
+      isBlock = #{isBlock,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <select id="getAllTopics" resultMap="BaseResultMap">
+    select * from topic_topinfo
+  </select>
+
+  <select id="selectTopicByCondition" parameterType="com.iquma.pojo.Topic" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from topic_topinfo
+    <where>
+      <if test="id != null">
+        id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR}
+      </if>
+      <if test="tid != null">
+        and tid = #{tid,jdbcType=TINYINT}
+      </if>
+      <if test="aid != null">
+        and aid = #{aid,jdbcType=VARCHAR}
+      </if>
+      <if test="addTime != null">
+        and addTime = #{addTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="reTime != null">
+        and reTime = #{reTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="viewCount != null">
+        and viewCount = #{viewCount,jdbcType=INTEGER}
+      </if>
+      <if test="rateCount != null">
+        and rateCount = #{rateCount,jdbcType=INTEGER}
+      </if>
+      <if test="isBlock != null">
+        and isBlock = #{isBlock,jdbcType=BIT}
+      </if>
+      <if test="content != null">
+        and content = #{content,jdbcType=LONGVARCHAR}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectTopicsByCondition" parameterType="com.iquma.pojo.Topic" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from topic_topinfo
+    <where>
+      <if test="title != null">
+        title = #{title,jdbcType=VARCHAR}
+      </if>
+      <if test="tid != null">
+        and tid = #{tid,jdbcType=TINYINT}
+      </if>
+      <if test="aid != null">
+        and aid = #{aid,jdbcType=VARCHAR}
+      </if>
+      <if test="addTime != null">
+        and addTime = #{addTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="reTime != null">
+        and reTime = #{reTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="viewCount != null">
+        and viewCount = #{viewCount,jdbcType=INTEGER}
+      </if>
+      <if test="rateCount != null">
+        and rateCount = #{rateCount,jdbcType=INTEGER}
+      </if>
+      <if test="isBlock != null">
+        and isBlock = #{isBlock,jdbcType=BIT}
+      </if>
+      <if test="content != null">
+        and content = #{content,jdbcType=LONGVARCHAR}
+      </if>
+    </where>
+  </select>
+</mapper>
