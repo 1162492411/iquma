@@ -22,4 +22,6 @@ public interface UserService {
     boolean updateUser(User record);//更新用户信息
 
     boolean insert(User user);//添加用户
+
+    boolean delete(String id);//删除用户
 }

@@ -1,15 +1,10 @@
 package com.iquma.service.impl;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+
 import com.iquma.dao.UserMapper;
 import com.iquma.pojo.User;
 import com.iquma.service.UserService;
@@ -36,6 +31,11 @@ public class UserServiceImpl implements UserService {
 
     public boolean insert(User user) {
         return this.userMapper.insert(user) > 0;
+    }
+
+    @Override
+    public boolean delete(String id) {
+        return this.userMapper.deleteByPrimaryKey(id) > 0;
     }
 
     @Override

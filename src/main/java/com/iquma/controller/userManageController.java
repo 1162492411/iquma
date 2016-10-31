@@ -4,8 +4,7 @@ import com.iquma.pojo.User;
 import com.iquma.pojo.Block;
 import com.iquma.service.UserService;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
 
@@ -14,25 +13,23 @@ import javax.annotation.Resource;
 
 @Controller
 @RequestMapping("admin/users")
-public class UserManageController {
+public class userManageController {
 
     @Resource
     private UserService userService;
     private String result;
 
     //默认为显示所有用户页面
-    @RequestMapping()
+    @RequestMapping(method = RequestMethod.GET)
     public String toShowUsers(@RequestParam("uid") String uid, Model model) {
         model.addAttribute("uid", uid);
         model.addAttribute("userMap", this.userService.getAllUsers());
-        return "admin/users/showUsers";
+        return "admin/users/users";
     }
 
     //前往添加用户页面
-    @RequestMapping("/add")
-    public String toAddUser() {
-        return "admin/users/addUser";
-    }
+    @RequestMapping("add")
+    public void add(){  }
 
     //添加用户验证
     @RequestMapping("/add/validator")
@@ -48,9 +45,8 @@ public class UserManageController {
 
     //前往封禁用户页面
     @RequestMapping("/block")
-    public String toBlock(@RequestParam("uid") String uid, Model model) {
+    public void toBlock(@RequestParam("uid") String uid, Model model) {
         model.addAttribute("uid", uid);
-        return "admin/users/blockUser";
     }
 
     //封禁用户验证
@@ -67,20 +63,32 @@ public class UserManageController {
 
     //前往更新账户页面
     @RequestMapping("update")
-    public String toUpdate(@RequestParam("uid") String uid, Model model) {
+    public void toUpdate(@RequestParam("uid")String uid, Model model) {
         model.addAttribute(this.userService.getUserById(uid));
-        return "admin/users/updateUser";
     }
 
     //更新账户验证
-    @RequestMapping("update/validator")
-    public String updateValidator(User user, Model model) {
-        if (this.userService.updateUser(user)) {
-            result = "成功更新账户" + user.getId();
+    @RequestMapping(method = RequestMethod.PUT, value = "{id}")
+    public String updateValidator(User record, Model model) {
+        if (this.userService.updateUser(record)) {
+            result = "成功更新账户" + record.getId();
         } else {
-            result = "未能更新账户" + user.getId();
+            result = "未能更新账户" + record.getId();
         }
         model.addAttribute("result", result);
         return "admin/status/actionResult";
     }
+
+
+    //删除用户
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.DELETE, value = "{id}")
+    public String deleteUser(@PathVariable("id") String id) {
+        if (this.userService.delete(id)) {
+            return "suc";
+        } else {
+            return "err";
+        }
+    }
+
 }

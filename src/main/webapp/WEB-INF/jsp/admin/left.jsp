@@ -15,7 +15,7 @@
     <li class="active">
         <a href="#">管理功能菜单</a>
     </li>
-    <li><a href="users/showUsers.jsp" target="mainFrame">查看用户</a></li>
+    <li><a href="users/users.jsp" target="mainFrame">查看用户</a></li>
     <li><a href="users/addUsers.jsp" target="mainFrame">添加用户</a></li>
     <li><a href="courses/showCourses.jsp" target="mainFrame">查看教程</a></li>
     <li><a href="courses/addCourses.jsp" target="mainFrame">添加教程</a></li>

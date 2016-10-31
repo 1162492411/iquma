@@ -9,11 +9,11 @@ public class Reply {
 
     private String uid;
 
-    private Date addtime;
+    private Date addTime;
 
-    private Boolean isbest;
+    private Boolean isBest;
 
-    private Integer ratecount;
+    private Integer rateCount;
 
     private String content;
 
@@ -41,28 +41,28 @@ public class Reply {
         this.uid = uid == null ? null : uid.trim();
     }
 
-    public Date getAddtime() {
-        return addtime;
+    public Date getAddTime() {
+        return addTime;
     }
 
-    public void setAddtime(Date addtime) {
-        this.addtime = addtime;
+    public void setAddTime(Date addTime) {
+        this.addTime = addTime;
     }
 
-    public Boolean getIsbest() {
-        return isbest;
+    public Boolean getIsBest() {
+        return isBest;
     }
 
-    public void setIsbest(Boolean isbest) {
-        this.isbest = isbest;
+    public void setIsBest(Boolean isBest) {
+        this.isBest = isBest;
     }
 
-    public Integer getRatecount() {
-        return ratecount;
+    public Integer getRateCount() {
+        return rateCount;
     }
 
-    public void setRatecount(Integer ratecount) {
-        this.ratecount = ratecount;
+    public void setRateCount(Integer rateCount) {
+        this.rateCount = rateCount;
     }
 
     public String getContent() {

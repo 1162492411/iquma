@@ -2,7 +2,7 @@ package com.iquma.dao;
 
 import com.iquma.pojo.Comment;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface CommentMapper {
     int deleteByPrimaryKey(Integer id);
@@ -13,9 +13,8 @@ public interface CommentMapper {
 
     Comment selectByPrimaryKey(Integer id);
 
-    Comment selectCommentByCondition(Comment comment);//根据条件查找评论 -- 未实现
 
-    ArrayList selectCommentsByCondition(Comment comment);//根据条件查找评论集合 -- 未实现
+    List selectCommentsByRid(Integer rid);//根据回复id查找其所有评论
 
     int updateByPrimaryKeySelective(Comment record);
 

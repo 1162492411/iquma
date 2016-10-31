@@ -19,7 +19,8 @@
 
 <body>
 <!-- 这里是更新账户信息页面 -->
-<form action="${pageContext.request.contextPath}/admin/users/update/validator">
+<form action="${pageContext.request.contextPath}/admin/users" method="post" >
+    <input type="hidden" name="_method" value="put" />
     <div class="panel panel-default">
         <div class="panel-heading">更新账户</div>
         <div class="panel-body" id="profileBody">

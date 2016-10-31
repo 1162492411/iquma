@@ -9,26 +9,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import com.iquma.pojo.User;
 import com.iquma.service.UserService;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class userController {
 
     @Resource
     private UserService userService;
 
 
-//    //前往用户个人主页
+    //    //前往用户个人主页
     @RequestMapping("/home/{uid}")
     public String toHome(@PathVariable("uid") String uid, Model model) throws Exception {
         User user = this.userService.getUserById(uid);
-//        String uname = user.getName();
-//        String validatorNameUTF8 = new String(uname.getBytes(), "UTF-8");
-//        String validatorNameGBK = new String(uname.getBytes(), "GBK");
-//        if (uname.equals(validatorNameUTF8)) System.out.println("姓名的编码格式为utf8");
-//        else if (uname.equals(validatorNameGBK)) System.out.println("姓名的编码格式为gbk");
         model.addAttribute("user", user);
         return "user/home";
     }
@@ -44,7 +38,7 @@ public class UserController {
     @RequestMapping("/settings/profile")
     public String toProfile(@RequestParam("uid") String uid, Model model) {
         model.addAttribute(this.userService.getUserById(uid));
-        return "user/settings_profile";
+        return "user/profile";
     }
 
     //个人资料验证
@@ -60,7 +54,7 @@ public class UserController {
     @RequestMapping("/settings/account")
     public String toAccount(@RequestParam("uid") String uid, Model model) {
         model.addAttribute(this.userService.getUserById(uid));
-        return "user/settings_account";
+        return "user/account";
     }
 
     //邮箱及密码验证
@@ -75,7 +69,7 @@ public class UserController {
     @RequestMapping("/settings/forgot")
     public String toForgot(@RequestParam("uid") String uid, Model model) {
         model.addAttribute("uid", uid);
-        return "user/settings_forgot";
+        return "user/forgot";
     }
 
     //重置密码验证

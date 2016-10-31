@@ -16,9 +16,46 @@
           href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
     <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function deleteUser(id){
+            $.ajax({
+                type: 'delete',
+                url:'<%=basePath%>admin/users/'+id,
+                dataType:'text',
+                success:function(data){
+                    if(data=="suc"){
+                        alert("删除成功");
+                        location.reload();
+                    }
+                    else if (data=="err"){
+                        alert("未能成功删除");
+                        location.reload();
+                    }
+                },
+                error:function(data){
+                }
+            });
+        }
+
+    </script>
+
 </head>
 
 <body>
+<%--顶部 --%>
+<nav class="navbar navbar-default" role="navigation">
+    <%--顶部导航栏 --%>
+    <div class="navbar-header">
+        <a class="navbar-brand" href="#">
+            <span class="glyphicon glyphicon-user">账户列表</span>
+        </a>
+    </div>
+
+        <div style="float:right" >
+            <a href="/admin/users/add" class="btn btn-primary" role="button">添加</a>
+        </div>
+</nav>
+
 <%-- 数据表格 --%>
 <div class="table-responsive">
     <table class="table table-hover" id="userTable">
@@ -50,8 +87,7 @@
                 <td>${user.prestige}</td>
                 <td>${user.appCount}</td>
                 <td>
-                    <input type="button" class="btn btn-primary" id="updateButton" value="更新"
-                           onclick="updateUser(${user.id})"/>
+                    <a href="/admin/users/update?uid=${user.id}" class="btn btn-primary" role="button">更新</a>
                     <input type="button" class="btn btn-primary" id="BlockButton" value="封禁"
                            onclick="blockUser(${uid})"/>
                     <input type="button" class="btn btn-danger" id="deleteButton" value="删除"

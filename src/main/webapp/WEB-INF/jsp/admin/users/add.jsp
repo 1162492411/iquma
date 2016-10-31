@@ -26,6 +26,7 @@
 <body>
 <!-- 添加账户 -->
 <form action="${pageContext.request.contextPath}/admin/users/add/validator">
+
     <div class="panel panel-default">
         <div class="panel-heading">添加账户</div>
         <div class="panel-body" id="profileBody">

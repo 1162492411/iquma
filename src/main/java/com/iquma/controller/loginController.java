@@ -10,7 +10,7 @@ import com.iquma.service.UserService;
 
 @Controller
 @RequestMapping("/login")
-public class LoginController {
+public class loginController {
 
     @Autowired
     private UserService userService;
@@ -26,16 +26,20 @@ public class LoginController {
     public String loginValidator(HttpServletRequest request, Model model) {
         String id = request.getParameter("id");
         String pass = request.getParameter("password");
+        System.out.println("登录验证时获取了信息:" + id + "  " + pass);
         if (this.userService.validatorUserPass(id, pass)) {
             model.addAttribute("uid", id);
+            System.out.println("成功验证");
             return "success";
-        } else
+        } else {
+            System.out.println("验证失败");
             return "error";
+        }
     }
 
     //后台登录页面
     @RequestMapping("/admin")
-    public String toAdminlogin() {
+    public String toAdminLogin() {
         return "adminlogin";
     }
 

@@ -15,7 +15,7 @@ import javax.annotation.Resource;
  */
 @Controller
 @RequestMapping("search")
-public class SearchController {
+public class searchController {
 
     @Resource
     private TopicService topicService;

@@ -2,7 +2,8 @@ package com.iquma.dao;
 
 import com.iquma.pojo.Reply;
 
-import java.util.ArrayList;
+
+import java.util.List;
 
 public interface ReplyMapper {
     int deleteByPrimaryKey(Integer id);
@@ -13,9 +14,8 @@ public interface ReplyMapper {
 
     Reply selectByPrimaryKey(Integer id);
 
-    Reply selectReplyByCondition(Reply reply);//根据条件查找单个回复 --未实现
+    List selectByTid(Integer tid);//根据主贴id查找其所属的所有回复
 
-    ArrayList selectReplysByCondition(Reply reply);//根据条件查找回复集合 -- 未实现
 
     int updateByPrimaryKeySelective(Reply record);
 

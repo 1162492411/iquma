@@ -1,6 +1,9 @@
 package com.iquma.controller;
 
+import com.iquma.pojo.CommentList;
 import com.iquma.pojo.Topic;
+import com.iquma.service.CommentService;
+import com.iquma.service.ReplyService;
 import com.iquma.service.TopicService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,24 +17,30 @@ import javax.annotation.Resource;
  */
 @Controller
 @RequestMapping("discuss")
-public class DiscussController {
+public class discussController {
 
     @Resource
     private TopicService topicService;
+    @Resource
+    private ReplyService replyService;
+    @Resource
+    private CommentService commentService;
+    private CommentList commentList;
     private String result;
 
     //前往显示问题页面
     @RequestMapping()
     public String toShowTopic(@RequestParam("id")Integer id, Model model){
         model.addAttribute("topic",this.topicService.selectTopicById(id));
-        return "discuss/discuss";
+        model.addAttribute("replies",this.replyService.selectReplyByTid(id));
+        return "discusses/discuss";
     }
 
     //前往提问页面
     @RequestMapping("add")
     public String toAddDiscuss(@RequestParam("uid")String uid, Model model){
         model.addAttribute("uid",uid);
-        return "discuss/add";
+        return "ask/ask";
     }
 
     //提问验证
@@ -54,7 +63,7 @@ public class DiscussController {
     @RequestMapping("update")
     public String toUpdateDiscuss(@RequestParam("id")Integer id, Model model) {
         model.addAttribute("topic",this.topicService.selectTopicById(id));
-        return "discuss/update";
+        return "discusses/update";
     }
 
     //修改问题验证
