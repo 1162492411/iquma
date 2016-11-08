@@ -1,15 +1,8 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
-<%
-    String path = request.getContextPath();
-    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
-%>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-    <base href="<%=basePath%>">
-
-    <title>My JSP 'settings_forgot.jsp' starting page</title>
+    <title>邮箱及密码</title>
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
     <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
@@ -19,9 +12,10 @@
 
 <body>
 <!-- 账户安全邮箱及密码修改 -->
-<form action="${pageContext.request.contextPath}/user/settings/account/validator">
+<form action="${pageContext.request.contextPath}/user/account/${user.id}" method="post">
     <div class="panel panel-default">
         <div class="panel-heading">邮箱及密码</div>
+        <input type="hidden" name="_method" value="PUT">
         <input type="hidden" name="id" value="${ user.id }"/>
         <div class="panel-body" id="profileBody">
             <%--用户邮箱 --%>

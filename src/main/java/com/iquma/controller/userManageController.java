@@ -62,14 +62,16 @@ public class userManageController {
     }
 
     //前往更新账户页面
-    @RequestMapping("update")
-    public void toUpdate(@RequestParam("uid")String uid, Model model) {
+    @RequestMapping("update/{uid}")
+    public String toUpdate(@PathVariable("uid")String uid, Model model) {
         model.addAttribute(this.userService.getUserById(uid));
+        return "admin/users/update";
     }
 
     //更新账户验证
-    @RequestMapping(method = RequestMethod.PUT, value = "{id}")
+    @RequestMapping(method = RequestMethod.PUT, value = "update")
     public String updateValidator(User record, Model model) {
+        System.out.println("传输的账户信息为"+ record);
         if (this.userService.updateUser(record)) {
             result = "成功更新账户" + record.getId();
         } else {

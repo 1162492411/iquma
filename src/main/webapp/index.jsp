@@ -1,4 +1,7 @@
-<html lang="zh-CN">
+
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<html>
 <head>
     <meta charset="UTF-8">
     <title>SegmentFault</title>
@@ -49,6 +52,7 @@
                         <span class="glyphicon glyphicon-search"></span>
                     </button>
                     <input id="searchBox" name="q" placeholder="输入关键字搜索" class="form-control" value="" type="text"></form>
+
                 <ul class="opts list-inline hidden-xs">
                     <li class="opts__item dropdown hoverDropdown write-btns">
                         <a class="dropdownBtn" data-toggle="dropdown" href="/ask">发布<span class="caret"></span>
@@ -66,31 +70,36 @@
                         </ul>
                     </li>
 
+
                     <li class="opts__item user dropdown hoverDropdown">
                         <a class="dropdownBtn user-avatar" data-toggle="dropdown" style="background-image: url('https://sf-static.b0.upaiyun.com/v-5812e736/global/img/user-64.png')" href="/user/home/"></a>
                         <ul class="dropdown-menu dropdown-menu-right">
                             <li>
-                                <a href="/user/home/">我的主页</a>
+                                <a href="/user/home/${userid}">我的主页</a>
                             </li>
                             <li>
-                                <a href="/user/settings/profile">我的档案</a>
+                                <a href="/user/profile/${userid}">我的档案</a>
                             </li>
                             <li>
-                                <a href="/user/settings/account">安全设置</a>
+                                <a href="/user/account/${userid}">安全设置</a>
                             </li>
                             <li>
-                                <a href="/user/settings/account">忘记密码</a>
+                                <a href="/user/forgot/${userid}">忘记密码</a>
                             </li>
                             <li class="divider"></li>
                             <li>
+                                <a href="/login" >登录</a>
                                 <a href="/user/logout">退出</a>
                             </li>
                         </ul>
                     </li>
+
                 </ul>
+
             </div>
         </div>
     </nav>
 </div>
 </body>
 </html>
+

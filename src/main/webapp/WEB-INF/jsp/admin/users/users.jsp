@@ -1,16 +1,9 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
-    String path = request.getContextPath();
-    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
-%>
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-    <base href="<%=basePath%>">
-
-    <title>展示所有用户页面</title>
+    <title>账户列表</title>
 
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
@@ -20,7 +13,7 @@
         function deleteUser(id){
             $.ajax({
                 type: 'delete',
-                url:'<%=basePath%>admin/users/'+id,
+                url:'${pageContext.request.contextPath}/admin/users/'+id,
                 dataType:'text',
                 success:function(data){
                     if(data=="suc"){
@@ -87,7 +80,7 @@
                 <td>${user.prestige}</td>
                 <td>${user.appCount}</td>
                 <td>
-                    <a href="/admin/users/update?uid=${user.id}" class="btn btn-primary" role="button">更新</a>
+                    <a href="/admin/users/update/${user.id}" class="btn btn-primary" role="button">更新</a>
                     <input type="button" class="btn btn-primary" id="BlockButton" value="封禁"
                            onclick="blockUser(${uid})"/>
                     <input type="button" class="btn btn-danger" id="deleteButton" value="删除"

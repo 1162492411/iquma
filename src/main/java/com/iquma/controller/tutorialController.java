@@ -11,7 +11,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("tutorials")
 public class tutorialController {
 
+    @RequestMapping()
+    public String toTutorials(){
+        return "tutorials/tutorials";
+    }
 
+    @RequestMapping("tutorial")
+    public void toTutorial() { }
+
+    @RequestMapping("tutorial/update")
+    public String toUpdateTutorial(){
+        return "tutorials/update";
+    }
 
 
 }

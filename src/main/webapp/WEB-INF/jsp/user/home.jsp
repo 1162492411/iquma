@@ -1,15 +1,7 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
-<%
-    String path = request.getContextPath();
-    String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
-%>
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-    <base href="<%=basePath%>">
-
-    <title>My JSP 'home.jsp' starting page</title>
+    <title>用户主页</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
     <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
@@ -17,11 +9,9 @@
 
 <body>
 <!-- 这里是用户主页 -->
-
-
 <!-- 显示用户简略信息，最近动态，收藏内容 -->
 <!-- 个人基础信息显示和编辑 -->
-<form action="${pageContext.request.contextPath}/user/settings/profile/validator">
+<form action="${pageContext.request.contextPath}/user/profile/validator">
     <div class="panel panel-default">
         <div class="panel-heading">个人档案</div>
         <input type="hidden" name="id" value="${ user.id }"/>
