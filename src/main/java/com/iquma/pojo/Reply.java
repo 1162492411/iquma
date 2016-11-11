@@ -72,4 +72,22 @@ public class Reply {
     public void setContent(String content) {
         this.content = content == null ? null : content.trim();
     }
+
+    @Override
+    public String toString() {
+        return "Reply{" +
+                "id=" + id +
+                ", tid=" + tid +
+                ", uid='" + uid + '\'' +
+                ", addTime=" + addTime +
+                ", isBest=" + isBest +
+                ", rateCount=" + rateCount +
+                ", content='" + content + '\'' +
+                '}';
+    }
+
+    //初始化默认回复
+    public void parseDefaultReply(){
+        addTime = new Date();
+    }
 }

@@ -12,7 +12,7 @@
 
 <body>
 <!-- 账户安全邮箱及密码修改 -->
-<form action="${pageContext.request.contextPath}/user/account/${user.id}" method="post">
+<form action="${pageContext.request.contextPath}/user/${user.id}/account" method="post">
     <div class="panel panel-default">
         <div class="panel-heading">邮箱及密码</div>
         <input type="hidden" name="_method" value="PUT">

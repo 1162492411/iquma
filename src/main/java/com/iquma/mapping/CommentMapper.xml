@@ -13,8 +13,6 @@
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
 
-
-
   <sql id="Base_Column_List">
     id, rid, uid, addTime
   </sql>

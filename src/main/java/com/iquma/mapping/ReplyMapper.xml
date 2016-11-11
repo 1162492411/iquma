@@ -49,10 +49,10 @@
   </delete>
 
     <insert id="insert" parameterType="com.iquma.pojo.Reply">
-    insert into topic_repinfo (id, tid, uid, 
+    insert into topic_repinfo (tid, uid,
       addTime, isBest, rateCount, 
       content)
-    values (#{id,jdbcType=INTEGER}, #{tid,jdbcType=INTEGER}, #{uid,jdbcType=VARCHAR}, 
+    values (#{tid,jdbcType=INTEGER}, #{uid,jdbcType=VARCHAR},
       #{addTime,jdbcType=TIMESTAMP}, #{isBest,jdbcType=BIT}, #{rateCount,jdbcType=INTEGER},
       #{content,jdbcType=LONGVARCHAR})
   </insert>
@@ -60,9 +60,6 @@
     <insert id="insertSelective" parameterType="com.iquma.pojo.Reply">
         insert into topic_repinfo
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
             <if test="tid != null">
                 tid,
             </if>
@@ -83,9 +80,6 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=INTEGER},
-            </if>
             <if test="tid != null">
                 #{tid,jdbcType=INTEGER},
             </if>

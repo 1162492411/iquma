@@ -11,7 +11,7 @@
 <!-- 这里是用户主页 -->
 <!-- 显示用户简略信息，最近动态，收藏内容 -->
 <!-- 个人基础信息显示和编辑 -->
-<form action="${pageContext.request.contextPath}/user/profile/validator">
+<form>
     <div class="panel panel-default">
         <div class="panel-heading">个人档案</div>
         <input type="hidden" name="id" value="${ user.id }"/>

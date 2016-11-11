@@ -21,6 +21,7 @@ public class TopicServiceImpl implements TopicService {
     @Resource
     private TopicMapper topicMapper;
 
+
     @Override
     public ArrayList getAllTopics() {
         return this.topicMapper.getAllTopics();

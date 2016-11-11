@@ -9,13 +9,17 @@ import java.util.ArrayList;
 
 public interface TopicMapper {
 
-    int deleteByPrimaryKey(Integer id);
+    Topic selectByPrimaryKey(Integer id);
+
+    ArrayList getAllTopics();//获取所有话题
+
+    Topic selectTopicByCondition(Topic record);//根据条件获取主题--未实现
+
+    ArrayList selectTopicsByCondition(Topic record);//根据条件获取主题集合--未实现
 
     int insert(Topic record);
 
     int insertSelective(Topic record);
-
-    Topic selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(Topic record);
 
@@ -23,10 +27,5 @@ public interface TopicMapper {
 
     int updateByPrimaryKey(Topic record);
 
-    ArrayList getAllTopics();//获取所有话题
-
-    Topic selectTopicByCondition(Topic topic);//根据条件获取主题--未实现
-
-    ArrayList selectTopicsByCondition(Topic topic);//根据条件获取主题集合--未实现
-
+    int deleteByPrimaryKey(Integer id);
 }

@@ -9,10 +9,10 @@
 </head>
 <body>
 <!-- 重置密码 -->
-<form action="${pageContext.request.contextPath}/user/forgot" method="post">
+<form action="${pageContext.request.contextPath}/user/${user.id}/forgot" method="post">
     <div class="panel panel-default">
         <div class="panel-heading">重置密码</div>
-        <input type="hidden" name="_method" value="PUT"/>
+        <input type="hidden" name="_method" value="POST"/>
         <input type="hidden" name="id" value="${user.id }"/>
         <div class="panel-body" id="profileBody">
             <%--用户邮箱 --%>

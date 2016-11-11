@@ -12,8 +12,9 @@
 <body>
 <!-- 登录框开始 -->
 <div id="login-part">
-    <form action="${pageContext.request.contextPath}/login/validator" method="post"
+    <form action="${pageContext.request.contextPath}/user/login" method="post"
           style="height: 400px; width: 250px; margin-left: 50px; margin-top: 20px">
+        <input type="hidden" name="_method" value="POST"/>
         <!-- 学号-->
         <div class="form-group">
             <input type="text" class="form-control" name="id" placeholder="学号" required=""
@@ -21,7 +22,7 @@
         </div>
         <!-- 密码 -->
         <div class="form-group">
-            <input type="password" class="form-control" name="password"
+            <input type="password" class="form-control" name="pass"
                    placeholder="密码" required=""/>
         </div>
         <!-- 登录按钮 -->

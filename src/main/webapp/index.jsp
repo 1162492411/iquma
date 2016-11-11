@@ -4,7 +4,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>SegmentFault</title>
+    <title>趣码网</title>
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
     <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
@@ -32,16 +32,16 @@
                 </div>
                 <ul class="menu list-inline pull-left hidden-xs">
                     <li class="menu__item menu__item--new">
-                        <a href="/tutorials">教程</a>
+                        <a href="/tutorials/2">教程</a>
                     </li>
                     <li class="menu__item">
-                        <a href="/discusses">问答</a>
+                        <a href="/discusses/2">问答</a>
                     </li>
                     <li class="menu__item">
-                        <a href="/articles">经验</a>
+                        <a href="/articles/2">经验</a>
                     </li>
                     <li class="menu__item">
-                        <a href="/codes">代码</a>
+                        <a href="/codes/2">代码</a>
                     </li>
                 </ul>
             </div>
@@ -72,24 +72,24 @@
 
 
                     <li class="opts__item user dropdown hoverDropdown">
-                        <a class="dropdownBtn user-avatar" data-toggle="dropdown" style="background-image: url('https://sf-static.b0.upaiyun.com/v-5812e736/global/img/user-64.png')" href="/user/home/"></a>
+                        <a class="dropdownBtn user-avatar" data-toggle="dropdown" style="background-image: url('https://sf-static.b0.upaiyun.com/v-5812e736/global/img/user-64.png')" href="/user/${userid}/home/"></a>
                         <ul class="dropdown-menu dropdown-menu-right">
                             <li>
-                                <a href="/user/home/${userid}">我的主页</a>
+                                <a href="/user/${userid}/home">我的主页</a>
                             </li>
                             <li>
-                                <a href="/user/profile/${userid}">我的档案</a>
+                                <a href="/user/${userid}/profile">我的档案</a>
                             </li>
                             <li>
-                                <a href="/user/account/${userid}">安全设置</a>
+                                <a href="/user/${userid}/account">安全设置</a>
                             </li>
                             <li>
-                                <a href="/user/forgot/${userid}">忘记密码</a>
+                                <a href="/user/forgot">忘记密码</a>
                             </li>
                             <li class="divider"></li>
                             <li>
-                                <a href="/login" >登录</a>
-                                <a href="/user/logout">退出</a>
+                                <a href="/user/login" >登录</a>
+                                <a href="/user/${userid}/logout">退出</a>
                             </li>
                         </ul>
                     </li>

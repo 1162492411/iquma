@@ -1,14 +1,15 @@
 package com.iquma.controller;
 
 import com.iquma.pojo.CommentList;
+import com.iquma.pojo.Reply;
 import com.iquma.pojo.Topic;
 import com.iquma.service.CommentService;
 import com.iquma.service.ReplyService;
 import com.iquma.service.TopicService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -19,66 +20,59 @@ import javax.annotation.Resource;
 @RequestMapping("discuss")
 public class discussController {
 
-    @Resource
+    @Autowired
     private TopicService topicService;
-    @Resource
+    @Autowired
     private ReplyService replyService;
-    @Resource
-    private CommentService commentService;
-    private CommentList commentList;
-    private String result;
+    String result;
 
-    //前往显示问题页面
-    @RequestMapping()
-    public String toShowTopic(@RequestParam("id")Integer id, Model model){
-        model.addAttribute("topic",this.topicService.selectTopicById(id));
-        model.addAttribute("replies",this.replyService.selectReplyByTid(id));
+    //显示提问
+    @RequestMapping(value = "{id}", method = RequestMethod.GET)
+    public String toDiscuss(@PathVariable String id, Model model) {
+        model.addAttribute("discuss",topicService.selectTopicById(Integer.parseInt(id)));
+        model.addAttribute("replies",replyService.selectReplyByTid(Integer.parseInt(id)));
         return "discusses/discuss";
     }
 
-    //前往提问页面
-    @RequestMapping("add")
-    public String toAddDiscuss(@RequestParam("uid")String uid, Model model){
-        model.addAttribute("uid",uid);
-        return "ask/ask";
+    //删除提问
+    @ResponseBody
+    @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
+    public String deleteDiscuss(@PathVariable("id") String id) {
+        if (topicService.deleteTopicById(Integer.parseInt(id))) {
+            return "suc";
+        } else {
+            return "err";
+        }
     }
 
-    //提问验证
-    @RequestMapping("add/validator")
-    public String validatorAddDiscuss(Topic discuss, Model model){
-        System.out.println("前端传进来的数据为:" + discuss);
-        if(this.topicService.insertTopic(discuss)){
-            result = "成功提问";
-        }
-        else{
-            result = "提问失败";
-        }
+    //发表评论
+    @RequestMapping(value = "{id}/reply", method = RequestMethod.POST)
+    public String addReply(Reply record, Model model){
+        record.parseDefaultReply();
+        if(replyService.insert(record)) result = "成功评论";
+        else result = "未能成功评论";
         model.addAttribute("result",result);
         return "status/actionResult";
     }
 
-
-
-    //前往修改问题页面
-    @RequestMapping("update")
-    public String toUpdateDiscuss(@RequestParam("id")Integer id, Model model) {
-        model.addAttribute("topic",this.topicService.selectTopicById(id));
+    //前往提问更新页面
+    @RequestMapping(value = "{id}/update", method = RequestMethod.GET)
+    public String toUpdateDiscuss(@PathVariable String id, Model model){
+        model.addAttribute("discuss",topicService.selectTopicById(Integer.parseInt(id)));
         return "discusses/update";
     }
 
-    //修改问题验证
-    @RequestMapping("update/validator")
-    public String validatorUpdateDiscuss(Topic discuss, Model model){
-        System.out.println("前端传来的信息为:" + discuss);
-        if(this.topicService.updateTopic(discuss)){
-            result = "修改提问成功";
+    //更新提问验证
+    @RequestMapping(value = "{id}/update", method = RequestMethod.PUT)
+    public String updateValidator(Topic record, Model model) {
+        if (topicService.updateTopic(record)) {
+            result = "成功更新提问" + record.getId();
+        } else {
+            result = "未能更新提问" + record.getId();
         }
-        else{
-            result = "修改提问失败";
-        }
-        model.addAttribute("result",result);
+        model.addAttribute("result", result);
         return "status/actionResult";
-
     }
+
 
 }

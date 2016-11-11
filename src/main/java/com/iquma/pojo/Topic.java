@@ -28,15 +28,7 @@ public class Topic {
     public Topic() {
     }
 
-//    public Topic(String title, String sid, String tid, String aid,Date addTime, Date reTime, String content) {
-//        this.title = title;
-//        this.sid = Byte.parseByte(sid);
-//        this.tid = Byte.parseByte(tid);
-//        this.aid = aid;
-//        this.addTime = addTime;
-//        this.reTime = reTime;
-//        this.content = content;
-//    }
+
 
     public Topic(Integer id, String title, Byte sid, Byte tid, String aid, Date addTime, Date reTime, Integer viewCount, Integer rateCount, Boolean isBlock, String content) {
         this.id = id;
@@ -144,5 +136,27 @@ public class Topic {
         return "[话题id: " + id + ",标题: " + title + ",标签id: " + tid + ",作者id: " + aid + ",发表时间: " + addTime
                 + ",话题内容: " + content + ",最后回复时间: " + reTime + ",浏览量: " + viewCount + ",评价分数: " + rateCount
                 + ",话题状态 :" + isBlock;
+    }
+
+    //初始化默认提问主贴
+    public void parseDefaultDiscuss(){
+        sid = new Byte("2");
+        addTime = new Date();
+        reTime = new Date();
+    }
+
+    //初始化默认经验主贴
+    public void parseDefaultArticle(){
+        sid = new Byte("3");
+        addTime = new Date();
+        reTime = new Date();
+    }
+
+
+    //初始化默认代码主贴
+    public void parseDefaultCode(){
+        sid = new Byte("4");
+        addTime = new Date();
+        reTime = new Date();
     }
 }

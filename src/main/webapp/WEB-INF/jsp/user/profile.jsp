@@ -10,7 +10,7 @@
 </head>
 <body>
 <!-- 个人基础信息显示和编辑 -->
-<form action="${pageContext.request.contextPath}/user/profile/${user.id}" method="post">
+<form action="${pageContext.request.contextPath}/user/${user.id}/profile" method="post">
     <div class="panel panel-default">
         <div class="panel-heading">个人档案</div>
         <input type="hidden" name="id" value="${ user.id }"/>
