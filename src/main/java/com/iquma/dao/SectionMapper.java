@@ -2,6 +2,8 @@ package com.iquma.dao;
 
 import com.iquma.pojo.Section;
 
+import java.util.List;
+
 public interface SectionMapper {
     int deleteByPrimaryKey(Byte id);
 
@@ -14,4 +16,6 @@ public interface SectionMapper {
     int updateByPrimaryKeySelective(Section record);
 
     int updateByPrimaryKey(Section record);
+
+    List selectAll();//获取所有版块
 }

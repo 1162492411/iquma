@@ -6,23 +6,24 @@ import com.iquma.pojo.Topic;
 import com.iquma.pojo.Type;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Mo on 2016/9/27.
  */
 public interface TopicService {
 
-    ArrayList getAllTopics();//获取所有主题
+    List selectAll();//获取所有主题
 
-    Topic selectTopicById(Integer id);//根据id获取主题
+    Topic selectById(Integer id);//根据id获取主题
 
-    Topic selectTopicByCondition(Topic topic);//根据条件获取主题
+    List selectByCondition(Topic condition);//根据条件获取主题集合
 
-    ArrayList selectTopicsByCondition(Topic topic);//根据条件获取主题集合
+    boolean update(Topic topic);//更新主题信息
 
-    boolean updateTopic(Topic topic);//更新主题信息
+    boolean insert(Topic topic);//新增主题
 
-    boolean insertTopic(Topic topic);//新增主题
+    boolean deleteById(Integer id);//根据id删除主题
 
-    boolean deleteTopicById(Integer id);//根据id删除主题
+    boolean changeStatus(Integer id);//根据id关闭主贴
 }

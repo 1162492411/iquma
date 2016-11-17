@@ -14,12 +14,16 @@ public interface ReplyMapper {
 
     Reply selectByPrimaryKey(Integer id);
 
-    List selectByTid(Integer tid);//根据主贴id查找其所属的所有回复
-
-
     int updateByPrimaryKeySelective(Reply record);
 
     int updateByPrimaryKeyWithBLOBs(Reply record);
 
     int updateByPrimaryKey(Reply record);
+
+    boolean changeStatusByPrimaryKey(Integer id);//改变回复状态--建议替换blockByPrimaryKey
+
+   // List selectByTid(Integer tid);//查找某主贴下的所有回复--建议废弃
+
+    List selectByCondition(Reply record);//查找符合条件的所有回复
+
 }

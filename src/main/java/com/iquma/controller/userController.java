@@ -46,7 +46,7 @@ public class userController {
     //前往用户个人主页
     @RequestMapping(value = "{uid}/home", method = RequestMethod.GET)
     public String toHome(@PathVariable("uid") String uid, Model model) {
-        User user = this.userService.getUserById(uid);
+        User user = this.userService.selectById(uid);
         model.addAttribute("user", user);
         return "user/home";
     }
@@ -55,14 +55,14 @@ public class userController {
     //前往个人资料页面
     @RequestMapping(value = "{uid}/profile", method = RequestMethod.GET)
     public String toProfile(@PathVariable("uid") String uid, Model model) {
-        model.addAttribute(this.userService.getUserById(uid));
+        model.addAttribute(this.userService.selectById(uid));
         return "user/profile";
     }
 
     //个人资料验证
     @RequestMapping(value = "{uid}/profile", method = RequestMethod.PUT)
     public String profileValidator(User record, Model model) {
-        if (this.userService.updateUser(record))
+        if (this.userService.update(record))
             result = "成功修改个人资料";
         else result  = "未能修改个人资料";
         model.addAttribute("result",result);
@@ -72,14 +72,14 @@ public class userController {
     //前往邮箱及密码页面
     @RequestMapping(value = "{uid}/account", method = RequestMethod.GET)
     public String toAccount(@PathVariable("uid") String uid, Model model) {
-        model.addAttribute(this.userService.getUserById(uid));
+        model.addAttribute(this.userService.selectById(uid));
         return "user/account";
     }
 
     //邮箱及密码验证
     @RequestMapping(value = "{uid}/account", method = RequestMethod.PUT)
     public String accountValidator(User record,Model model) {
-        if (this.userService.updateUser(record))
+        if (this.userService.update(record))
             result = "成功修改邮箱密码";
         else result  = "未能修改邮箱密码";
         model.addAttribute("result",result);
@@ -95,7 +95,7 @@ public class userController {
     //重置密码验证
     @RequestMapping(value = "forgot", method = RequestMethod.POST)
     public String forgotValidator(User record, Model model) {
-        if (this.userService.validatorEmail(record.getId(), record.getEmail()) && this.userService.updateUser(record))
+        if (this.userService.validatorEmail(record.getId(), record.getEmail()) && this.userService.update(record))
             result = "成功重置密码";
         else result  = "未能重置密码";
         model.addAttribute("result",result);

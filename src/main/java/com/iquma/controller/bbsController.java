@@ -25,7 +25,7 @@ public class bbsController {
     public String toTutorials(@PathVariable String tid, Topic topic, Model model){
         topic.setSid(Byte.parseByte("1"));
         topic.setTid(Byte.parseByte(tid));
-        model.addAttribute("tutorials",topicService.selectTopicsByCondition(topic));
+        model.addAttribute("tutorials",topicService.selectByCondition(topic));
         return "tutorials/tutorials";
     }
 
@@ -34,7 +34,7 @@ public class bbsController {
     public String toDiscusses(@PathVariable String tid, Topic topic, Model model){
         topic.setSid(Byte.parseByte("2"));
         topic.setTid(Byte.parseByte(tid));
-        model.addAttribute("discusses",topicService.selectTopicsByCondition(topic));
+        model.addAttribute("discusses",topicService.selectByCondition(topic));
         return "discusses/discusses";
     }
 
@@ -43,7 +43,7 @@ public class bbsController {
     public String toArticles(@PathVariable String tid, Topic topic, Model model){
         topic.setSid(Byte.parseByte("3"));
         topic.setTid(Byte.parseByte(tid));
-        model.addAttribute("articles",topicService.selectTopicsByCondition(topic));
+        model.addAttribute("articles",topicService.selectByCondition(topic));
         return "articles/articles";
     }
 
@@ -52,7 +52,7 @@ public class bbsController {
     public String toCodes(@PathVariable String tid, Topic topic, Model model){
         topic.setSid(Byte.parseByte("4"));
         topic.setTid(Byte.parseByte(tid));
-        model.addAttribute("codes",topicService.selectTopicsByCondition(topic));
+        model.addAttribute("codes",topicService.selectByCondition(topic));
         return "codes/codes";
     }
 
@@ -66,7 +66,7 @@ public class bbsController {
     @RequestMapping(value = "ask", method = RequestMethod.PUT)
     public String askValidator(Topic record, Model model){
         record.parseDefaultDiscuss();
-        if(topicService.insertTopic(record)) result = "成功发表提问";
+        if(topicService.insert(record)) result = "成功发表提问";
         else result = "未能成功发表提问";
         model.addAttribute("result", result);
         return "status/actionResult";
@@ -83,7 +83,7 @@ public class bbsController {
     @RequestMapping(value = "write", method = RequestMethod.PUT)
     public String writeValidator(Topic record, Model model){
         record.parseDefaultArticle();
-        if(topicService.insertTopic(record)) result = "成功分享经验";
+        if(topicService.insert(record)) result = "成功分享经验";
         else result = "未能成功分享经验";
         model.addAttribute("result", result);
         return "status/actionResult";
@@ -100,7 +100,7 @@ public class bbsController {
     @RequestMapping(value = "upload", method = RequestMethod.PUT)
     public String uploadValidator(Topic record, Model model){
         record.parseDefaultCode();
-        if(topicService.insertTopic(record)) result = "成功分享代码";
+        if(topicService.insert(record)) result = "成功分享代码";
         else result = "未能成功分享代码";
         model.addAttribute("result", result);
         return "status/actionResult";

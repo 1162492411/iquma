@@ -26,9 +26,10 @@ public class codeController {
 
     //显示代码
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public String toCode(@PathVariable String id, Model model) {
-        model.addAttribute("code",topicService.selectTopicById(Integer.parseInt(id)));
-        model.addAttribute("replies",replyService.selectReplyByTid(Integer.parseInt(id)));
+    public String toCode(@PathVariable String id, Reply condition, Model model) {
+        condition.setTid(Integer.parseInt(id));
+        model.addAttribute("code",topicService.selectById(Integer.parseInt(id)));
+        model.addAttribute("replies",replyService.selectByCondition(condition));
         return "codes/code";
     }
 
@@ -36,7 +37,7 @@ public class codeController {
     @ResponseBody
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public String deleteCode(@PathVariable("id") String id) {
-        if (topicService.deleteTopicById(Integer.parseInt(id))) {
+        if (topicService.deleteById(Integer.parseInt(id))) {
             return "suc";
         } else {
             return "err";
@@ -56,14 +57,14 @@ public class codeController {
     //前往代码更新页面
     @RequestMapping(value = "{id}/update", method = RequestMethod.GET)
     public String toUpdateCode(@PathVariable String id, Model model){
-        model.addAttribute("code",topicService.selectTopicById(Integer.parseInt(id)));
+        model.addAttribute("code",topicService.selectById(Integer.parseInt(id)));
         return "codes/update";
     }
 
     //更新代码验证
     @RequestMapping(value = "{id}/update", method = RequestMethod.PUT)
     public String updateValidator(Topic record, Model model) {
-        if (topicService.updateTopic(record)) {
+        if (topicService.update(record)) {
             result = "成功更新代码" + record.getId();
         } else {
             result = "未能更新代码" + record.getId();

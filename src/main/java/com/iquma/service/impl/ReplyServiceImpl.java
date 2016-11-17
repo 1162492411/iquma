@@ -18,8 +18,8 @@ public class ReplyServiceImpl implements ReplyService {
     private ReplyMapper replyMapper;
 
     @Override
-    public List selectReplyByTid(Integer tid) {
-        return this.replyMapper.selectByTid(tid);
+    public List selectByCondition(Reply condition) {
+        return this.replyMapper.selectByCondition(condition);
     }
 
     @Override
@@ -35,5 +35,10 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     public Boolean update(Reply record) {
         return this.replyMapper.updateByPrimaryKeyWithBLOBs(record) > 0;
+    }
+
+    @Override
+    public Boolean changeStatus(Integer id) {
+        return this.replyMapper.changeStatusByPrimaryKey(id);
     }
 }

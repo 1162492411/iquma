@@ -22,10 +22,6 @@
         where id = #{id,jdbcType=VARCHAR}
     </select>
 
-    <select id="getAllUsers" resultMap="BaseResultMap">
-        select * from user_basinfo
-    </select>
-
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from user_basinfo
         where id = #{id,jdbcType=VARCHAR}
@@ -145,8 +141,20 @@
         where id = #{id,jdbcType=VARCHAR}
     </update>
 
-    <update id="blockByPrimaryKey" parameterType="java.lang.String">
+    <update id="changeStatusByPrimaryKey" parameterType="java.lang.String">
         update user_basinfo
-        set isBlock=true where id = #{id,jdbcType=VARCHAR}
+        set isBlock= ! isBlock where id = #{id,jdbcType=VARCHAR}
     </update>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_basinfo
+    </select>
+
+    <select id="selectByCondition" parameterType="com.iquma.pojo.User">
+
+
+    </select>
+
 </mapper>

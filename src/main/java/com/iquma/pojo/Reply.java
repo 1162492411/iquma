@@ -13,6 +13,8 @@ public class Reply {
 
     private Boolean isBest;
 
+    private Boolean isBlock;
+
     private Integer rateCount;
 
     private String content;
@@ -57,6 +59,14 @@ public class Reply {
         this.isBest = isBest;
     }
 
+    public Boolean getIsBlock() {
+        return isBlock;
+    }
+
+    public void setIsBlock(Boolean block) {
+        isBlock = block;
+    }
+
     public Integer getRateCount() {
         return rateCount;
     }
@@ -81,6 +91,7 @@ public class Reply {
                 ", uid='" + uid + '\'' +
                 ", addTime=" + addTime +
                 ", isBest=" + isBest +
+                ", isBlock=" + isBlock +
                 ", rateCount=" + rateCount +
                 ", content='" + content + '\'' +
                 '}';

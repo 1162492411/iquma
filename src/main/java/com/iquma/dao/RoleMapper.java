@@ -2,6 +2,7 @@ package com.iquma.dao;
 
 import com.iquma.pojo.Role;
 
+import java.util.List;
 import java.util.Map;
 
 public interface RoleMapper {
@@ -17,5 +18,5 @@ public interface RoleMapper {
 
     int updateByPrimaryKey(Role record);
 
-    Map getAllRoles();
+    List selectAll();//获取所有角色
 }

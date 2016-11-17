@@ -1,10 +1,8 @@
 package com.iquma.service;
 
-import java.util.Map;
+import java.util.List;
 
-/**
- * Created by Mo on 2016/8/30.
- */
 public interface RoleService {
-    Map getAllRoles();
+
+    List selectAll();
 }

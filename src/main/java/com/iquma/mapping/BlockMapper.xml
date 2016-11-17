@@ -5,12 +5,10 @@
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="uid" jdbcType="VARCHAR" property="uid"/>
         <result column="opid" jdbcType="VARCHAR" property="opid"/>
-        <result column="starttime" jdbcType="TIMESTAMP" property="starttime"/>
-        <result column="endtime" jdbcType="TIMESTAMP" property="endtime"/>
         <result column="reason" jdbcType="VARCHAR" property="reason"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, uid, opid, starttime, endtime, reason
+        id, uid, opid, reason
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
@@ -23,11 +21,9 @@
         where id = #{id,jdbcType=INTEGER}
     </delete>
     <insert id="insert" parameterType="com.iquma.pojo.Block">
-        insert into user_blockinfo (id, uid, opid,
-        starttime, endtime, reason
-        )
+        insert into user_blockinfo (id, uid, opid, reason)
         values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=VARCHAR}, #{opid,jdbcType=VARCHAR},
-        #{starttime,jdbcType=TIMESTAMP}, #{endtime,jdbcType=TIMESTAMP}, #{reason,jdbcType=VARCHAR}
+        #{reason,jdbcType=VARCHAR}
         )
     </insert>
     <insert id="insertSelective" parameterType="com.iquma.pojo.Block">
@@ -41,12 +37,6 @@
             </if>
             <if test="opid != null">
                 opid,
-            </if>
-            <if test="starttime != null">
-                starttime,
-            </if>
-            <if test="endtime != null">
-                endtime,
             </if>
             <if test="reason != null">
                 reason,
@@ -62,12 +52,6 @@
             <if test="opid != null">
                 #{opid,jdbcType=VARCHAR},
             </if>
-            <if test="starttime != null">
-                #{starttime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="endtime != null">
-                #{endtime,jdbcType=TIMESTAMP},
-            </if>
             <if test="reason != null">
                 #{reason,jdbcType=VARCHAR},
             </if>
@@ -82,12 +66,6 @@
             <if test="opid != null">
                 opid = #{opid,jdbcType=VARCHAR},
             </if>
-            <if test="starttime != null">
-                starttime = #{starttime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="endtime != null">
-                endtime = #{endtime,jdbcType=TIMESTAMP},
-            </if>
             <if test="reason != null">
                 reason = #{reason,jdbcType=VARCHAR},
             </if>
@@ -98,8 +76,6 @@
         update user_blockinfo
         set uid = #{uid,jdbcType=VARCHAR},
         opid = #{opid,jdbcType=VARCHAR},
-        starttime = #{starttime,jdbcType=TIMESTAMP},
-        endtime = #{endtime,jdbcType=TIMESTAMP},
         reason = #{reason,jdbcType=VARCHAR}
         where id = #{id,jdbcType=INTEGER}
     </update>

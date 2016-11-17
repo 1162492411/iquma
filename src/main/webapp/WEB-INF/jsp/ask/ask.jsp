@@ -6,6 +6,15 @@
           href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
     <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/iquma.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            initTypeId();
+            $("#typeIdSelection").change(function () {
+                updateTidSelection($('#typeIdSelection option:selected').val());
+            });
+        });
+    </script>
 </head>
 <body>
 <!-- 提问 -->
@@ -19,17 +28,24 @@
                 <label>话题标题</label>
                 <input type="text" class="form-control" name="title" placeholder="话题标题"/>
             </div>
+            <%--类别id --%>
+            <div class="form-group" id="typeIdPanel">
+                <label>类别</label>
+                <select id="typeIdSelection">
+                </select>
+            </div>
             <%--标签id --%>
             <div class="form-group" id="tidPanel">
                 <label>标签id</label>
-                <input type="text" class="form-control" name="tid" placeholder="标签id"/>
+                <select name="tid" id="tidSelection">
+                </select>
             </div>
             <%--作者id --%>
-                <input type="hidden" name="aid" value="${userid}"/>
+            <input type="hidden" name="aid" value="${userid}"/>
             <%-- 内容--%>
             <div class="form-group" id="contentPanel">
                 <label>内容</label>
-                <input type="textarea" class="form-control" name="content" placeholder="内容"/>
+                <textarea name="content" cols="120" rows="5" placeholder="写点什么吧"></textarea>
             </div>
             <%-- 按钮 --%>
             <div class="form-group" id="buttonPanel">

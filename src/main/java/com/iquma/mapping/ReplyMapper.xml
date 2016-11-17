@@ -7,17 +7,16 @@
         <result column="uid" jdbcType="VARCHAR" property="uid"/>
         <result column="addTime" jdbcType="TIMESTAMP" property="addTime"/>
         <result column="isBest" jdbcType="BIT" property="isBest"/>
+        <result column="isBlock" jdbcType="BIT" property="isBlock"/>
         <result column="rateCount" jdbcType="INTEGER" property="rateCount"/>
     </resultMap>
     <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.iquma.pojo.Reply">
         <result column="content" jdbcType="LONGVARCHAR" property="content"/>
     </resultMap>
 
-
     <sql id="Base_Column_List">
-    id, tid, uid, addTime, isBest, rateCount
+    id, tid, uid, addTime, isBest,isBlock, rateCount
   </sql>
-
 
     <sql id="Blob_Column_List">
     content
@@ -32,17 +31,6 @@
         where id = #{id,jdbcType=INTEGER}
     </select>
 
-    <select id="selectByTid" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
-        select
-        <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
-        from topic_repinfo
-        where tid = #{tid,jdbcType=INTEGER}
-    </select>
-
-
-
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from topic_repinfo
     where id = #{id,jdbcType=INTEGER}
@@ -50,10 +38,10 @@
 
     <insert id="insert" parameterType="com.iquma.pojo.Reply">
     insert into topic_repinfo (tid, uid,
-      addTime, isBest, rateCount, 
+      addTime, isBest, isBlock, rateCount,
       content)
     values (#{tid,jdbcType=INTEGER}, #{uid,jdbcType=VARCHAR},
-      #{addTime,jdbcType=TIMESTAMP}, #{isBest,jdbcType=BIT}, #{rateCount,jdbcType=INTEGER},
+      #{addTime,jdbcType=TIMESTAMP}, #{isBest,jdbcType=BIT}, #{isBlock,jdbcType=BIT}, #{rateCount,jdbcType=INTEGER},
       #{content,jdbcType=LONGVARCHAR})
   </insert>
 
@@ -71,6 +59,9 @@
             </if>
             <if test="isBest != null">
                 isBest,
+            </if>
+            <if test="isBlock != null">
+                isBlock,
             </if>
             <if test="rateCount != null">
                 rateCount,
@@ -91,6 +82,9 @@
             </if>
             <if test="isBest != null">
                 #{isBest,jdbcType=BIT},
+            </if>
+            <if test="isBlock != null">
+                #{isBlock,jdbcType=BIT},
             </if>
             <if test="rateCount != null">
                 #{rateCount,jdbcType=INTEGER},
@@ -117,6 +111,9 @@
             <if test="isBest != null">
                 isBest = #{isBest,jdbcType=BIT},
             </if>
+            <if test="isBlock != null">
+                isBlock = #{isBlock,jdbcType=BIT},
+            </if>
             <if test="rateCount != null">
                 rateCount = #{rateCount,jdbcType=INTEGER},
             </if>
@@ -133,6 +130,7 @@
       uid = #{uid,jdbcType=VARCHAR},
       addTime = #{addTime,jdbcType=TIMESTAMP},
       isBest = #{isBest,jdbcType=BIT},
+      isBlock = #{isBlock,jdbcType=BIT},
       rateCount = #{rateCount,jdbcType=INTEGER},
       content = #{content,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
@@ -144,9 +142,48 @@
       uid = #{uid,jdbcType=VARCHAR},
       addTime = #{addTime,jdbcType=TIMESTAMP},
       isBest = #{isBest,jdbcType=BIT},
+      isBlock = #{isBlock,jdbcType=BIT},
       rateCount = #{rateCount,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+    <update id="changeStatusByPrimaryKey" parameterType="java.lang.Integer">
+        update topic_repinfo
+        set isBlock = ! isBlock where id = #{id,jdbcType=INTEGER}
+    </update>
+
+
+    <select id="selectByCondition" parameterType="com.iquma.pojo.Reply" resultMap="ResultMapWithBLOBs">
+        select
+        <include refid="Base_Column_List"/>
+        ,
+        <include refid="Blob_Column_List"/>
+        from topic_repinfo
+        where
+        <if test="id != null">
+            id = #{id,jdbcType=INTEGER}
+        </if>
+        <if test="tid != null">
+           and tid = #{tid,jdbcType=INTEGER}
+        </if>
+        <if test="uid != null">
+           and uid = #{uid,jdbcType=VARCHAR}
+        </if>
+        <if test="addTime != null">
+           and addTime = #{addTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="isBest != null">
+           and isBest = #{isBest,jdbcType=BIT}
+        </if>
+        <if test="isBlock != null">
+           and isBlock = #{isBlock,jdbcType=BIT}
+        </if>
+        <if test="rateCount != null">
+           and rateCount = #{rateCount,jdbcType=INTEGER}
+        </if>
+        <if test="content != null">
+           and content = #{content,jdbcType=LONGVARCHAR}
+        </if>
+    </select>
 
 </mapper>

@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Mo on 2016/9/27.
@@ -23,39 +24,38 @@ public class TopicServiceImpl implements TopicService {
 
 
     @Override
-    public ArrayList getAllTopics() {
-        return this.topicMapper.getAllTopics();
+    public List selectAll() {
+        return this.topicMapper.selectAll();
     }
 
     @Override
-    public Topic selectTopicById(Integer id) {
+    public Topic selectById(Integer id) {
         return this.topicMapper.selectByPrimaryKey(id);
     }
 
     @Override
-    public Topic selectTopicByCondition(Topic topic) {
-        return this.topicMapper.selectTopicByCondition(topic);
+    public List selectByCondition(Topic topic) {
+        return this.topicMapper.selectByCondition(topic);
     }
 
     @Override
-    public ArrayList selectTopicsByCondition(Topic topic) {
-        return this.topicMapper.selectTopicsByCondition(topic);
-    }
-
-
-    @Override
-    public boolean updateTopic(Topic topic) {
+    public boolean update(Topic topic) {
         return this.topicMapper.updateByPrimaryKeySelective(topic) > 0;
     }
 
     @Override
-    public boolean insertTopic(Topic topic) {
+    public boolean insert(Topic topic) {
         return this.topicMapper.insertSelective(topic) > 0;
     }
 
     @Override
-    public boolean deleteTopicById(Integer id) {
+    public boolean deleteById(Integer id) {
         return this.topicMapper.deleteByPrimaryKey(id) > 0 ;
+    }
+
+    @Override
+    public boolean changeStatus(Integer id) {
+        return this.topicMapper.changeStatusByPrimaryKey(id);
     }
 
 

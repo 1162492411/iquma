@@ -30,9 +30,10 @@ public class tutorialController {
 
     //显示教程
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public String toTutorial(@PathVariable String id, Model model) {
-        model.addAttribute("tutorial",topicService.selectTopicById(Integer.parseInt(id)));
-        model.addAttribute("replies",replyService.selectReplyByTid(Integer.parseInt(id)));
+    public String toTutorial(@PathVariable String id,Reply condition, Model model) {
+        condition.setTid(Integer.parseInt(id));
+        model.addAttribute("tutorial",topicService.selectById(Integer.parseInt(id)));
+        model.addAttribute("replies",replyService.selectByCondition(condition));
         return "tutorials/tutorial";
     }
 
@@ -40,7 +41,7 @@ public class tutorialController {
     @ResponseBody
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public String deleteTutorial(@PathVariable("id") String id) {
-        if (topicService.deleteTopicById(Integer.parseInt(id))) {
+        if (topicService.deleteById(Integer.parseInt(id))) {
             return "suc";
         } else {
             return "err";
@@ -60,14 +61,14 @@ public class tutorialController {
     //前往教程更新页面
     @RequestMapping(value = "{id}/update", method = RequestMethod.GET)
     public String toUpdateTutorial(@PathVariable String id, Model model){
-        model.addAttribute("tutorial",topicService.selectTopicById(Integer.parseInt(id)));
+        model.addAttribute("tutorial",topicService.selectById(Integer.parseInt(id)));
         return "tutorials/update";
     }
 
     //更新教程验证
     @RequestMapping(value = "{id}/update", method = RequestMethod.PUT)
     public String updateValidator(Topic record, Model model) {
-        if (topicService.updateTopic(record)) {
+        if (topicService.update(record)) {
             result = "成功更新教程" + record.getId();
         } else {
             result = "未能更新教程" + record.getId();

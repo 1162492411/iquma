@@ -9,12 +9,14 @@
   <sql id="Base_Column_List">
     id, pid, name
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.Byte" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from common_tag
     where id = #{id,jdbcType=TINYINT}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Byte">
     delete from common_tag
     where id = #{id,jdbcType=TINYINT}
@@ -68,4 +70,29 @@
       name = #{name,jdbcType=VARCHAR}
     where id = #{id,jdbcType=TINYINT}
   </update>
+
+
+  <select id="selectAll"  resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from common_tag
+  </select>
+
+  <select id="selectByCondition" parameterType="com.iquma.pojo.Tag" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from common_tag
+    <trim prefix="where" prefixOverrides="and">
+      <if test="id != null">
+        id = #{id,jdbcType=TINYINT}
+      </if>
+      <if test="pid != null">
+        and pid = #{pid,jdbcType=TINYINT}
+      </if>
+      <if test="name != null">
+        and name = #{name,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </select>
+
 </mapper>

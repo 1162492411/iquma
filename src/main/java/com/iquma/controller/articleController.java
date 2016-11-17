@@ -27,17 +27,17 @@ public class articleController {
 
     //显示经验
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public String toArticle(@PathVariable String id, Model model) {
-        model.addAttribute("article",topicService.selectTopicById(Integer.parseInt(id)));
-        model.addAttribute("replies",replyService.selectReplyByTid(Integer.parseInt(id)));
+    public String toArticle(@PathVariable String id, Reply condition, Model model) {
+        condition.setTid(Integer.parseInt(id));
+        model.addAttribute("article",topicService.selectById(Integer.parseInt(id)));
+        model.addAttribute("replies",replyService.selectReplyByCondition(condition));
         return "articles/article";
     }
 
     //删除经验
-    @ResponseBody
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public String deleteArticle(@PathVariable("id") String id) {
-        if (topicService.deleteTopicById(Integer.parseInt(id))) {
+    public @ResponseBody String deleteArticle(@PathVariable("id") String id) {
+        if (topicService.deleteById(Integer.parseInt(id))) {
             return "suc";
         } else {
             return "err";
@@ -57,14 +57,14 @@ public class articleController {
     //前往经验更新页面
     @RequestMapping(value = "{id}/update", method = RequestMethod.GET)
     public String toUpdateArticle(@PathVariable String id, Model model){
-        model.addAttribute("article",topicService.selectTopicById(Integer.parseInt(id)));
+        model.addAttribute("article",topicService.selectById(Integer.parseInt(id)));
         return "articles/update";
     }
 
     //更新经验验证
     @RequestMapping(value = "{id}/update", method = RequestMethod.PUT)
     public String updateValidator(Topic record, Model model) {
-        if (topicService.updateTopic(record)) {
+        if (topicService.update(record)) {
             result = "成功更新经验" + record.getId();
         } else {
             result = "未能更新经验" + record.getId();

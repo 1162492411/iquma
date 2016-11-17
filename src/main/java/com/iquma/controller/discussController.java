@@ -1,17 +1,13 @@
 package com.iquma.controller;
 
-import com.iquma.pojo.CommentList;
 import com.iquma.pojo.Reply;
 import com.iquma.pojo.Topic;
-import com.iquma.service.CommentService;
 import com.iquma.service.ReplyService;
 import com.iquma.service.TopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import javax.annotation.Resource;
 
 /**
  * Created by Mo on 2016/10/3.
@@ -28,9 +24,10 @@ public class discussController {
 
     //显示提问
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
-    public String toDiscuss(@PathVariable String id, Model model) {
-        model.addAttribute("discuss",topicService.selectTopicById(Integer.parseInt(id)));
-        model.addAttribute("replies",replyService.selectReplyByTid(Integer.parseInt(id)));
+    public String toDiscuss(@PathVariable String id, Reply condition, Model model) {
+        condition.setTid(Integer.parseInt(id));
+        model.addAttribute("discuss",topicService.selectById(Integer.parseInt(id)));
+        model.addAttribute("replies",replyService.selectByCondition(condition));
         return "discusses/discuss";
     }
 
@@ -38,7 +35,7 @@ public class discussController {
     @ResponseBody
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public String deleteDiscuss(@PathVariable("id") String id) {
-        if (topicService.deleteTopicById(Integer.parseInt(id))) {
+        if (topicService.deleteById(Integer.parseInt(id))) {
             return "suc";
         } else {
             return "err";
@@ -58,14 +55,14 @@ public class discussController {
     //前往提问更新页面
     @RequestMapping(value = "{id}/update", method = RequestMethod.GET)
     public String toUpdateDiscuss(@PathVariable String id, Model model){
-        model.addAttribute("discuss",topicService.selectTopicById(Integer.parseInt(id)));
+        model.addAttribute("discuss",topicService.selectById(Integer.parseInt(id)));
         return "discusses/update";
     }
 
     //更新提问验证
     @RequestMapping(value = "{id}/update", method = RequestMethod.PUT)
     public String updateValidator(Topic record, Model model) {
-        if (topicService.updateTopic(record)) {
+        if (topicService.update(record)) {
             result = "成功更新提问" + record.getId();
         } else {
             result = "未能更新提问" + record.getId();

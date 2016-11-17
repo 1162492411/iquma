@@ -20,4 +20,12 @@ public class Section {
     public void setName(String name) {
         this.name = name == null ? null : name.trim();
     }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
