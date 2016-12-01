@@ -11,9 +11,10 @@
         <result column="isBlock" jdbcType="BIT" property="isBlock"/>
         <result column="prestige" jdbcType="INTEGER" property="prestige"/>
         <result column="appCount" jdbcType="INTEGER" property="appCount"/>
+        <result column="salt" jdbcType="VARCHAR" property="salt"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, rid, name, pass, avatar, email, isBlock, prestige, appCount
+        id, rid, name, pass, avatar, email, isBlock, prestige, appCount, salt
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
@@ -30,11 +31,11 @@
     <insert id="insert" parameterType="com.iquma.pojo.User">
         insert into user_basinfo (id, rid, name,
         pass, avatar, email,
-        isBlock, prestige, appCount
+        isBlock, prestige, appCount, salt
         )
         values (#{id,jdbcType=VARCHAR}, #{rid,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR},
         #{pass,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR},
-        #{isBlock,jdbcType=BIT}, #{prestige,jdbcType=INTEGER}, #{appCount,jdbcType=INTEGER}
+        #{isBlock,jdbcType=BIT}, #{prestige,jdbcType=INTEGER}, #{appCount,jdbcType=INTEGER}, #{salt,jdbcType=VARCHAR}
         )
     </insert>
     <insert id="insertSelective" parameterType="com.iquma.pojo.User">
@@ -67,6 +68,9 @@
             <if test="appCount != null">
                 appCount,
             </if>
+            <if test="salt != null">
+                salt,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -95,6 +99,9 @@
             </if>
             <if test="appCount != null">
                 #{appCount,jdbcType=INTEGER},
+            </if>
+            <if test="salt != null">
+                #{salt,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -125,6 +132,9 @@
             <if test="appCount != null">
                 appCount = #{appCount,jdbcType=INTEGER},
             </if>
+            <if test="salt != null">
+                salt = #{salt,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=VARCHAR}
     </update>
@@ -137,7 +147,8 @@
         email = #{email,jdbcType=VARCHAR},
         isBlock = #{isBlock,jdbcType=BIT},
         prestige = #{prestige,jdbcType=INTEGER},
-        appCount = #{appCount,jdbcType=INTEGER}
+        appCount = #{appCount,jdbcType=INTEGER},
+        salt = #{salt,jdbcType=VARCHAR}
         where id = #{id,jdbcType=VARCHAR}
     </update>
 

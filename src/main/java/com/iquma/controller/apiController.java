@@ -1,15 +1,15 @@
 package com.iquma.controller;
 
 import com.iquma.pojo.Tag;
-import com.iquma.service.RoleService;
-import com.iquma.service.SectionService;
-import com.iquma.service.TagService;
-import com.iquma.service.TypeService;
+import com.iquma.pojo.Topic;
+import com.iquma.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.ws.rs.Path;
 import java.util.List;
 
 @Controller
@@ -24,6 +24,8 @@ public class apiController {
     private TagService tagService;
     @Autowired
     private RoleService roleService;
+    @Autowired
+    private TopicService topicService;
 
     @RequestMapping("getAllSections")
     public @ResponseBody

@@ -3,16 +3,20 @@ package com.iquma.controller;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.ws.rs.Path;
 
+import com.iquma.utils.PasswordHelper;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
+import org.apache.shiro.util.ByteSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.iquma.pojo.User;
 import com.iquma.service.UserService;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
 
 
 @Controller
@@ -21,7 +25,9 @@ public class userController {
 
     @Resource
     private UserService userService;
-    String result;
+    @Autowired
+    PasswordHelper passwordHelper;
+    public String result;
 
     //前往登录页面
     @RequestMapping(value = "login", method = RequestMethod.GET)
@@ -30,18 +36,22 @@ public class userController {
     }
 
     //验证前台登陆
-    @RequestMapping(value = "login", method = RequestMethod.POST)
-    public String loginValidator(User user, HttpServletRequest request, Model model) {
-        if (this.userService.validatorUserPass(user.getId(),user.getPass())) {
-            HttpSession session = request.getSession();
+    @RequestMapping(value = "logindo")
+    public String loginValidator(User user) {
+        Subject subject = SecurityUtils.getSubject();
+        UsernamePasswordToken token = new UsernamePasswordToken(user.getId(),user.getPass());
+        try{
+            subject.login(token);//会跳到我们自定义的realm中
+            Session session = subject.getSession();
             session.setAttribute("userid",user.getId());
-            result = "登录成功";
-        } else {
-            result = "登录失败";
+            return "index";
+        }catch(Exception e){
+            e.printStackTrace();
+            System.out.println("控制器遇到了异常了！！！");
+            return "login";
         }
-        model.addAttribute("result",result);
-        return "status/actionResult";
     }
+
 
     //前往用户个人主页
     @RequestMapping(value = "{uid}/home", method = RequestMethod.GET)
@@ -104,9 +114,9 @@ public class userController {
 
     //退出登录
     @RequestMapping(value = "{uid}/logout")
-    public String logout(HttpServletRequest request, Model model){
-        HttpSession session =request.getSession();
-        session.removeAttribute("userid");
+    public String logout(Model model){
+        SecurityUtils.getSubject().logout();
+        SecurityUtils.getSubject().getSession().removeAttribute("userid");
         model.addAttribute("result","您已经退出");
         return "status/actionResult";
     }

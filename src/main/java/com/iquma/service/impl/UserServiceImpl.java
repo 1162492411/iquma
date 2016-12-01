@@ -3,6 +3,8 @@ package com.iquma.service.impl;
 import java.util.List;
 import javax.annotation.Resource;
 
+import com.iquma.utils.PasswordHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.iquma.dao.UserMapper;
@@ -15,6 +17,8 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private UserMapper userMapper;
+    @Autowired
+    private PasswordHelper passwordHelper;
     private static int SUPER_ADMIN_ID = 1;//最高权限的超级管理员的角色Id
     private static int SUPER_STUDENT_ID = 3;//最高级别的学生的角色Id
 
@@ -30,6 +34,8 @@ public class UserServiceImpl implements UserService {
 
 
     public boolean insert(User user) {
+
+        passwordHelper.encryptPassword(user);
         return this.userMapper.insert(user) > 0;
     }
 

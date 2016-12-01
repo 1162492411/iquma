@@ -1,6 +1,7 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -20,6 +21,7 @@
     <script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="https://sf-static.b0.upaiyun.com/v-5812e736/3rd/socket/socket.io.js" src="https://sf-static.b0.upaiyun.com/v-5812e736/3rd/socket/socket.io.js"></script>
 </head>
 <body data-mod="qa" class="qa-index ">
+这是内部的首页页面
 <img id="icon4weChat" style="height: 0;width: 0;" data-src="https://sf-static.b0.upaiyun.com/v-5812e736/global/img/touch-icon-512.png">
 <div class="global-nav sf-header">
     <nav class="container nav">
@@ -88,7 +90,15 @@
                             </li>
                             <li class="divider"></li>
                             <li>
-                                <a href="${pageContext.request.contextPath}/user/login" >登录</a>
+                                <!-- 用户未登录时  -->
+                                <shiro:guest>
+                                    <a href="${pageContext.request.contextPath}/user/login" >登录</a>
+                                </shiro:guest>
+                                <!-- 用户通过subject.login已登录时 -->
+                                <shiro:authenticated>
+                                    <a href="${pageContext.request.contextPath}/user/${userid}/logout">退出</a>
+                                </shiro:authenticated>
+
                             </li>
                         </ul>
                     </li>
@@ -99,6 +109,30 @@
         </div>
     </nav>
 </div>
+
+    <!-- 测试用户权限 -->
+    <shiro:hasRole name="1">
+        该用户是超管(id辨识)
+    </shiro:hasRole>
+
+
+
+
+<shiro:hasPermission name="puser:create">
+    该用户有创建管理账户的权限
+</shiro:hasPermission>
+
+    <shiro:hasPermission name="suser:create">
+        该用户有创建普通账户的权限
+    </shiro:hasPermission>
+    <shiro:hasPermission name="suser:update">
+        该用户有更新普通账户的权限
+    </shiro:hasPermission>
+    <shiro:hasPermission name="suser:delete">
+        该用户有删除普通账户的权限
+    </shiro:hasPermission>
+
+
 </body>
 </html>
 

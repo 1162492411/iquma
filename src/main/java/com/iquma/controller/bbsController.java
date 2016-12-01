@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import java.util.List;
 
 /**
  * Created by Mo on 2016/10/31.
@@ -18,42 +20,66 @@ public class bbsController {
 
     @Autowired
     private TopicService topicService;
-    String result;
+
 
     //前往教程列表页面
     @RequestMapping(value = "tutorials/{tid}", method = RequestMethod.GET)
-    public String toTutorials(@PathVariable String tid, Topic topic, Model model){
+    public String toTutorials(@PathVariable Byte tid, Topic topic, Model model) throws IllegalArgumentException{
         topic.setSid(Byte.parseByte("1"));
-        topic.setTid(Byte.parseByte(tid));
-        model.addAttribute("tutorials",topicService.selectByCondition(topic));
-        return "tutorials/tutorials";
+        topic.setTid(tid);
+        List tutorials =  topicService.selectByCondition(topic);
+        if(tutorials.size() == 0){
+            return "status/emptyQuery";
+        }
+        else{
+            model.addAttribute("tutorials",tutorials);
+            return "tutorials/tutorials";
+        }
     }
 
     //前往提问列表页面
     @RequestMapping(value = "discusses/{tid}", method = RequestMethod.GET)
-    public String toDiscusses(@PathVariable String tid, Topic topic, Model model){
+    public String toDiscusses(@PathVariable Byte tid, Topic topic, Model model)throws IllegalArgumentException{
         topic.setSid(Byte.parseByte("2"));
-        topic.setTid(Byte.parseByte(tid));
-        model.addAttribute("discusses",topicService.selectByCondition(topic));
-        return "discusses/discusses";
+        topic.setTid(tid);
+        List discusses = topicService.selectByCondition(topic);
+        if(discusses.size() == 0){
+            return "status/emptyQuery";
+        }
+        else{
+            model.addAttribute("discusses",discusses);
+            return "discusses/discusses";
+        }
     }
 
     //前往经验列表页面
     @RequestMapping(value = "articles/{tid}", method = RequestMethod.GET)
-    public String toArticles(@PathVariable String tid, Topic topic, Model model){
+    public String toArticles(@PathVariable Byte tid, Topic topic, Model model)throws IllegalArgumentException{
         topic.setSid(Byte.parseByte("3"));
-        topic.setTid(Byte.parseByte(tid));
-        model.addAttribute("articles",topicService.selectByCondition(topic));
-        return "articles/articles";
+        topic.setTid(tid);
+        List articles = topicService.selectByCondition(topic);
+        if(articles.size() == 0){
+            return "status/emptyQuery";
+        }
+        else{
+            model.addAttribute("articles",articles);
+            return "articles/articles";
+        }
     }
 
     //前往代码列表页面
     @RequestMapping(value = "codes/{tid}", method = RequestMethod.GET)
-    public String toCodes(@PathVariable String tid, Topic topic, Model model){
+    public String toCodes(@PathVariable Byte tid, Topic topic, Model model)throws IllegalArgumentException{
         topic.setSid(Byte.parseByte("4"));
-        topic.setTid(Byte.parseByte(tid));
-        model.addAttribute("codes",topicService.selectByCondition(topic));
-        return "codes/codes";
+        topic.setTid(tid);
+        List codes = topicService.selectByCondition(topic);
+        if(codes.size() == 0){
+            return "status/emptyQuery";
+        }
+        else{
+            model.addAttribute("codes",codes);
+            return "codes/codes";
+        }
     }
 
     //前往提问页面
@@ -64,12 +90,10 @@ public class bbsController {
 
     //提问验证页面
     @RequestMapping(value = "ask", method = RequestMethod.PUT)
-    public String askValidator(Topic record, Model model){
+    public @ResponseBody String askValidator(Topic record){
         record.parseDefaultDiscuss();
-        if(topicService.insert(record)) result = "成功发表提问";
-        else result = "未能成功发表提问";
-        model.addAttribute("result", result);
-        return "status/actionResult";
+        if(topicService.insert(record)) return "suc";
+        else return "err";
     }
 
 
@@ -81,12 +105,10 @@ public class bbsController {
 
     //分享经验验证页面
     @RequestMapping(value = "write", method = RequestMethod.PUT)
-    public String writeValidator(Topic record, Model model){
+    public @ResponseBody String writeValidator(Topic record){
         record.parseDefaultArticle();
-        if(topicService.insert(record)) result = "成功分享经验";
-        else result = "未能成功分享经验";
-        model.addAttribute("result", result);
-        return "status/actionResult";
+        if(topicService.insert(record)) return "suc";
+        else return "err";
     }
 
 
@@ -98,12 +120,10 @@ public class bbsController {
 
     //分享代码验证
     @RequestMapping(value = "upload", method = RequestMethod.PUT)
-    public String uploadValidator(Topic record, Model model){
+    public  @ResponseBody String uploadValidator(Topic record){
         record.parseDefaultCode();
-        if(topicService.insert(record)) result = "成功分享代码";
-        else result = "未能成功分享代码";
-        model.addAttribute("result", result);
-        return "status/actionResult";
+        if(topicService.insert(record)) return "suc";
+        else return "err";
     }
 
 

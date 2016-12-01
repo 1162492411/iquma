@@ -30,7 +30,7 @@ public class articleController {
     public String toArticle(@PathVariable String id, Reply condition, Model model) {
         condition.setTid(Integer.parseInt(id));
         model.addAttribute("article",topicService.selectById(Integer.parseInt(id)));
-        model.addAttribute("replies",replyService.selectReplyByCondition(condition));
+        model.addAttribute("replies",replyService.selectByCondition(condition));
         return "articles/article";
     }
 

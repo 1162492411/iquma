@@ -32,7 +32,7 @@ public class userManageController {
     //前往添加用户页面
     @RequestMapping(value = "add", method = RequestMethod.GET)
     public String toAddUser(){
-        return "admin/users/add";
+        return "admin/user/add";
     }
 
     //前往用户页面
@@ -45,7 +45,7 @@ public class userManageController {
     //添加用户验证
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public String addUser(User user, Model model) {
-        user.setPass(user.getId().substring(user.getId().length() - 6, user.getId().length()));
+        user.parseDefaultAddUser();
         if (this.userService.insert(user)) result = new String("成功添加用户" + user.getId());
         else result = new String("未能成功添加用户" + user.getId());
         model.addAttribute("result", result);

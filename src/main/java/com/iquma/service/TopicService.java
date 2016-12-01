@@ -19,6 +19,8 @@ public interface TopicService {
 
     List selectByCondition(Topic condition);//根据条件获取主题集合
 
+    List selectNewTopics(int number, Topic condition);//按页码根据条件获取主题集合
+
     boolean update(Topic topic);//更新主题信息
 
     boolean insert(Topic topic);//新增主题

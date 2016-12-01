@@ -14,6 +14,7 @@
                 updateTidSelection($('#typeIdSelection option:selected').val());
             });
         });
+        //根据返回数据提示用户是否发帖成功
     </script>
 </head>
 <body>

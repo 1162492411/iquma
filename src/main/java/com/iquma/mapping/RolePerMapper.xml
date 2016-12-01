@@ -5,6 +5,14 @@
         <id column="rid" jdbcType="TINYINT" property="rid"/>
         <id column="pid" jdbcType="TINYINT" property="pid"/>
     </resultMap>
+
+    <select id="selectPersById" parameterType="java.lang.Byte" resultType="java.lang.String" >
+        select pid
+        from user_roleperinfo
+        where rid = #{rid,jdbcType=TINYINT}
+    </select>
+
+
     <delete id="deleteByPrimaryKey" parameterType="com.iquma.pojo.RolePerKey">
         delete from user_roleperinfo
         where rid = #{rid,jdbcType=TINYINT}

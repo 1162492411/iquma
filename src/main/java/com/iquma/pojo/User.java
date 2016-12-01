@@ -1,6 +1,11 @@
 package com.iquma.pojo;
 
 public class User {
+    private static final String defaultAvatar = "http://ocgfh1n3q.bkt.clouddn.com/default_avatar.png";
+    private static final Boolean defaultIsBlock = false;
+    private static final Integer defaultPrestige = 0;
+    private static final Integer defaultAppCount = 0;
+
     private String id;
 
     private Byte rid;
@@ -18,6 +23,8 @@ public class User {
     private Integer prestige;
 
     private Integer appCount;
+
+    private String salt;
 
     public User() {
 
@@ -123,9 +130,36 @@ public class User {
         this.appCount = appCount;
     }
 
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
+
+    //默认添加用户模板类
+    public void parseDefaultAddUser(){
+        this.setIsBlock(defaultIsBlock);
+        this.setPrestige(defaultPrestige);
+        this.setAppCount(defaultAppCount);
+        this.setAvatar(null == this.getAvatar() ? defaultAvatar : this.getAvatar());
+        this.setPass(this.getId().substring(this.getId().length() - 6, this.getId().length()));
+    }
+
+    @Override
     public String toString() {
-        return "[编号 : " + id + ", 角色 : " + rid + ", 昵称 : " + name + ", 密码 : "
-                + pass + ", 头像 : " + avatar + ", 邮箱 : " + email + ", 账户状态 : "
-                + isBlock + ", 威望 : " + prestige + ", 获赞 :" + appCount + "]";
+        return "User{" +
+                "id='" + id + '\'' +
+                ", rid=" + rid +
+                ", name='" + name + '\'' +
+                ", pass='" + pass + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", email='" + email + '\'' +
+                ", isBlock=" + isBlock +
+                ", prestige=" + prestige +
+                ", appCount=" + appCount +
+                ", salt='" + salt + '\'' +
+                '}';
     }
 }

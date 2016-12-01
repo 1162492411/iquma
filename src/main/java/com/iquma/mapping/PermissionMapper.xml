@@ -1,58 +1,103 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.iquma.dao.PermissionMapper">
-    <resultMap id="BaseResultMap" type="com.iquma.pojo.Permission">
-        <id column="id" jdbcType="TINYINT" property="id"/>
-        <result column="name" jdbcType="VARCHAR" property="name"/>
-    </resultMap>
-    <sql id="Base_Column_List">
-        id, name
-    </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Byte" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from user_perinfo
-        where id = #{id,jdbcType=TINYINT}
-    </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Byte">
-        delete from user_perinfo
-        where id = #{id,jdbcType=TINYINT}
-    </delete>
-    <insert id="insert" parameterType="com.iquma.pojo.Permission">
-        insert into user_perinfo (id, name)
-        values (#{id,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR})
-    </insert>
-    <insert id="insertSelective" parameterType="com.iquma.pojo.Permission">
-        insert into user_perinfo
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
-            <if test="name != null">
-                name,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=TINYINT},
-            </if>
-            <if test="name != null">
-                #{name,jdbcType=VARCHAR},
-            </if>
-        </trim>
-    </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Permission">
-        update user_perinfo
-        <set>
-            <if test="name != null">
-                name = #{name,jdbcType=VARCHAR},
-            </if>
-        </set>
-        where id = #{id,jdbcType=TINYINT}
-    </update>
-    <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Permission">
-        update user_perinfo
-        set name = #{name,jdbcType=VARCHAR}
-        where id = #{id,jdbcType=TINYINT}
-    </update>
+  <resultMap id="BaseResultMap" type="com.iquma.pojo.Permission">
+    <id column="id" jdbcType="TINYINT" property="id" />
+    <result column="permission" jdbcType="VARCHAR" property="permission" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="isAvailable" jdbcType="BIT" property="isAvailable" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, permission, description, isAvailable
+  </sql>
+
+  <select id="selectByPids" parameterType="java.util.List" resultType="java.lang.String">
+    select
+    permission
+    from user_perinfo
+    where id in
+    <foreach collection="list" item="xx" open="("
+             separator=","
+             close=")" >
+      #{xx}
+    </foreach>
+
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Byte" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from user_perinfo
+    where id = #{id,jdbcType=TINYINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Byte">
+    delete from user_perinfo
+    where id = #{id,jdbcType=TINYINT}
+  </delete>
+  <insert id="insert" parameterType="com.iquma.pojo.Permission">
+    insert into user_perinfo (id, permission, description, 
+      isAvailable)
+    values (#{id,jdbcType=TINYINT}, #{permission,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{isAvailable,jdbcType=BIT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.iquma.pojo.Permission">
+    insert into user_perinfo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="permission != null">
+        permission,
+      </if>
+      <if test="description != null">
+        description,
+      </if>
+      <if test="isAvailable != null">
+        isAvailable,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=TINYINT},
+      </if>
+      <if test="permission != null">
+        #{permission,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="isAvailable != null">
+        #{isAvailable,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Permission">
+    update user_perinfo
+    <set>
+      <if test="permission != null">
+        permission = #{permission,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="isAvailable != null">
+        isAvailable = #{isAvailable,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=TINYINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Permission">
+    update user_perinfo
+    set permission = #{permission,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      isAvailable = #{isAvailable,jdbcType=BIT}
+    where id = #{id,jdbcType=TINYINT}
+  </update>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_perinfo
+  </select>
+
 </mapper>

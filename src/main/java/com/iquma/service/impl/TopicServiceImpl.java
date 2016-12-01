@@ -1,5 +1,6 @@
 package com.iquma.service.impl;
 
+import com.github.pagehelper.PageHelper;
 import com.iquma.dao.TopicMapper;
 import com.iquma.pojo.Section;
 import com.iquma.pojo.Tag;
@@ -35,7 +36,14 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public List selectByCondition(Topic topic) {
+        PageHelper.startPage(2,5);
         return this.topicMapper.selectByCondition(topic);
+    }
+
+    @Override
+    public List selectNewTopics(int number, Topic condition) {
+        PageHelper.startPage(number,5);
+        return this.topicMapper.selectByCondition(condition);
     }
 
     @Override
