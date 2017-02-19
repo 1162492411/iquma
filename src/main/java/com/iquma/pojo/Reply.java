@@ -7,6 +7,8 @@ public class Reply {
 
     private Integer tid;
 
+    private String title;
+
     private String uid;
 
     private Date addTime;
@@ -18,6 +20,9 @@ public class Reply {
     private Integer rateCount;
 
     private String content;
+
+    private User user;
+
 
     public Integer getId() {
         return id;
@@ -33,6 +38,14 @@ public class Reply {
 
     public void setTid(Integer tid) {
         this.tid = tid;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getUid() {
@@ -83,17 +96,27 @@ public class Reply {
         this.content = content == null ? null : content.trim();
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "Reply{" +
                 "id=" + id +
                 ", tid=" + tid +
+                ", title='" + title + '\'' +
                 ", uid='" + uid + '\'' +
                 ", addTime=" + addTime +
                 ", isBest=" + isBest +
                 ", isBlock=" + isBlock +
                 ", rateCount=" + rateCount +
                 ", content='" + content + '\'' +
+                ", user=" + user +
                 '}';
     }
 

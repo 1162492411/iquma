@@ -7,6 +7,8 @@ public class Tag {
 
     private String name;
 
+    private String path;
+
     public Byte getId() {
         return id;
     }
@@ -31,12 +33,23 @@ public class Tag {
         this.name = name == null ? null : name.trim();
     }
 
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+
+
     @Override
     public String toString() {
         return "Tag{" +
                 "id=" + id +
                 ", pid=" + pid +
                 ", name='" + name + '\'' +
+                ", path='" + path + '\'' +
                 '}';
     }
 }

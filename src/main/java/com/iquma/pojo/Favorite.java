@@ -9,7 +9,9 @@ public class Favorite {
 
     private Integer obid;
 
-    private Date favtime;
+    private Date favTime;
+
+    private Topic topic;
 
     public Integer getId() {
         return id;
@@ -35,15 +37,30 @@ public class Favorite {
         this.obid = obid;
     }
 
-    public Date getFavtime() {
-        return favtime;
+    public Date getFavTime() {
+        return favTime;
     }
 
-    public void setFavtime(Date favtime) {
-        this.favtime = favtime;
+    public void setFavTime(Date favtime) {
+        this.favTime = favtime;
     }
 
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+    }
+
+    @Override
     public String toString() {
-        return "[记录id : " + id + ",用户id : " + uid + ",话题id : " + obid + ",收藏时间 : " + favtime + "]";
+        return "Favorite{" +
+                "id=" + id +
+                ", uid='" + uid + '\'' +
+                ", obid=" + obid +
+                ", favTime=" + favTime +
+                ", topic=" + topic +
+                '}';
     }
 }

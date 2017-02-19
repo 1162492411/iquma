@@ -10,8 +10,6 @@ import java.util.List;
  */
 public interface ReplyService {
 
-    List selectByCondition(Reply condition);//查找主贴的所有回复
-
     Boolean insert(Reply record);//发表回复
 
     Boolean deleteById(Integer id);//删除指定id的回复
@@ -20,4 +18,11 @@ public interface ReplyService {
 
     Boolean changeStatus(Integer id);//关闭回复
 
+    Boolean adopt(Integer id);//采纳回复
+
+    List selectByCondition(Reply condition);//查找主贴的所有回复
+
+    List selectByConditionSortByTime(Reply condition);//查找主贴的所有回复并按时间排序
+
+    List selectByConditionAndPage(int page, Reply condition);//分页查找符合条件的回复
 }

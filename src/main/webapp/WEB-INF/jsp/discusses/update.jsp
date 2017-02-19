@@ -9,6 +9,7 @@
     <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
 </head>
 <body>
+<!-- 根据返回信息提示用户是否更新成功 -->
 <!-- 修改提问 -->
 <form action="${pageContext.request.contextPath}/discuss/${discuss.id}/update" method="post">
     <div class="panel panel-default">

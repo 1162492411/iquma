@@ -22,21 +22,22 @@ public class codeController {
     private TopicService topicService;
     @Autowired
     private ReplyService replyService;
-    String result;
-
-    //显示代码
+    //显示提问
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public String toCode(@PathVariable String id, Reply condition, Model model) {
         condition.setTid(Integer.parseInt(id));
-        model.addAttribute("code",topicService.selectById(Integer.parseInt(id)));
-        model.addAttribute("replies",replyService.selectByCondition(condition));
-        return "codes/code";
+        Topic code = topicService.selectById(Integer.parseInt(id));
+        if(code == null) return "status/emptyQuery";
+        else{
+            model.addAttribute("code",code);
+            model.addAttribute("replies",replyService.selectByCondition(condition));
+            return "codes/code";
+        }
     }
 
-    //删除代码
-    @ResponseBody
+    //删除提问
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public String deleteCode(@PathVariable("id") String id) {
+    public @ResponseBody String deleteCode(@PathVariable("id") String id) {
         if (topicService.deleteById(Integer.parseInt(id))) {
             return "suc";
         } else {
@@ -46,31 +47,23 @@ public class codeController {
 
     //发表评论
     @RequestMapping(value = "{id}/reply", method = RequestMethod.POST)
-    public String addReply(Reply record, Model model){
+    public @ResponseBody String addReply(Reply record){
         record.parseDefaultReply();
-        if(replyService.insert(record)) result = "成功评论";
-        else result = "未能成功评论";
-        model.addAttribute("result",result);
-        return "status/actionResult";
+        if(replyService.insert(record)) return "suc";
+        else return "err";
     }
 
-    //前往代码更新页面
+    //前往提问更新页面
     @RequestMapping(value = "{id}/update", method = RequestMethod.GET)
     public String toUpdateCode(@PathVariable String id, Model model){
         model.addAttribute("code",topicService.selectById(Integer.parseInt(id)));
         return "codes/update";
     }
 
-    //更新代码验证
+    //更新提问验证
     @RequestMapping(value = "{id}/update", method = RequestMethod.PUT)
-    public String updateValidator(Topic record, Model model) {
-        if (topicService.update(record)) {
-            result = "成功更新代码" + record.getId();
-        } else {
-            result = "未能更新代码" + record.getId();
-        }
-        model.addAttribute("result", result);
-        return "status/actionResult";
+    public @ResponseBody String updateValidator(Topic record) {
+        if (topicService.update(record)) return "suc";
+        else return "err";
     }
-
 }

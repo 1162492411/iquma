@@ -2,16 +2,12 @@ package com.iquma.dao;
 
 import com.iquma.pojo.Operation;
 
-public interface OperationMapper {
-    int deleteByPrimaryKey(Integer id);
+import java.util.List;
 
-    int insert(Operation record);
+public interface OperationMapper {
 
     int insertSelective(Operation record);
 
-    Operation selectByPrimaryKey(Integer id);
+    List selectsByCondition(Operation condition);
 
-    int updateByPrimaryKeySelective(Operation record);
-
-    int updateByPrimaryKey(Operation record);
 }

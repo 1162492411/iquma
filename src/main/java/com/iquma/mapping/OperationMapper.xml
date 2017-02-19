@@ -4,29 +4,40 @@
     <resultMap id="BaseResultMap" type="com.iquma.pojo.Operation">
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="uid" jdbcType="VARCHAR" property="uid"/>
-        <result column="obid" jdbcType="VARCHAR" property="obid"/>
-        <result column="perid" jdbcType="TINYINT" property="perid"/>
-        <result column="optime" jdbcType="TIMESTAMP" property="optime"/>
+        <result column="opid" jdbcType="VARCHAR" property="opid"/>
+        <result column="pid" jdbcType="TINYINT" property="pid"/>
+        <result column="optime" jdbcType="TIMESTAMP" property="opTime"/>
     </resultMap>
     <sql id="Base_Column_List">
-        id, uid, obid, perid, optime
+        id, uid, opid, pid, optime
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+
+    <select id="selectsByCondition" parameterType="com.iquma.pojo.Operation" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from user_opinfo
-        where id = #{id,jdbcType=INTEGER}
+        <trim prefix="where" prefixOverrides="and">
+            <if test="id != null">
+                id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="uid != null">
+                and uid = #{uid,jdbcType=VARCHAR}
+            </if>
+            <if test="opid != null">
+                and opid = #{opid,jdbcType=VARCHAR}
+            </if>
+            <if test="pid != null">
+                and pid = #{pid,jdbcType=TINYINT}
+            </if>
+        </trim>
     </select>
+
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete from user_opinfo
         where id = #{id,jdbcType=INTEGER}
     </delete>
-    <insert id="insert" parameterType="com.iquma.pojo.Operation">
-        insert into user_opinfo (id, uid, obid,
-        perid, optime)
-        values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=VARCHAR}, #{obid,jdbcType=VARCHAR},
-        #{perid,jdbcType=TINYINT}, #{optime,jdbcType=TIMESTAMP})
-    </insert>
+
     <insert id="insertSelective" parameterType="com.iquma.pojo.Operation">
         insert into user_opinfo
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -36,11 +47,11 @@
             <if test="uid != null">
                 uid,
             </if>
-            <if test="obid != null">
-                obid,
+            <if test="opid != null">
+                opid,
             </if>
-            <if test="perid != null">
-                perid,
+            <if test="pid != null">
+                pid,
             </if>
             <if test="optime != null">
                 optime,
@@ -53,41 +64,16 @@
             <if test="uid != null">
                 #{uid,jdbcType=VARCHAR},
             </if>
-            <if test="obid != null">
-                #{obid,jdbcType=VARCHAR},
+            <if test="opid != null">
+                #{opid,jdbcType=VARCHAR},
             </if>
-            <if test="perid != null">
-                #{perid,jdbcType=TINYINT},
+            <if test="pid != null">
+                #{pid,jdbcType=TINYINT},
             </if>
             <if test="optime != null">
                 #{optime,jdbcType=TIMESTAMP},
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Operation">
-        update user_opinfo
-        <set>
-            <if test="uid != null">
-                uid = #{uid,jdbcType=VARCHAR},
-            </if>
-            <if test="obid != null">
-                obid = #{obid,jdbcType=VARCHAR},
-            </if>
-            <if test="perid != null">
-                perid = #{perid,jdbcType=TINYINT},
-            </if>
-            <if test="optime != null">
-                optime = #{optime,jdbcType=TIMESTAMP},
-            </if>
-        </set>
-        where id = #{id,jdbcType=INTEGER}
-    </update>
-    <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Operation">
-        update user_opinfo
-        set uid = #{uid,jdbcType=VARCHAR},
-        obid = #{obid,jdbcType=VARCHAR},
-        perid = #{perid,jdbcType=TINYINT},
-        optime = #{optime,jdbcType=TIMESTAMP}
-        where id = #{id,jdbcType=INTEGER}
-    </update>
+
 </mapper>

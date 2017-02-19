@@ -9,7 +9,7 @@
     <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
 
 </head>
-
+<!-- 根据返回信息提示用户是否操作成功 -->
 <body>
 <!-- 账户安全邮箱及密码修改 -->
 <form action="${pageContext.request.contextPath}/user/${user.id}/account" method="post">
@@ -21,7 +21,7 @@
             <%--用户邮箱 --%>
             <div class="form-group" id="namePanel">
                 <label>邮箱</label>
-                <input type="email" class="form-control" name="email" value="${user.email}" placeholder="密码"/>
+                <input type="email" class="form-control" name="email" value="${user.email}" placeholder="邮箱"/>
             </div>
             <%--用户密码 --%>
             <div class="form-group" id="namePanel">

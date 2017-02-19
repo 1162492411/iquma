@@ -21,7 +21,6 @@
              close=")" >
       #{xx}
     </foreach>
-
   </select>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Byte" resultMap="BaseResultMap">
@@ -30,10 +29,27 @@
     from user_perinfo
     where id = #{id,jdbcType=TINYINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Byte">
-    delete from user_perinfo
-    where id = #{id,jdbcType=TINYINT}
-  </delete>
+
+  <select id="selectByCondition" parameterType="com.iquma.pojo.Permission" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_perinfo
+    <trim prefix="where" prefixOverrides="and">
+      <if test="id != null">
+        id = #{id,jdbcType=TINYINT}
+      </if>
+      <if test="permission != null">
+        and permission = #{permission,jdbcType=VARCHAR}
+      </if>
+      <if test="description != null">
+        and description = #{description,jdbcType=VARCHAR}
+      </if>
+      <if test="isAvailable != null">
+        and isAvailable = #{path,jdbcType=BIT}
+      </if>
+    </trim>
+  </select>
+
   <insert id="insert" parameterType="com.iquma.pojo.Permission">
     insert into user_perinfo (id, permission, description, 
       isAvailable)

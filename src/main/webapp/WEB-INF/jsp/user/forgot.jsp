@@ -8,6 +8,7 @@
     <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
 </head>
 <body>
+<!-- 根据返回信息提示用户是否操作成功 -->
 <!-- 重置密码 -->
 <form action="${pageContext.request.contextPath}/user/${user.id}/forgot" method="post">
     <div class="panel panel-default">

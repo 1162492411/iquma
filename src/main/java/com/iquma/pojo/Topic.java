@@ -21,28 +21,16 @@ public class Topic {
 
     private Integer rateCount;
 
+    private Integer replyCount;
+
     private Boolean isBlock;
 
     private String content;
 
-    public Topic() {
-    }
+    private User user;
 
+    private Tag tag;
 
-
-    public Topic(Integer id, String title, Byte sid, Byte tid, String aid, Date addTime, Date reTime, Integer viewCount, Integer rateCount, Boolean isBlock, String content) {
-        this.id = id;
-        this.title = title;
-        this.sid = sid;
-        this.tid = tid;
-        this.aid = aid;
-        this.addTime = addTime;
-        this.reTime = reTime;
-        this.viewCount = viewCount;
-        this.rateCount = rateCount;
-        this.isBlock = isBlock;
-        this.content = content;
-    }
 
     public Integer getId() {
         return id;
@@ -112,6 +100,14 @@ public class Topic {
         return rateCount;
     }
 
+    public Integer getReplyCount() {
+        return replyCount;
+    }
+
+    public void setReplyCount(Integer replyCount) {
+        this.replyCount = replyCount;
+    }
+
     public void setRateCount(Integer rateCount) {
         this.rateCount = rateCount;
     }
@@ -132,22 +128,67 @@ public class Topic {
         this.content = content == null ? null : content.trim();
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Tag getTag() {
+        return tag;
+    }
+
+    public void setTag(Tag tag) {
+        this.tag = tag;
+    }
+
+    @Override
     public String toString() {
-        return "[话题id: " + id + ",标题: " + title + ",标签id: " + tid + ",作者id: " + aid + ",发表时间: " + addTime
-                + ",话题内容: " + content + ",最后回复时间: " + reTime + ",浏览量: " + viewCount + ",评价分数: " + rateCount
-                + ",话题状态 :" + isBlock;
+        return "Topic{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", sid=" + sid +
+                ", tid=" + tid +
+                ", aid='" + aid + '\'' +
+                ", addTime=" + addTime +
+                ", reTime=" + reTime +
+                ", viewCount=" + viewCount +
+                ", rateCount=" + rateCount +
+                ", replyCount=" + replyCount +
+                ", isBlock=" + isBlock +
+                ", content='" + content + '\'' +
+                ", user=" + user +
+                ", tag=" + tag +
+                '}';
+    }
+
+
+    public Topic() {
+    }
+
+    public Topic(Integer id) {
+        this.id = id;
+    }
+
+    //初始化默认教程主贴
+    public void parseDefaultTutorial(){
+        sid = Byte.valueOf("1");
+        addTime = new Date();
+        reTime = new Date();
     }
 
     //初始化默认提问主贴
     public void parseDefaultDiscuss(){
-        sid = new Byte("2");
+        sid = Byte.valueOf("2");
         addTime = new Date();
         reTime = new Date();
     }
 
     //初始化默认经验主贴
     public void parseDefaultArticle(){
-        sid = new Byte("3");
+        sid = Byte.valueOf("3");
         addTime = new Date();
         reTime = new Date();
     }
@@ -155,8 +196,10 @@ public class Topic {
 
     //初始化默认代码主贴
     public void parseDefaultCode(){
-        sid = new Byte("4");
+        sid = Byte.valueOf("4");
         addTime = new Date();
         reTime = new Date();
     }
+
+
 }

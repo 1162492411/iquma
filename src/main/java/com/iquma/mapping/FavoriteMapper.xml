@@ -5,16 +5,37 @@
         <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="uid" jdbcType="VARCHAR" property="uid"/>
         <result column="obid" jdbcType="INTEGER" property="obid"/>
-        <result column="favtime" jdbcType="TIMESTAMP" property="favtime"/>
+        <result column="favTime" jdbcType="TIMESTAMP" property="favTime"/>
+        <association property="topic" resultMap="TopicResultMap"/>
     </resultMap>
+
+    <resultMap id="TopicResultMap" type="com.iquma.pojo.Topic">
+        <id column="topicId" jdbcType="INTEGER" property="id" />
+        <result column="topicTitle" jdbcType="VARCHAR" property="title" />
+        <result column="topicContent" jdbcType="LONGVARCHAR" property="content" />
+    </resultMap>
+
     <sql id="Base_Column_List">
-        id, uid, obid, favtime
+        id, uid, obid, favTime
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    <select id="selectByCondition" parameterType="com.iquma.pojo.Favorite" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from user_favinfo
-        where id = #{id,jdbcType=INTEGER}
+        <trim prefix="where" prefixOverrides="and">
+            <if test="id != null">
+                id = #{id,jdbcType=TINYINT}
+            </if>
+            <if test="uid != null">
+                and uid = #{uid,jdbcType=VARCHAR}
+            </if>
+            <if test="obid != null">
+                and obid = #{obid,jdbcType=INTEGER}
+            </if>
+            <if test="favTime != null">
+                and favTime = #{favTime,jdbcType=TIMESTAMP}
+            </if>
+        </trim>
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete from user_favinfo
@@ -22,9 +43,9 @@
     </delete>
     <insert id="insert" parameterType="com.iquma.pojo.Favorite">
         insert into user_favinfo (id, uid, obid,
-        favtime)
+        favTime)
         values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=VARCHAR}, #{obid,jdbcType=INTEGER},
-        #{favtime,jdbcType=TIMESTAMP})
+        #{favTime,jdbcType=TIMESTAMP})
     </insert>
     <insert id="insertSelective" parameterType="com.iquma.pojo.Favorite">
         insert into user_favinfo
@@ -38,8 +59,8 @@
             <if test="obid != null">
                 obid,
             </if>
-            <if test="favtime != null">
-                favtime,
+            <if test="favTime != null">
+                favTime,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -52,8 +73,8 @@
             <if test="obid != null">
                 #{obid,jdbcType=INTEGER},
             </if>
-            <if test="favtime != null">
-                #{favtime,jdbcType=TIMESTAMP},
+            <if test="favTime != null">
+                #{favTime,jdbcType=TIMESTAMP},
             </if>
         </trim>
     </insert>
@@ -66,8 +87,8 @@
             <if test="obid != null">
                 obid = #{obid,jdbcType=INTEGER},
             </if>
-            <if test="favtime != null">
-                favtime = #{favtime,jdbcType=TIMESTAMP},
+            <if test="favTime != null">
+                favTime = #{favTime,jdbcType=TIMESTAMP},
             </if>
         </set>
         where id = #{id,jdbcType=INTEGER}
@@ -76,7 +97,29 @@
         update user_favinfo
         set uid = #{uid,jdbcType=VARCHAR},
         obid = #{obid,jdbcType=INTEGER},
-        favtime = #{favtime,jdbcType=TIMESTAMP}
+        favTime = #{favTime,jdbcType=TIMESTAMP}
         where id = #{id,jdbcType=INTEGER}
     </update>
+
+    <select id="selectsByCondition" parameterType="com.iquma.pojo.Favorite" resultMap="BaseResultMap">
+        select
+        f.id, f.uid, f.obid, f.favTime, t.id as topicId, t.title as topicTitle, t.content as topicContent
+        from user_favinfo f
+        left join topic_topinfo t on f.obid = t.id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="id != null">
+                id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="uid != null">
+                and uid = #{uid,jdbcType=VARCHAR}
+            </if>
+            <if test="obid != null">
+                and obid = #{obid,jdbcType=INTEGER}
+            </if>
+            <if test="favTime != null">
+                and favTime = #{favTime,jdbcType=TIMESTAMP}
+            </if>   
+        </trim>
+    </select>
+    
 </mapper>

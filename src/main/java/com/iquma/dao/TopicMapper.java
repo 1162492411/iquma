@@ -1,11 +1,7 @@
 package com.iquma.dao;
 
-import com.iquma.pojo.Section;
-import com.iquma.pojo.Tag;
-import com.iquma.pojo.Topic;
-import com.iquma.pojo.Type;
 
-import java.util.ArrayList;
+import com.iquma.pojo.Topic;
 import java.util.List;
 
 public interface TopicMapper {
@@ -24,13 +20,13 @@ public interface TopicMapper {
 
     int deleteByPrimaryKey(Integer id);
 
-   // boolean blockByPrimaryKey(Integer id);//关闭主贴--建议废弃
-
     List selectAll();//获取所有主贴
 
-    boolean changeStatusByPrimaryKey(Integer id);//改变主贴状态--建议替blockByPrimaryKey
+    boolean changeStatusByPrimaryKey(Integer id);//改变主贴状态
 
-    List selectByCondition(Topic record);//获取符合条件的主贴列表
+    Topic selectByCondition(Topic record);//获取符合条件的主贴
+
+    List selectsByCondition(Topic record);//获取符合条件的主贴列表
 
 
 }

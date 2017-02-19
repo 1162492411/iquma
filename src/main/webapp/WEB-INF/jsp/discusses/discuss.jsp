@@ -71,6 +71,7 @@
     </div>
 </div>
 
+<!-- 根据返回结果提示用户是否评论成功 -->
 <%-- 发表评论--%>
 <div class="panel panel-default" style="position:absolute;left:20%;top:100%">
     <form action="/discuss/${discuss.id}/reply" method="post">

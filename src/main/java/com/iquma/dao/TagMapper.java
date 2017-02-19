@@ -19,7 +19,9 @@ public interface TagMapper {
 
     List selectAll();//获取所有标签
 
-    //List selectTagsByPid(Byte pid);//根据类别id获取标签列表--建议废弃
+    Tag selectByCondition(Tag condition);//获取符合条件的标签
 
-    List selectByCondition(Tag condition);//获取符合条件的标签列表--建议替换selectTagsByPid
+    List selectTagsByCondition(Tag condition);//获取符合条件的标签集合
+
+
 }

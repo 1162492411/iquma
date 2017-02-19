@@ -5,8 +5,18 @@
     <title>主贴列表</title>
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/static/css/jqPagination.css">
     <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/jqPagination.min.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/jqPagination.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/iquma.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            initPage();
+        });
+    </script>
 </head>
 <body>
 <%--顶部 --%>
@@ -40,23 +50,18 @@
         </thead>
 
         <%-- 设置数据 --%>
-        <tbody>
-        <c:forEach var="topic" items="${topics}">
-            <tr id="${topic.id}">
-                <td><a href="topic/${topic.id}">${topic.id}</a></td>
-                <td>${topic.title}</td>
-                <td>${topic.sid}</td>
-                <td>${topic.tid}</td>
-                <td>${topic.aid}</td>
-                <td>${topic.addTime}</td>
-                <td>${topic.content}</td>
-                <td>${topic.reTime}</td>
-                <td>${topic.viewCount}</td>
-                <td>${topic.rateCount}</td>
-                <td>${topic.isBlock}</td>
-            </tr>
-        </c:forEach>
-        </tbody>
+            <%-- 分页插件--%>
+            <tbody id="Pagination">
+            </tbody>
+
+
+            <div class="pagination">
+                <a href="#" class="first" data-action="first">&laquo;</a>
+                <a href="#" class="previous" data-action="previous">&lsaquo;</a>
+                <input type="text"  />
+                <a href="#" class="next" data-action="next">&rsaquo;</a>
+                <a href="#" class="last" data-action="last">&raquo;</a>
+            </div>
 
     </table>
 </div>

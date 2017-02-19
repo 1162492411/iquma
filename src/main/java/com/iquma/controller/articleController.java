@@ -23,18 +23,22 @@ public class articleController {
     private TopicService topicService;
     @Autowired
     private ReplyService replyService;
-    String result;
+  
 
-    //显示经验
+    //显示提问
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public String toArticle(@PathVariable String id, Reply condition, Model model) {
         condition.setTid(Integer.parseInt(id));
-        model.addAttribute("article",topicService.selectById(Integer.parseInt(id)));
-        model.addAttribute("replies",replyService.selectByCondition(condition));
-        return "articles/article";
+        Topic article = topicService.selectById(Integer.parseInt(id));
+        if(article == null) return "status/emptyQuery";
+        else{
+            model.addAttribute("article",article);
+            model.addAttribute("replies",replyService.selectByCondition(condition));
+            return "articles/article";
+        }
     }
 
-    //删除经验
+    //删除提问
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
     public @ResponseBody String deleteArticle(@PathVariable("id") String id) {
         if (topicService.deleteById(Integer.parseInt(id))) {
@@ -46,31 +50,24 @@ public class articleController {
 
     //发表评论
     @RequestMapping(value = "{id}/reply", method = RequestMethod.POST)
-    public String addReply(Reply record, Model model){
+    public @ResponseBody String addReply(Reply record){
         record.parseDefaultReply();
-        if(replyService.insert(record)) result = "成功评论";
-        else result = "未能成功评论";
-        model.addAttribute("result",result);
-        return "status/actionResult";
+        if(replyService.insert(record)) return "suc";
+        else return "err";
     }
 
-    //前往经验更新页面
+    //前往提问更新页面
     @RequestMapping(value = "{id}/update", method = RequestMethod.GET)
     public String toUpdateArticle(@PathVariable String id, Model model){
         model.addAttribute("article",topicService.selectById(Integer.parseInt(id)));
         return "articles/update";
     }
 
-    //更新经验验证
+    //更新提问验证
     @RequestMapping(value = "{id}/update", method = RequestMethod.PUT)
-    public String updateValidator(Topic record, Model model) {
-        if (topicService.update(record)) {
-            result = "成功更新经验" + record.getId();
-        } else {
-            result = "未能更新经验" + record.getId();
-        }
-        model.addAttribute("result", result);
-        return "status/actionResult";
+    public @ResponseBody String updateValidator(Topic record) {
+        if (topicService.update(record)) return "suc";
+        else return "err";
     }
 
 }

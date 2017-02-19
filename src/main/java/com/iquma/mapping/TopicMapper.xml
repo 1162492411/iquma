@@ -9,27 +9,44 @@
     <result column="aid" jdbcType="VARCHAR" property="aid" />
     <result column="addTime" jdbcType="TIMESTAMP" property="addTime" />
     <result column="reTime" jdbcType="TIMESTAMP" property="reTime" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
     <result column="viewCount" jdbcType="INTEGER" property="viewCount" />
     <result column="rateCount" jdbcType="INTEGER" property="rateCount" />
+    <result column="replyCount" jdbcType="INTEGER" property="replyCount" />
     <result column="isBlock" jdbcType="BIT" property="isBlock" />
+    <association property="user" resultMap="UserResultMap" />
+    <association property="tag" resultMap="TagResultMap" />
   </resultMap>
+
+  <resultMap id="UserResultMap" type="com.iquma.pojo.User">
+    <id column="userid" jdbcType="VARCHAR" property="id"/>
+    <result column="username" jdbcType="VARCHAR" property="name"/>
+  </resultMap>
+
+  <resultMap id="TagResultMap" type="com.iquma.pojo.Tag">
+    <id column="tagid" jdbcType="TINYINT" property="id" />
+    <result column="tagname" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.iquma.pojo.Topic">
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, title, sid, tid, aid, addTime, reTime, viewCount, rateCount, isBlock
+    id, title, sid, tid, aid, addTime, reTime, viewCount, rateCount, replyCount, isBlock
   </sql>
   <sql id="Blob_Column_List">
     content
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
-    select 
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from topic_topinfo
-    where id = #{id,jdbcType=INTEGER}
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    t.id as id, t.title, t.sid, t.aid, u.name as username, q.name as tagname, t.addTime, t.reTime,   t.content, t.viewCount, t.rateCount, t.replyCount, t.isBlock
+    from topic_topinfo t
+    left join user_basinfo u on t.aid = u.id
+    left join common_tag q on t.tid = q.id
+    where t.id = #{id,jdbcType=INTEGER}
   </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from topic_topinfo
     where id = #{id,jdbcType=INTEGER}
@@ -37,11 +54,11 @@
   <insert id="insert" parameterType="com.iquma.pojo.Topic">
     insert into topic_topinfo (title, sid, tid,
       aid, addTime, reTime, 
-      viewCount, rateCount, isBlock, 
+      viewCount, rateCount, replyCount, isBlock,
       content)
     values (#{title,jdbcType=VARCHAR}, #{sid,jdbcType=TINYINT}, #{tid,jdbcType=TINYINT},
       #{aid,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, #{reTime,jdbcType=TIMESTAMP}, 
-      #{viewCount,jdbcType=INTEGER}, #{rateCount,jdbcType=INTEGER}, #{isBlock,jdbcType=BIT}, 
+      #{viewCount,jdbcType=INTEGER}, #{rateCount,jdbcType=INTEGER}, #{replyCount,jdbcType=INTEGER}, #{isBlock,jdbcType=BIT},
       #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.iquma.pojo.Topic">
@@ -70,6 +87,9 @@
       </if>
       <if test="rateCount != null">
         rateCount,
+      </if>
+      <if test="replyCount != null">
+        replyCount,
       </if>
       <if test="isBlock != null">
         isBlock,
@@ -102,6 +122,9 @@
       </if>
       <if test="rateCount != null">
         #{rateCount,jdbcType=INTEGER},
+      </if>
+      <if test="replyCount != null">
+        #{replyCount,jdbcType=INTEGER},
       </if>
       <if test="isBlock != null">
         #{isBlock,jdbcType=BIT},
@@ -138,6 +161,9 @@
       <if test="rateCount != null">
         rateCount = #{rateCount,jdbcType=INTEGER},
       </if>
+      <if test="replyCount != null">
+        replyCount = #{replyCount,jdbcType=INTEGER},
+      </if>
       <if test="isBlock != null">
         isBlock = #{isBlock,jdbcType=BIT},
       </if>
@@ -157,6 +183,7 @@
       reTime = #{reTime,jdbcType=TIMESTAMP},
       viewCount = #{viewCount,jdbcType=INTEGER},
       rateCount = #{rateCount,jdbcType=INTEGER},
+      replyCount = #{replyCount,jdbcType=INTEGER},
       isBlock = #{isBlock,jdbcType=BIT},
       content = #{content,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
@@ -171,16 +198,17 @@
       reTime = #{reTime,jdbcType=TIMESTAMP},
       viewCount = #{viewCount,jdbcType=INTEGER},
       rateCount = #{rateCount,jdbcType=INTEGER},
+      replyCount = #{replyCount,jdbcType=INTEGER},
       isBlock = #{isBlock,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="selectByCondition" parameterType="com.iquma.pojo.Topic" resultMap="BaseResultMap">
+  <select id="selectsByCondition" parameterType="com.iquma.pojo.Topic" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from topic_topinfo
+    t.id as id, t.title, t.sid, t.aid, u.name as username, q.name as tagname, t.addTime, t.reTime, t.viewCount, t.rateCount, t.replyCount, t.isBlock, t.content
+    from topic_topinfo t
+        left join user_basinfo u on t.aid = u.id
+        left join common_tag q on t.tid = q.id
     <where>
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR}
@@ -201,16 +229,66 @@
         and reTime = #{reTime,jdbcType=TIMESTAMP}
       </if>
       <if test="viewCount != null">
-        and viewCount = #{viewCount,jdbcType=INTEGER}
+        and viewCount >= #{viewCount,jdbcType=INTEGER}
       </if>
       <if test="rateCount != null">
-        and rateCount = #{rateCount,jdbcType=INTEGER}
+        and rateCount >= #{rateCount,jdbcType=INTEGER}
+      </if>
+      <if test="replyCount != null">
+        and replyCount = #{replyCount,jdbcType=INTEGER}
       </if>
       <if test="isBlock != null">
         and isBlock = #{isBlock,jdbcType=BIT}
       </if>
       <if test="content != null">
         and content = #{content,jdbcType=LONGVARCHAR}
+      </if>
+    </where>
+    order by t.addTime desc
+  </select>
+
+  <select id="selectByCondition" parameterType="com.iquma.pojo.Topic" resultMap="BaseResultMap">
+    select
+    t.id as id, t.title, t.sid, t.aid, u.name as username, q.name as tagname, t.addTime, t.reTime, t.viewCount, t.rateCount, t.replyCount, t.isBlock, t.content
+    from topic_topinfo t
+    left join user_basinfo u on t.aid = u.id
+    left join common_tag q on t.tid = q.id
+    <where>
+      <if test="id != null">
+        t.id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="title != null">
+        t.title = #{title,jdbcType=VARCHAR}
+      </if>
+      <if test="sid != null">
+        and t.sid = #{sid,jdbcType=TINYINT}
+      </if>
+      <if test="tid != null">
+        and t.tid = #{tid,jdbcType=TINYINT}
+      </if>
+      <if test="aid != null">
+        and t.aid = #{aid,jdbcType=VARCHAR}
+      </if>
+      <if test="addTime != null">
+        and t.addTime = #{addTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="reTime != null">
+        and t.reTime = #{reTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="viewCount != null">
+        and t.viewCount >= #{viewCount,jdbcType=INTEGER}
+      </if>
+      <if test="rateCount != null">
+        and t.rateCount >= #{rateCount,jdbcType=INTEGER}
+      </if>
+      <if test="replyCount != null">
+        and t.replyCount = #{replyCount,jdbcType=INTEGER}
+      </if>
+      <if test="isBlock != null">
+        and t.isBlock = #{isBlock,jdbcType=BIT}
+      </if>
+      <if test="content != null">
+        and t.content = #{content,jdbcType=LONGVARCHAR}
       </if>
     </where>
   </select>
@@ -227,7 +305,5 @@
     <include refid="Blob_Column_List" />
     from topic_topinfo
   </select>
-
-
 
 </mapper>

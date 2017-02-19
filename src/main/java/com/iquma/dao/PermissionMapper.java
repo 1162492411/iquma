@@ -14,6 +14,8 @@ public interface PermissionMapper {
 
     Permission selectByPrimaryKey(Byte id);
 
+    Permission selectByCondition(Permission condition);//获取符合条件的权限信息
+
     int updateByPrimaryKeySelective(Permission record);
 
     int updateByPrimaryKey(Permission record);

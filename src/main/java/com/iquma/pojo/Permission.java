@@ -14,6 +14,10 @@ public class Permission {
 
     }
 
+    public Permission(String permission) {
+        this.permission = permission;
+    }
+
     public Permission(String permission, String description, Boolean isAvailable) {
         this.permission = permission;
         this.description = description;

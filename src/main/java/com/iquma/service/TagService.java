@@ -9,6 +9,8 @@ import java.util.List;
  */
 public interface TagService {
 
-    List selectTagsByPid(Tag condition);//获取某类型的所有标签
+    Tag selectByCondition(Tag condition);//获取符合条件的标签
+
+    List selectTagsByCondition(Tag coditon);//获取符合条件的标签集合
 
 }

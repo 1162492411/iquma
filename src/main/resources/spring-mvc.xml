@@ -15,13 +15,16 @@
                         http://www.springframework.org/schema/aop/spring-aop.xsd">
 
 
+    <!-- 配置扫描路径 -->
+    <context:component-scan base-package="com.iquma"/>
     <!-- 启动注解功能 -->
     <mvc:annotation-driven/>
     <!-- 默认拦截器 -->
     <mvc:default-servlet-handler/>
-
+    <!-- 声明AOP -->
     <aop:aspectj-autoproxy/>
 
+    <!-- 视图层配置 -->
     <bean
             class="org.springframework.web.servlet.view.InternalResourceViewResolver"
             id="internalResourceViewResolver">
@@ -29,12 +32,21 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
+    <!-- 设置文件上传限制,1G -->
     <bean id="multipartResolver"
           class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="defaultEncoding" value="utf-8"/>
-        <property name="maxUploadSize" value="10485760000"/>
+        <property name="maxUploadSize" value="1048576000"/>
         <property name="maxInMemorySize" value="40960"/>
     </bean>
 
-    <context:component-scan base-package="com.iquma"/>
+    <!-- 开启shiro注解-->
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"
+          depends-on="lifecycleBeanPostProcessor">
+        <property name="proxyTargetClass" value="true" />
+    </bean>
+    <bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">
+        <property name="securityManager" ref="securityManager"/>
+    </bean>
+
 </beans>

@@ -1,4 +1,4 @@
-package com.iquma.realm;
+package com.iquma.utils;
 
 import com.iquma.pojo.User;
 import com.iquma.service.PermissionService;
@@ -41,13 +41,8 @@ public class LoginRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         User user = userService.selectById(token.getUsername());//数据库查询用户
-        System.out.println("【验证登陆】从数据库查询到了用户" + user);
-        if(Boolean.TRUE.equals(user.getIsBlock())){//若用户被封禁
-            throw new LockedAccountException();
-        }
-        else if(user == null){//若未找到该用户
-            throw new UnknownAccountException("未找到该账号");
-        }
+        if(null == user) throw new UnknownAccountException();//未找到用户时抛出异常
+        else if(user.getIsBlock()) throw new LockedAccountException();//用户被封禁时抛出异常
         //交给AuthenticatingRealm使用CredentialsMatcher进行密码匹配
         return new SimpleAuthenticationInfo(user.getId(), user.getPass(), ByteSource.Util.bytes(user.getSalt()),getName());
     }
@@ -57,8 +52,6 @@ public class LoginRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         String username = (String) principalCollection.getPrimaryPrincipal();//获取已验证的用户标识
-        System.out.println("【角色和权限认证】获取到已验证的用户标识" + username);
-
         Byte role = userService.selectById(username).getRid();//获取用户所属的角色
         List permissions =  permissionService.selectByPids(rolePerService.selectPersById(role));//获取用户的角色所拥有的权限集合
 
@@ -70,9 +63,9 @@ public class LoginRealm extends AuthorizingRealm {
         }
 
 
-
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();//将授权信息封装
         authorizationInfo.addRole(String.valueOf(role));
+        authorizationInfo.addStringPermissions(permissions);
         return authorizationInfo;
     }
 

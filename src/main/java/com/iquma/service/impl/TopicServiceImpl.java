@@ -2,15 +2,11 @@ package com.iquma.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.iquma.dao.TopicMapper;
-import com.iquma.pojo.Section;
-import com.iquma.pojo.Tag;
 import com.iquma.pojo.Topic;
-import com.iquma.pojo.Type;
 import com.iquma.service.TopicService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,16 +31,23 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public List selectByCondition(Topic topic) {
-        PageHelper.startPage(2,5);
-        return this.topicMapper.selectByCondition(topic);
+    public Topic selectByCondition(Topic condition) {
+        return this.topicMapper.selectByCondition(condition);
+    }
+
+
+    @Override
+    public List selectsByCondition(Topic topic) {
+        List result = this.topicMapper.selectsByCondition(topic);
+        return  result;
     }
 
     @Override
-    public List selectNewTopics(int number, Topic condition) {
-        PageHelper.startPage(number,5);
-        return this.topicMapper.selectByCondition(condition);
+    public List selectsByConditionAndPage(int page, Topic condition) {
+        PageHelper.startPage(page,10);
+        return this.topicMapper.selectsByCondition(condition);
     }
+
 
     @Override
     public boolean update(Topic topic) {
@@ -65,6 +68,7 @@ public class TopicServiceImpl implements TopicService {
     public boolean changeStatus(Integer id) {
         return this.topicMapper.changeStatusByPrimaryKey(id);
     }
+
 
 
 }

@@ -10,10 +10,9 @@
     <title>用户登录页面</title>
 </head>
 <body>
-这是内部的登录页面！
 <!-- 登录框开始 -->
 <div id="login-part">
-    <form action="${pageContext.request.contextPath}/user/logindo"
+    <form action="${pageContext.request.contextPath}/user/loginValidator"
           style="height: 400px; width: 250px; margin-left: 50px; margin-top: 20px">
 
         <!-- 学号-->

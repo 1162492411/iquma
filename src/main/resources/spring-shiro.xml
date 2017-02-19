@@ -21,8 +21,8 @@
         <property name="storedCredentialsHexEncoded" value="true"/>
     </bean>
 
-    <!-- Realm实现 -->
-    <bean id="userRealm" class="com.iquma.realm.LoginRealm">
+    <!-- 自定义Realm -->
+    <bean id="userRealm" class="com.iquma.utils.LoginRealm">
         <property name="credentialsMatcher" ref="credentialsMatcher"/>
         <property name="cachingEnabled" value="true"/>
         <property name="authenticationCachingEnabled" value="true"/>
@@ -98,14 +98,11 @@
                 /unauthorized.jsp = anon
                 /login.jsp = authc
                 /static/** = anon
+                /user/login = anon
+                /user/logindo = anon
             </value>
         </property>
     </bean>
-
-
-    <!--/user/** = user
-     /WEB-INF/jsp/user/** = authc
-     /** = user -->
     <!-- Shiro生命周期处理器-->
     <bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>
 

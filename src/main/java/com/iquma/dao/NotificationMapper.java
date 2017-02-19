@@ -2,16 +2,16 @@ package com.iquma.dao;
 
 import com.iquma.pojo.Notification;
 
+import java.util.List;
+
 public interface NotificationMapper {
     int deleteByPrimaryKey(Integer id);
-
-    int insert(Notification record);
 
     int insertSelective(Notification record);
 
     Notification selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(Notification record);
+    List selectsByCondition(Notification condition);
 
-    int updateByPrimaryKey(Notification record);
+    Boolean read(Notification record);
 }

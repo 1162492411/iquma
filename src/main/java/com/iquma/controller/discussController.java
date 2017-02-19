@@ -20,21 +20,23 @@ public class discussController {
     private TopicService topicService;
     @Autowired
     private ReplyService replyService;
-    String result;
 
     //显示提问
     @RequestMapping(value = "{id}", method = RequestMethod.GET)
     public String toDiscuss(@PathVariable String id, Reply condition, Model model) {
         condition.setTid(Integer.parseInt(id));
-        model.addAttribute("discuss",topicService.selectById(Integer.parseInt(id)));
-        model.addAttribute("replies",replyService.selectByCondition(condition));
-        return "discusses/discuss";
+        Topic discuss = topicService.selectById(Integer.parseInt(id));
+        if(discuss == null) return "status/emptyQuery";
+        else{
+            model.addAttribute("discuss",discuss);
+            model.addAttribute("replies",replyService.selectByCondition(condition));
+            return "discusses/discuss";
+        }
     }
 
     //删除提问
-    @ResponseBody
     @RequestMapping(value = "{id}", method = RequestMethod.DELETE)
-    public String deleteDiscuss(@PathVariable("id") String id) {
+    public @ResponseBody String deleteDiscuss(@PathVariable("id") String id) {
         if (topicService.deleteById(Integer.parseInt(id))) {
             return "suc";
         } else {
@@ -44,12 +46,10 @@ public class discussController {
 
     //发表评论
     @RequestMapping(value = "{id}/reply", method = RequestMethod.POST)
-    public String addReply(Reply record, Model model){
+    public @ResponseBody String addReply(Reply record){
         record.parseDefaultReply();
-        if(replyService.insert(record)) result = "成功评论";
-        else result = "未能成功评论";
-        model.addAttribute("result",result);
-        return "status/actionResult";
+        if(replyService.insert(record)) return "suc";
+        else return "err";
     }
 
     //前往提问更新页面
@@ -61,14 +61,9 @@ public class discussController {
 
     //更新提问验证
     @RequestMapping(value = "{id}/update", method = RequestMethod.PUT)
-    public String updateValidator(Topic record, Model model) {
-        if (topicService.update(record)) {
-            result = "成功更新提问" + record.getId();
-        } else {
-            result = "未能更新提问" + record.getId();
-        }
-        model.addAttribute("result", result);
-        return "status/actionResult";
+    public @ResponseBody String updateValidator(Topic record) {
+        if (topicService.update(record)) return "suc";
+        else return "err";
     }
 
 

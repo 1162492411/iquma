@@ -16,6 +16,8 @@ public class User {
 
     private String avatar;
 
+    private String description;
+
     private String email;
 
     private Boolean isBlock;
@@ -25,38 +27,6 @@ public class User {
     private Integer appCount;
 
     private String salt;
-
-    public User() {
-
-    }
-
-    public User(String id, String name) {
-        super();
-        this.id = id;
-        this.name = name;
-    }
-
-    public User(String id, String name, String email) {
-        super();
-        this.id = id;
-        this.name = name;
-        this.email = email;
-    }
-
-    public User(String id, Byte rid, String name, String pass, String avatar,
-                String email, Boolean isBlock, Integer prestige, Integer appCount) {
-        super();
-        this.id = id;
-        this.rid = rid;
-        this.name = name;
-        this.pass = pass;
-        this.avatar = avatar;
-        this.email = email;
-        this.isBlock = isBlock;
-        this.prestige = prestige;
-        this.appCount = appCount;
-    }
-
 
     public String getId() {
         return id;
@@ -96,6 +66,14 @@ public class User {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar == null ? null : avatar.trim();
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String desc) {
+        this.description = desc;
     }
 
     public String getEmail() {

@@ -9,16 +9,22 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * Created by Mo on 2016/11/13.
+ * Created by Mo on 2016/12/4.
  */
 @Service
 public class TagServiceImpl implements TagService {
-
     @Autowired
     private TagMapper tagMapper;
 
+
+
     @Override
-    public List selectTagsByPid(Tag condition) {
+    public Tag selectByCondition(Tag condition) {
         return this.tagMapper.selectByCondition(condition);
+    }
+
+    @Override
+    public List selectTagsByCondition(Tag coditon) {
+        return this.tagMapper.selectTagsByCondition(coditon);
     }
 }

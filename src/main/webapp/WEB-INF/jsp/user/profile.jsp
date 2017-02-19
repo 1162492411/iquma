@@ -1,4 +1,4 @@
-<%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
+<%@ page language="java" pageEncoding="UTF-8" %>
 
 <html>
 <head>
@@ -9,29 +9,44 @@
     <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
 </head>
 <body>
-<!-- 个人基础信息显示和编辑 -->
-<form action="${pageContext.request.contextPath}/user/${user.id}/profile" method="post">
-    <div class="panel panel-default">
+<form action="${pageContext.request.contextPath}/user/${user.id}/profile" method="post" class="form-horizontal">
+    <input type="hidden" name="_method" value="PUT" />
+    <div class="panel panel-default" style="position:relative;left:25%;width:50%;top:20px">
         <div class="panel-heading">个人档案</div>
         <input type="hidden" name="id" value="${ user.id }"/>
-        <input type="hidden" name="_method" value="PUT"/>
         <div class="panel-body" id="profileBody">
-            <%--<!-- 用户头像 -->--%>
-            <%--<div class="form-group" id="avatarpanel">--%>
-                <%--<label>用户头像</label><br/>--%>
-                <%--<img class="img_thumbnail" alt="用户头像" src="http://ocgfh1n3q.bkt.clouddn.com/default_avatar.png"/>--%>
-                <%--<input type="file" id="avatat_upload">--%>
-            <%--</div>--%>
-            <%--用户姓名 --%>
+            <%-- 昵称 --%>
             <div class="form-group" id="namePanel">
-                <label>姓名</label>
-                <input type="text" class="form-control" name="name" value="${user.name}" placeholder="真实姓名">
+                <label for="name" class="col-md-offset-2 col-md-2 control-label">昵称</label>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="name" name="name" value="${user.name}" placeholder="账户昵称" />
+                </div>
             </div>
-            <%--保存按钮 --%>
-            <input type="submit" class="btn btn-primary" value="更新"/>
-            <input type="reset" class="btn btn-default" value="取消">
+            <%-- 简介 --%>
+            <div class="form-group" id="descriptionPanel">
+                <label for="description" class="col-md-offset-2 col-md-2 control-label">简介</label>
+                <div class="col-md-5">
+                    <input type="text" class="form-control" id="description" name="description" value="${user.description}" placeholder="账户简介" />
+                </div>
+            </div>
+            <%-- 邮箱 --%>
+            <div class="form-group" id="emailPanel">
+                <label for="email" class="col-md-offset-2 col-md-2 control-label">邮箱</label>
+                <div class="col-md-5">
+                    <input type="email" class="form-control" id="email" name="email" value="${user.email}" placeholder="安全邮箱" />
+                </div>
+            </div>
+            <%-- 按钮 --%>
+            <div class="form-group">
+                <div class="col-md-offset-4 col-md-4">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <button type="reset" class="btn btn-default">取消</button>
+                </div>
+            </div>
         </div>
+
     </div>
+
 </form>
 </body>
 </html>

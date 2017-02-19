@@ -45,11 +45,11 @@ public class Notification {
         this.ntftime = ntftime;
     }
 
-    public Boolean getIsnew() {
+    public Boolean getisnew() {
         return isnew;
     }
 
-    public void setIsnew(Boolean isnew) {
+    public void setisnew(Boolean isnew) {
         this.isnew = isnew;
     }
 
@@ -58,4 +58,13 @@ public class Notification {
                 ",通知时间 : " + ntftime + ",通知状态 : " + isnew + "]";
     }
 
+    public Notification() {
+    }
+
+    public Notification(String uid, String content, Date ntftime, Boolean isnew) {
+        this.uid = uid;
+        this.content = content;
+        this.ntftime = ntftime;
+        this.isnew = isnew;
+    }
 }

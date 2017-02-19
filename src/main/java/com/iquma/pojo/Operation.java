@@ -7,9 +7,9 @@ public class Operation {
 
     private String uid;
 
-    private String obid;
+    private String opid;
 
-    private Byte perid;
+    private Byte pid;
 
     private Date optime;
 
@@ -29,20 +29,20 @@ public class Operation {
         this.uid = uid == null ? null : uid.trim();
     }
 
-    public String getObid() {
-        return obid;
+    public String getOpid() {
+        return opid;
     }
 
-    public void setObid(String obid) {
-        this.obid = obid == null ? null : obid.trim();
+    public void setOpid(String opid) {
+        this.opid = opid;
     }
 
-    public Byte getPerid() {
-        return perid;
+    public Byte getPid() {
+        return pid;
     }
 
-    public void setPerid(Byte perid) {
-        this.perid = perid;
+    public void setPid(Byte pid) {
+        this.pid = pid;
     }
 
     public Date getOptime() {
@@ -54,7 +54,17 @@ public class Operation {
     }
 
     public String toString() {
-        return "[记录id : " + id + ",操作人id : " + uid + ",操作对象id : " + obid + ",所用权限 : " + perid
+        return "[记录id : " + id + ",操作人id : " + uid + ",操作对象id : " + opid + ",所用权限 : " + pid
                 + ",操作时间 : " + optime + "]";
+    }
+
+    public Operation() {
+    }
+
+    public Operation(String uid, String opid, Byte pid, Date optime) {
+        this.uid = uid;
+        this.opid = opid;
+        this.pid = pid;
+        this.optime = optime;
     }
 }

@@ -46,4 +46,14 @@ public class Suclog {
     public String toString() {
         return "[记录id : " + id + ",账户id : " + uid + ",登录时间 : " + logintime + ",登录IP : " + loginip + "]";
     }
+
+    public Suclog(){
+
+    }
+
+    public Suclog(String uid, Date logintime, String loginip) {
+        this.uid = uid;
+        this.logintime = logintime;
+        this.loginip = loginip;
+    }
 }

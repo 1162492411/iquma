@@ -22,8 +22,10 @@ public interface ReplyMapper {
 
     boolean changeStatusByPrimaryKey(Integer id);//改变回复状态--建议替换blockByPrimaryKey
 
-   // List selectByTid(Integer tid);//查找某主贴下的所有回复--建议废弃
+    boolean adopt(Integer id);//采纳回复
 
     List selectByCondition(Reply record);//查找符合条件的所有回复
+
+    List selectByConditionSortByTime(Reply record);//查找符合条件的所有回复并按时间排序
 
 }
