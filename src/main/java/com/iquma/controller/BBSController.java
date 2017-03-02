@@ -17,7 +17,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("")
-public class bbsController {
+public class BBSController {
 
     @Autowired
     private TopicService topicService;

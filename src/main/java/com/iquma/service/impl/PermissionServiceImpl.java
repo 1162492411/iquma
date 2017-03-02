@@ -28,8 +28,8 @@ public class PermissionServiceImpl implements PermissionService {
     }
 
     @Override
-    public Permission selectByCondition(Permission condition) {
-        return permissionMapper.selectByCondition(condition);
+    public Permission selectByPermission(String condition) {
+        return permissionMapper.selectByPermission(condition);
     }
 
     @Override

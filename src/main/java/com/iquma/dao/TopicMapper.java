@@ -18,6 +18,12 @@ public interface TopicMapper {
 
     int updateByPrimaryKeyWithBLOBs(Topic record);
 
+    int increaseReply(Integer id);//增加主贴回复数
+
+    int reduceReply(Integer id);//减少主贴回复数
+
+    int adopt(Integer id);//主贴采纳回复
+
     int deleteByPrimaryKey(Integer id);
 
     List selectAll();//获取所有主贴

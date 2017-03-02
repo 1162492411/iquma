@@ -34,16 +34,7 @@ public class PasswordHelper {
         user.setPass(newPassword);
     }
 
-    public void encryptPass(User user){
-        System.out.println("【加密密码】原密码" + user.getPass() + "\n盐值" + user.getSalt());
-        String newPassword = new SimpleHash(
-                algorithmName,
-                user.getPass(),
-                ByteSource.Util.bytes(user.getSalt()),
-                hashIterations).toHex();
-        System.out.println("【加密密码】加密后的密码为" + newPassword);
-        user.setPass(newPassword);
-    }
+
 
 
 }

@@ -1,5 +1,6 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
 </head>
@@ -16,6 +17,13 @@
                     <a class="AppHeader-navItem" href="${pageContext.request.contextPath}/discusses/jse/1">话题</a>
                     <a class="AppHeader-navItem" href="${pageContext.request.contextPath}/articles/jse/1">文章</a>
                     <a class="AppHeader-navItem" href="${pageContext.request.contextPath}/codes/jse/1">代码</a>
+                    <c:if test="${userid!= null}">
+                        <a class="AppHeader-navItem" href="${pageContext.request.contextPath}/user/${userid}/ntfs">通知
+                            <c:if test="${ntfCount != null && ntfCount != 0 }">
+                                <div class="ntf_img"><span class="ntf_text">${ntfCount}</span></div>
+                            </c:if>
+                        </a>
+                    </c:if>
                 </nav>
                 <!-- 导航分类结束 -->
                 <!-- 导航-搜索 -->
@@ -55,9 +63,8 @@
                             <a class="dropdownBtn user-avatar" data-toggle="dropdown" style="background-image: url(${useravatar})" href="${pageContext.request.contextPath}/user/${userid}/home"></a>
                             <ul class="dropdown-menu dropdown-menu-right">
                                 <li><a href="${pageContext.request.contextPath}/user/${userid}/home">我的主页</a></li>
-                                <li><a href="${pageContext.request.contextPath}/user/${userid}/ntfs">我的消息</a></li>
                                 <li><a href="${pageContext.request.contextPath}/user/${userid}/profile">我的档案</a></li>
-                                <li><a href="${pageContext.request.contextPath}/user/${userid}/settings">账号设置</a></li>
+                                <li><a href="${pageContext.request.contextPath}/user/${userid}/account">修改密码</a></li>
                                 <li class="divider"></li>
                                 <li><a href="${pageContext.request.contextPath}/user/${userid}/logout">退出</a></li>
                             </ul>

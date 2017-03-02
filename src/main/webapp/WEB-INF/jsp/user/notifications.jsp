@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/qa.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/responsive.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/zhihu.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/iquma.css">
     <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/iquma.js"></script>

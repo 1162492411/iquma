@@ -23,11 +23,11 @@
 <jsp:include page="${pageContext.request.contextPath}/common/bannar.jsp"/>
 <!-- 隐藏数据区 -->
 <div>
-<input type="hidden" id="condition_tid" value="${topic.id}"/>
-<input type="hidden" id="condition_isBlock" value="${topic.isBlock}"/>
-<input type="hidden" id="topicTitle" value="${topic.title}"/>
-<input type="hidden" id="condition_uid" value="${userid}" />
-<input type="hidden" id="condition_aid" value="${topic.aid}"/>
+    <input type="hidden" id="condition_tid" value="${topic.id}"/>
+    <input type="hidden" id="condition_isBlock" value="${topic.isBlock}"/>
+    <input type="hidden" id="topicTitle" value="${topic.title}"/>
+    <input type="hidden" id="condition_uid" value="${userid}" />
+    <input type="hidden" id="condition_aid" value="${topic.aid}"/>
 </div><!-- 隐藏数据区结束 -->
 <%--<!-- 主数据区 -->--%>
 <main role="main">
@@ -38,11 +38,24 @@
                 <div class="row">
                     <!-- 数据区顶部-主贴顶部 -->
                     <div class="col-md-9 col-sm-8 col-xs-12">
-                        <span class="post-topheader__title--icon-symbol">问</span>
+                        <span class="post-topheader__title--icon-symbol">
+                            <c:if test="${topic.section.name eq 'tutorial'}">
+                                教
+                            </c:if>
+                            <c:if test="${topic.section.name eq 'discuss'}">
+                                问
+                            </c:if>
+                            <c:if test="${topic.section.name eq 'article'}">
+                                文
+                            </c:if>
+                            <c:if test="${topic.section.name eq 'code'}">
+                                码
+                            </c:if>
+                        </span>
 
                         <div class="post-topheader__info">
                             <h1 class="h3 post-topheader__info--title" id="questionTitle">
-                                <a href="${pageContext.request.contextPath}/topic/${topic.id}">${topic.title}</a>
+                                <a href="${pageContext.request.contextPath}/${topic.section.name}/${topic.id}">${topic.title}</a>
                             </h1>
                             <ul class="taglist--inline inline-block question__title--tag mr10">
                                 <li class="tagPopup mb5">
@@ -87,28 +100,28 @@
                                         <li><strong class="no-stress">${topic.viewCount}</strong> 浏览</li>
                                         <li><a>
                                             <fmt:formatDate value="${topic.addTime}"
-                                            pattern="yyyy-MM-dd"/>
+                                                            pattern="yyyy-MM-dd"/>
                                         </a></li>
-                                        <shiro:hasPermission name="topic:update:${topic.id}">
-                                            <a href="${pageContext.request.contextPath}/topic/${topic.id}/update">
+                                        <shiro:hasPermission name="${topic.section.name}:update:${topic.id}">
+                                            <a href="${pageContext.request.contextPath}/${topic.section.name}/${topic.id}/update">
                                                 <Button class="btn btn-primary">编辑</Button>
                                             </a>
                                             </li>
                                         </shiro:hasPermission>
-<shiro:hasPermission name="topic:block:${topic.id}">
-                                        <li>
-                                            <Button class="btn btn-primary" id="blockButton" onclick="blockTopic('topic')" disabled>关闭</Button>
-                                        </li>
-    </shiro:hasPermission>
-<shiro:hasPermission name="topic:delete:${topic.id}">
-                                        <li>
-                                            <Button class="btn btn-danger"
-                                                   onclick="deleteTopic('topic')">删除</Button>
-                                        </li>
-    </shiro:hasPermission>
+                                        <shiro:hasPermission name="${topic.section.name}:block:${topic.id}">
+                                            <li>
+                                                <Button class="btn btn-primary" id="blockButton" onclick="blockTopic(${topic.section.name})" disabled>关闭</Button>
+                                            </li>
+                                        </shiro:hasPermission>
+                                        <shiro:hasPermission name="${topic.section.name}:delete:${topic.id}">
+                                            <li>
+                                                <Button class="btn btn-danger"
+                                                        onclick="deleteTopic(${topic.section.name})">删除</Button>
+                                            </li>
+                                        </shiro:hasPermission>
                                         <shiro:user>
                                             <li>
-                                                <Button class="btn btn-primary" id="favoriteButton" onclick="favoriteTopic('topic')" disabled>收藏</Button>
+                                                <Button class="btn btn-primary" id="favoriteButton" onclick="favoriteTopic(${topic.section.name})" disabled>收藏</Button>
                                             </li>
                                         </shiro:user>
                                     </ul>
@@ -121,9 +134,8 @@
                     <div class="widget-answers" id="repliesDiv">
                         <!-- 回复排序方式 -->
                         <div class="btn-group pull-right" role="group">
-                            <a class="btn btn-default btn-xs active">默认排序</a>
-                            <a href="${pageContext.request.contextPath}/topic/${topic.id}/time"
-                               class="btn btn-default btn-xs">时间排序</a>
+                            <a class="btn btn-default btn-xs" href="${pageContext.request.contextPath}/${topic.section.name}/${topic.id}">默认排序</a>
+                            <a class="btn btn-default btn-xs active">时间排序</a>
                         </div>
                         <!-- 回复排序方式结束 -->
                         <h2 class="title h4 mt30 mb20 post-title" id="answers-title">${replies.size()}个回答</h2>
@@ -163,8 +175,8 @@
                                             <ul class="list-inline mb0" id="replyUl-${reply.id}">
                                                 <li>
                                                     <a>
-                                                    <fmt:formatDate value="${reply.addTime}"
-                                                                    pattern="yyyy-MM-dd hh:mm:ss"/>
+                                                        <fmt:formatDate value="${reply.addTime}"
+                                                                        pattern="yyyy-MM-dd hh:mm:ss"/>
                                                     </a>
                                                 </li>
                                                     <%-- 删除按钮 --%>
@@ -206,7 +218,7 @@
                     <%-- 用户未登录时 --%>
                     <shiro:guest>
                         <a class="btn Button--blue" href="${pageContext.request.contextPath}/user/login" style="position:relative;top:10%">登录</a>
-                            后回复
+                        后回复
                     </shiro:guest>
                     <%-- 用户已登录时 --%>
                     <shiro:user>

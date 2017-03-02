@@ -13,9 +13,11 @@
     <result column="viewCount" jdbcType="INTEGER" property="viewCount" />
     <result column="rateCount" jdbcType="INTEGER" property="rateCount" />
     <result column="replyCount" jdbcType="INTEGER" property="replyCount" />
+    <result column="hasBest" jdbcType="BIT" property="hasBest" />
     <result column="isBlock" jdbcType="BIT" property="isBlock" />
     <association property="user" resultMap="UserResultMap" />
     <association property="tag" resultMap="TagResultMap" />
+    <association property="section" resultMap="SectionResultMap" />
   </resultMap>
 
   <resultMap id="UserResultMap" type="com.iquma.pojo.User">
@@ -28,11 +30,17 @@
     <result column="tagname" jdbcType="VARCHAR" property="name" />
   </resultMap>
 
+  <resultMap id="SectionResultMap" type="com.iquma.pojo.Section">
+    <id column="sectionid" jdbcType="TINYINT" property="id" />
+    <result column="sectionname" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+
+
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.iquma.pojo.Topic">
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, title, sid, tid, aid, addTime, reTime, viewCount, rateCount, replyCount, isBlock
+    id, title, sid, tid, aid, addTime, reTime, viewCount, rateCount, replyCount, hasBest, isBlock
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -40,10 +48,11 @@
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
-    t.id as id, t.title, t.sid, t.aid, u.name as username, q.name as tagname, t.addTime, t.reTime,   t.content, t.viewCount, t.rateCount, t.replyCount, t.isBlock
+    t.id as id, t.title, t.sid, t.aid, u.name as username, q.name as tagname, t.addTime, t.reTime,   t.content, t.viewCount, t.rateCount, t.replyCount, t.hasBest, t.isBlock, s.id as sectionid, s.name as sectionname
     from topic_topinfo t
     left join user_basinfo u on t.aid = u.id
     left join common_tag q on t.tid = q.id
+    left join common_section s on t.sid = s.id
     where t.id = #{id,jdbcType=INTEGER}
   </select>
 
@@ -54,11 +63,11 @@
   <insert id="insert" parameterType="com.iquma.pojo.Topic">
     insert into topic_topinfo (title, sid, tid,
       aid, addTime, reTime, 
-      viewCount, rateCount, replyCount, isBlock,
+      viewCount, rateCount, replyCount, hasBest, isBlock,
       content)
     values (#{title,jdbcType=VARCHAR}, #{sid,jdbcType=TINYINT}, #{tid,jdbcType=TINYINT},
       #{aid,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, #{reTime,jdbcType=TIMESTAMP}, 
-      #{viewCount,jdbcType=INTEGER}, #{rateCount,jdbcType=INTEGER}, #{replyCount,jdbcType=INTEGER}, #{isBlock,jdbcType=BIT},
+      #{viewCount,jdbcType=INTEGER}, #{rateCount,jdbcType=INTEGER}, #{replyCount,jdbcType=INTEGER}, #{hasBest,jdbcType=BIT}, #{isBlock,jdbcType=BIT},
       #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.iquma.pojo.Topic">
@@ -90,6 +99,9 @@
       </if>
       <if test="replyCount != null">
         replyCount,
+      </if>
+      <if test="hasBest != null">
+        hasBest,
       </if>
       <if test="isBlock != null">
         isBlock,
@@ -125,6 +137,9 @@
       </if>
       <if test="replyCount != null">
         #{replyCount,jdbcType=INTEGER},
+      </if>
+      <if test="hasBest != null">
+        #{hasBest,jdbcType=BIT},
       </if>
       <if test="isBlock != null">
         #{isBlock,jdbcType=BIT},
@@ -164,6 +179,9 @@
       <if test="replyCount != null">
         replyCount = #{replyCount,jdbcType=INTEGER},
       </if>
+      <if test="hasBest != null">
+        hasBest = #{hasBest,jdbcType=BIT},
+      </if>
       <if test="isBlock != null">
         isBlock = #{isBlock,jdbcType=BIT},
       </if>
@@ -184,6 +202,7 @@
       viewCount = #{viewCount,jdbcType=INTEGER},
       rateCount = #{rateCount,jdbcType=INTEGER},
       replyCount = #{replyCount,jdbcType=INTEGER},
+      hasBest = #{hasBest,jdbcType=BIT},
       isBlock = #{isBlock,jdbcType=BIT},
       content = #{content,jdbcType=LONGVARCHAR}
     where id = #{id,jdbcType=INTEGER}
@@ -199,16 +218,39 @@
       viewCount = #{viewCount,jdbcType=INTEGER},
       rateCount = #{rateCount,jdbcType=INTEGER},
       replyCount = #{replyCount,jdbcType=INTEGER},
+      hasBest = #{hasBest,jdbcType=BIT},
       isBlock = #{isBlock,jdbcType=BIT}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="increaseReply" parameterType="java.lang.Integer">
+    update topic_topinfo
+    set
+    replyCount = replyCount + 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="reduceReply" parameterType="java.lang.Integer">
+    update topic_topinfo
+    set
+    replyCount = replyCount - 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="adopt" parameterType="java.lang.Integer">
+    update topic_topinfo
+    set
+    hasBest = true
     where id = #{id,jdbcType=INTEGER}
   </update>
 
   <select id="selectsByCondition" parameterType="com.iquma.pojo.Topic" resultMap="BaseResultMap">
     select
-    t.id as id, t.title, t.sid, t.aid, u.name as username, q.name as tagname, t.addTime, t.reTime, t.viewCount, t.rateCount, t.replyCount, t.isBlock, t.content
+    t.id as id, t.title, t.sid, t.aid, u.name as username, q.name as tagname, t.addTime, t.reTime, t.viewCount, t.rateCount, t.replyCount, t.hasBest, t.isBlock, t.content, s.id as sectionid, s.name as sectionname
     from topic_topinfo t
         left join user_basinfo u on t.aid = u.id
         left join common_tag q on t.tid = q.id
+        left join common_section s on t.sid = s.id
     <where>
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR}
@@ -237,6 +279,9 @@
       <if test="replyCount != null">
         and replyCount = #{replyCount,jdbcType=INTEGER}
       </if>
+      <if test="hasBest != null">
+        and hasBest = #{hasBest,jdbcType=BIT}
+      </if>
       <if test="isBlock != null">
         and isBlock = #{isBlock,jdbcType=BIT}
       </if>
@@ -249,7 +294,7 @@
 
   <select id="selectByCondition" parameterType="com.iquma.pojo.Topic" resultMap="BaseResultMap">
     select
-    t.id as id, t.title, t.sid, t.aid, u.name as username, q.name as tagname, t.addTime, t.reTime, t.viewCount, t.rateCount, t.replyCount, t.isBlock, t.content
+    t.id as id, t.title, t.sid, t.aid, u.name as username, q.name as tagname, t.addTime, t.reTime, t.viewCount, t.rateCount, t.replyCount, t.hasBest, t.isBlock, t.content
     from topic_topinfo t
     left join user_basinfo u on t.aid = u.id
     left join common_tag q on t.tid = q.id
@@ -283,6 +328,9 @@
       </if>
       <if test="replyCount != null">
         and t.replyCount = #{replyCount,jdbcType=INTEGER}
+      </if>
+      <if test="hasBest != null">
+        and t.hasBest = #{hasBest,jdbcType=BIT}
       </if>
       <if test="isBlock != null">
         and t.isBlock = #{isBlock,jdbcType=BIT}

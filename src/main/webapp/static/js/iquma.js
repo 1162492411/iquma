@@ -80,15 +80,12 @@ function initTopicStatus() {
             //在关闭评论按钮存在的情况下，启用该按钮
             if($('#blockReplyButton-' + id).length > 0)
                 $('#blockReplyButton-' + id).removeAttr("disabled");
-            //用户登录且不存在最佳评论且用户浏览的是自己的主贴时，为评论添加采纳按钮
-            if($('input[id=condition-isBestReply]').length == 0 && $('#condition_uid').val() != null && $('#condition_aid').val() != null && $('#condition_uid').val() == $('#condition_aid').val())
-                $('ul[id=replyUl-' + id+ ']').append("<li><Button class='btn btn-primary' id='adoptReplyButton- " + id + "' onclick='adoptReply(" + id + ")'>采纳</Button></li>");
         }
     });
     //处理收藏主贴按钮
     var condition = {
         "uid" : $('#condition_uid').val(),
-        "obid" : Number($("#condition_tid").val())
+        "obid" : Number($("#condition_id").val())
     };
     if($('#condition_uid').val() != ""){
         $.ajax({
@@ -124,15 +121,22 @@ function hateTopic() {
 
 //删除主贴
 function deleteTopic(topicType){
+    var d = {
+        "id" : $("#condition_id").val(),
+        "aid" : $("#condition_aid").val(),
+        "title" : $("#topicTitle").val(),
+        "section" :{ "name" : topicType }
+    };
     $.ajax({
         type: 'delete',
-        url:'/' + topicType + '/'+ $("#condition_tid").val(),
-        dataType:'text',
+        url:'/' + topicType + '/'+ $("#condition_id").val(),
+        data : JSON.stringify(d),
+        contentType : 'application/json',
         success:function(data){
-            if(data=="suc"){
+            if(data == true){
                 alert("删除成功");
             }
-            else if (data=="err"){
+            else {
                 alert("未能成功删除");
             }
             location.reload();
@@ -145,54 +149,58 @@ function deleteTopic(topicType){
 
 //更新教程
 function updateTopic(topicType) {
-    var d = {};
-    var t = $('#updateTutorialForm').serializeArray();
-    $.each(t, function() {
-        d[this.name] = this.value;
-    });
+    var d = {
+        "id" : parseInt($("#id").val()),
+        "aid" : $("#aid").val(),
+        "title" : $("#title").val(),
+        "content" : $("#content").val(),
+        "section" : { "name" : $("#sectionname").val()}
+    };
     $.ajax({
         type : 'PUT',
         url: '/' + topicType + '/' + $("#condition_tid").val() + '/update',
         data : JSON.stringify(d),
         contentType : 'application/json',
         success: function(data){
-            if(data == "suc"){
+            if(data == true){
                 alert("成功修改该贴");
             }
-            else if(data == "err"){
-                alert("未能修改该贴")
+            else {
+                alert("未能修改该贴");
             }
         },
-        error:function(){
-            alert("发送请求失败!");
+        error : function () {
+            alert("发送更新主贴请求失败！");
         }
     });
 }
 
 
 //收藏话题
-function favoriteTopic(resultType) {
+function favoriteTopic(topicType) {
     var d = {
-        "uid" : $('#condition_uid').val(),
-        "obid" : Number($("#condition_tid").val()),
-        "favTime" : new Date()
+            "id" : parseInt($("#condition_id").val()),
+            "aid" : $("#condition_aid").val(),
+            "title" : $("#topicTitle").val(),
+            "section" :{ "name" : topicType }
     };
     $.ajax({
         type : 'POST',
-        url : '/' + resultType + '/' + $('#condition_tid').val() + '/favorite',
+        url : '/' + topicType + '/' + $('#condition_id').val() + '/favorite',
         data : JSON.stringify(d),
-        contentType : 'application/json',
+        contentType : 'application/json', //设置请求头信息
         success : function (data) {
-            if(data == "suc"){
+            if(data == true ){
                 alert("成功收藏该贴");
                 location.reload();
             }
-            else if (data == "err"){
+            else {
                 alert("未能收藏该帖");
             }
         },
         error : function () {
             alert("发送收藏请求失败！");
+
         }
     });
 }
@@ -200,20 +208,21 @@ function favoriteTopic(resultType) {
 //关闭话题
 function blockTopic(resultType){
     var d = {
-        "uid" : $('#condition_uid').val(),
-        "opid" : $("#condition_tid").val(),
-        "optime" : new Date()
+        "id" : $("#condition_id").val(),
+        "aid" : $("#condition_aid").val(),
+        "title" : $("#topicTitle").val(),
+        "section" :{ "name" : resultType }
     };
     $.ajax({
         type : 'POST',
-        url : '/' + resultType + '/' + $("#condition_tid").val() + '/block',
+        url : '/' + resultType + '/' + $("#condition_id").val() + '/block',
         data : JSON.stringify(d),
         contentType : 'application/json',
         success : function (data){
-            if(data == "suc"){
+            if(data == true){
                 alert('成功关闭该话题');
             }
-            else if (data == "err"){
+            else {
                 alert('未能关闭该话题');
             }
         },
@@ -227,7 +236,7 @@ function blockTopic(resultType){
 //发表评论
 function addReply(){
     var d = {
-        "tid" : Number($('#condition_tid').val()),
+        "tid" : Number($('#condition_id').val()),
         "title" : $('#topicTitle').val(),
         "uid" : $('#condition_uid').val(),
         "content" : $('#replyContent').val(),
@@ -244,7 +253,7 @@ function addReply(){
                 alert('成功发表评论');
                 location.reload();
             }
-            else if (data == false){
+            else {
                 alert('未能发表评论，请稍后重试');
             }
         },
@@ -255,8 +264,13 @@ function addReply(){
 }
 
 //删除评论
-function deleteReply(id) {
-    var d = Number(id);
+function deleteReply(id,uid) {
+    var d = {
+        "id" : Number(id),
+        "tid" : Number($('#condition_id').val()),
+        "title" : $("#topicTitle").val(),
+        "uid" : uid
+    };
     $.ajax({
         type : 'DELETE',
         url : '/reply',
@@ -267,7 +281,7 @@ function deleteReply(id) {
                 alert('成功删除评论');
                 location.reload();
             }
-            else if (data == false){
+            else {
                 alert('未能删除评论，请稍后重试');
             }
         },
@@ -279,8 +293,13 @@ function deleteReply(id) {
 
 
 //关闭评论
-function blockReply(id) {
-    var d = Number(id);
+function blockReply(id,uid) {
+    var d = {
+        "id" : Number(id),
+        "tid" : Number($('#condition_id').val()),
+        "title" : $("#topicTitle").val(),
+        "uid" : uid
+    };
     $.ajax({
         type : 'PUT',
         url : '/reply',
@@ -291,7 +310,7 @@ function blockReply(id) {
                 alert('成功关闭评论');
                 location.reload();
             }
-            else if (data == false){
+            else {
                 alert('未能关闭评论，请稍后重试');
             }
         },
@@ -302,8 +321,13 @@ function blockReply(id) {
 }
 
 //采纳评论
-function adoptReply(id){
-    var d = Number(id);
+function adoptReply(id,uid){
+    var d = {
+        "id" : Number(id),
+        "tid" : Number($('#condition_id').val()),
+        "title" : $("#topicTitle").val(),
+        "uid" : uid
+    };
     $.ajax({
         type : 'POST',
         url : '/reply/adopt',
@@ -314,7 +338,7 @@ function adoptReply(id){
                 alert('成功采纳评论');
                 location.reload();
             }
-            else if (data == false){
+            else {
                 alert('未能采纳评论，请稍后重试');
             }
         },
@@ -339,7 +363,6 @@ function hateReply() {
 //------------------
 //将消息标记为已读
 function signNtf(uid,id) {
-    //TODO:该方法待补充
     $.ajax({
         type : 'PUT',
         url : '/user/' + uid + '/ntfs/' + id,
@@ -356,4 +379,39 @@ function signNtf(uid,id) {
             alert('发送请求失败！');
         }
     });
+}
+
+//--------------------
+
+//加载用户主页分类样式
+function initUserList(type){
+    $("#Tabs-" + type + "s").attr("class","Tabs-link is-active");
+}
+
+//用户修改密码
+function updateAccount(uid){
+    if($('#newPass').val() != null && $('#newPass').val().split(' ').join('')!= '' && $('#newPass').val() == $('#confirmPass').val()){
+        $.ajax({
+            type : 'PUT',
+            url : '/user/' + uid + '/account',
+            contentType : 'application/json',
+            data : $('#newPass').val(),
+                success : function (data){
+                if(data == true){
+                    alert("您已成功修改密码!");
+                    location.reload();
+                }
+                else if (data == false){
+                    alert("未能修改密码，请稍后重试!");
+                }
+            },
+            error : function (){
+                alert('发送请求失败！');
+            }
+        });
+    }
+    else{
+        alert("密码不符合要求，请重新确认");
+        window.location.reload();
+    }
 }

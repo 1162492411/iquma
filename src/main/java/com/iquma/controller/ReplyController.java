@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @Controller
 @RequestMapping("reply")
-public class replyController {
+public class ReplyController {
 
     @Autowired
     private ReplyService replyService;
@@ -23,26 +23,25 @@ public class replyController {
     @RequiresUser
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody Boolean insert(@RequestBody Reply record){
-        System.out.println("发表评论时收到参数" + record);
         return replyService.insert(record);
     }
 
     //删除评论
     @RequestMapping(method = RequestMethod.DELETE)
-    public @ResponseBody Boolean delete(@RequestBody Integer id){
-        return replyService.deleteById(id);
+    public @ResponseBody Boolean delete(@RequestBody Reply record){
+        return replyService.deleteById(record.getId());
     }
 
     //关闭评论
     @RequestMapping(method = RequestMethod.PUT)
-    public @ResponseBody Boolean changeStatus(@RequestBody Integer id){
-        return replyService.changeStatus(id);
+    public @ResponseBody Boolean block(@RequestBody Reply record){
+        return replyService.changeStatus(record.getId());
     }
 
     //采纳评论
     @RequestMapping(value = "adopt", method = RequestMethod.POST)
-    public @ResponseBody Boolean adopt(@RequestBody Integer id){
-        return replyService.adopt(id);
+    public @ResponseBody Boolean adopt(@RequestBody Reply record){
+        return replyService.adopt(record.getId());
     }
 
 }

@@ -13,6 +13,8 @@ public interface SectionMapper {
 
     Section selectByPrimaryKey(Byte id);
 
+    Section selectByName(String name);
+
     int updateByPrimaryKeySelective(Section record);
 
     int updateByPrimaryKey(Section record);

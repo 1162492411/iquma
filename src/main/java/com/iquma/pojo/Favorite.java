@@ -63,4 +63,13 @@ public class Favorite {
                 ", topic=" + topic +
                 '}';
     }
+
+    public Favorite() {
+    }
+
+    public Favorite(String uid, Integer obid, Date favTime) {
+        this.uid = uid;
+        this.obid = obid;
+        this.favTime = favTime;
+    }
 }

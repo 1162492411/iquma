@@ -54,18 +54,9 @@ public class LoginRealm extends AuthorizingRealm {
         String username = (String) principalCollection.getPrimaryPrincipal();//获取已验证的用户标识
         Byte role = userService.selectById(username).getRid();//获取用户所属的角色
         List permissions =  permissionService.selectByPids(rolePerService.selectPersById(role));//获取用户的角色所拥有的权限集合
-
-
-        System.out.println("该账户拥有的角色是" + role);
-        System.out.println("该角色拥有的权限包括:");
-        for (Object per : permissions) {
-            System.out.println(per + ", ");
-        }
-
-
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();//将授权信息封装
-        authorizationInfo.addRole(String.valueOf(role));
-        authorizationInfo.addStringPermissions(permissions);
+        authorizationInfo.addRole(String.valueOf(role));//设置用户角色
+        authorizationInfo.addStringPermissions(permissions);//设置用户权限
         return authorizationInfo;
     }
 

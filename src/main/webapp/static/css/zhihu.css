@@ -4645,7 +4645,7 @@ html:not([data-focus-method=pointer]) .Button:focus {
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
-    width: 320px;
+    width: 340px;
     height: 30px;
     margin-right: 27px;
     margin-left: 27px;

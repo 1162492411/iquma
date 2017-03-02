@@ -5,6 +5,12 @@ import java.util.Date;
 public class Topic {
     private Integer id;
 
+    private User user;
+
+    private Tag tag;
+
+    private Section section;
+
     private String title;
 
     private Byte sid;
@@ -25,11 +31,9 @@ public class Topic {
 
     private Boolean isBlock;
 
+    private Boolean hasBest;
+
     private String content;
-
-    private User user;
-
-    private Tag tag;
 
 
     public Integer getId() {
@@ -120,6 +124,14 @@ public class Topic {
         this.isBlock = isBlock;
     }
 
+    public Boolean getHasBest() {
+        return hasBest;
+    }
+
+    public void setHasBest(Boolean hasBest) {
+        this.hasBest = hasBest;
+    }
+
     public String getContent() {
         return content;
     }
@@ -144,10 +156,21 @@ public class Topic {
         this.tag = tag;
     }
 
+    public Section getSection() {
+        return section;
+    }
+
+    public void setSection(Section section) {
+        this.section = section;
+    }
+
     @Override
     public String toString() {
         return "Topic{" +
                 "id=" + id +
+                ", user=" + user +
+                ", tag=" + tag +
+                ", section=" + section +
                 ", title='" + title + '\'' +
                 ", sid=" + sid +
                 ", tid=" + tid +
@@ -158,12 +181,10 @@ public class Topic {
                 ", rateCount=" + rateCount +
                 ", replyCount=" + replyCount +
                 ", isBlock=" + isBlock +
+                ", hasBest=" + hasBest +
                 ", content='" + content + '\'' +
-                ", user=" + user +
-                ", tag=" + tag +
                 '}';
     }
-
 
     public Topic() {
     }
@@ -202,4 +223,6 @@ public class Topic {
     }
 
 
+
 }
+

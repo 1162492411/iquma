@@ -23,9 +23,9 @@
 <jsp:include page="${pageContext.request.contextPath}/common/bannar.jsp"/>
 <!-- 隐藏数据区 -->
 <div>
-<input type="hidden" id="condition_tid" value="${topic.id}"/>
-<input type="hidden" id="condition_isBlock" value="${topic.isBlock}"/>
+<input type="hidden" id="condition_id" value="${topic.id}"/>
 <input type="hidden" id="topicTitle" value="${topic.title}"/>
+<input type="hidden" id="condition_isBlock" value="${topic.isBlock}" />
 <input type="hidden" id="condition_uid" value="${userid}" />
 <input type="hidden" id="condition_aid" value="${topic.aid}"/>
 </div><!-- 隐藏数据区结束 -->
@@ -38,11 +38,24 @@
                 <div class="row">
                     <!-- 数据区顶部-主贴顶部 -->
                     <div class="col-md-9 col-sm-8 col-xs-12">
-                        <span class="post-topheader__title--icon-symbol">问</span>
+                        <span class="post-topheader__title--icon-symbol">
+                            <c:if test="${topic.section.name eq 'tutorial'}">
+                                教
+                            </c:if>
+                            <c:if test="${topic.section.name eq 'discuss'}">
+                                问
+                            </c:if>
+                            <c:if test="${topic.section.name eq 'article'}">
+                                文
+                            </c:if>
+                            <c:if test="${topic.section.name eq 'code'}">
+                                码
+                            </c:if>
+                        </span>
 
                         <div class="post-topheader__info">
                             <h1 class="h3 post-topheader__info--title" id="questionTitle">
-                                <a href="${pageContext.request.contextPath}/topic/${topic.id}">${topic.title}</a>
+                                <a href="${pageContext.request.contextPath}/${topic.section.name}/${topic.id}">${topic.title}</a>
                             </h1>
                             <ul class="taglist--inline inline-block question__title--tag mr10">
                                 <li class="tagPopup mb5">
@@ -55,8 +68,6 @@
                                 </a>
                                 <span class="hidden-xs"></span>
                             </div>
-                            <br />
-                            <input type="hidden" style="color: #990055" id="blockTip" value="该帖已被关闭！！" disabled />
                         </div>
                     </div><!-- 数据区顶部-主贴顶部结束 -->
                 </div>
@@ -89,26 +100,26 @@
                                             <fmt:formatDate value="${topic.addTime}"
                                             pattern="yyyy-MM-dd"/>
                                         </a></li>
-                                        <shiro:hasPermission name="topic:update:${topic.id}">
-                                            <a href="${pageContext.request.contextPath}/topic/${topic.id}/update">
+                                        <shiro:hasPermission name="${topic.section.name}:update:${topic.id}">
+                                            <a href="${pageContext.request.contextPath}/${topic.section.name}/${topic.id}/update">
                                                 <Button class="btn btn-primary">编辑</Button>
                                             </a>
                                             </li>
                                         </shiro:hasPermission>
-<shiro:hasPermission name="topic:block:${topic.id}">
+<shiro:hasPermission name="${topic.section.name}:block:${topic.id}">
                                         <li>
-                                            <Button class="btn btn-primary" id="blockButton" onclick="blockTopic('topic')" disabled>关闭</Button>
+                                            <Button class="btn btn-primary" id="blockButton" onclick="blockTopic('${topic.section.name}')" disabled>关闭</Button>
                                         </li>
     </shiro:hasPermission>
-<shiro:hasPermission name="topic:delete:${topic.id}">
+<shiro:hasPermission name="${topic.section.name}:delete:${topic.id}">
                                         <li>
                                             <Button class="btn btn-danger"
-                                                   onclick="deleteTopic('topic')">删除</Button>
+                                                   onclick="deleteTopic('${topic.section.name}')">删除</Button>
                                         </li>
     </shiro:hasPermission>
                                         <shiro:user>
                                             <li>
-                                                <Button class="btn btn-primary" id="favoriteButton" onclick="favoriteTopic('topic')" disabled>收藏</Button>
+                                                <Button class="btn btn-primary" id="favoriteButton" onclick="favoriteTopic('${topic.section.name}')" disabled>收藏</Button>
                                             </li>
                                         </shiro:user>
                                     </ul>
@@ -122,7 +133,7 @@
                         <!-- 回复排序方式 -->
                         <div class="btn-group pull-right" role="group">
                             <a class="btn btn-default btn-xs active">默认排序</a>
-                            <a href="${pageContext.request.contextPath}/topic/${topic.id}/time"
+                            <a href="${pageContext.request.contextPath}/${topic.section.name}/${topic.id}/time"
                                class="btn btn-default btn-xs">时间排序</a>
                         </div>
                         <!-- 回复排序方式结束 -->
@@ -154,6 +165,7 @@
                                 </div>
                                 <!-- 回答-数据区 -->
                                 <div class="post-offset">
+                                    <input type="hidden" id="replyUid-${reply.id}" value="${reply.uid}" />
                                     <div class="answer fmt" id="replyContent-${reply.id}">
                                             ${reply.content}
                                     </div>
@@ -169,13 +181,19 @@
                                                 </li>
                                                     <%-- 删除按钮 --%>
                                                 <shiro:hasPermission name="reply:delete:${reply.id}">
-                                                    <li><Button class="btn btn-danger" onclick="deleteReply(${reply.id})">删除</Button></li>
+                                                    <li><Button class="btn btn-danger" onclick="deleteReply('${reply.id}','${reply.uid}')">删除</Button></li>
                                                 </shiro:hasPermission>
                                                     <%-- 关闭按钮 --%>
                                                 <shiro:hasPermission name="reply:block:${reply.id}">
                                                     <li>
-                                                        <Button class="btn btn-primary" id="blockReplyButton-${reply.id}" onclick="blockReply(${reply.id})" disabled>关闭</Button></li>
+                                                        <Button class="btn btn-primary" id="blockReplyButton-${reply.id}" onclick="blockReply('${reply.id}','${reply.uid}')" disabled>关闭</Button></li>
                                                 </shiro:hasPermission>
+                                                <%-- 采纳按钮 --%>
+                                                <c:if test="${topic.hasBest eq false && topic.aid eq userid && topic.isBlock eq false }">
+                                                 <li>
+                                                     <Button class = "btn btn-primary" onclick="adoptReply('${reply.id}','${reply.uid}')" >采纳</Button>
+                                                 </li>
+                                                </c:if>
                                             </ul>
                                         </div>
                                         <!-- 回复-数据区-底部按钮结束-->
@@ -203,13 +221,16 @@
 
 
                     <!-- 添加回复区 -->
-                    <%-- 用户未登录时 --%>
+                    <%-- 主贴未关闭时显示评论框 --%>
+                    <c:if test="${topic.isBlock eq 'false'}">
+                    <%-- 若用户未登录 --%>
                     <shiro:guest>
                         <a class="btn Button--blue" href="${pageContext.request.contextPath}/user/login" style="position:relative;top:10%">登录</a>
                             后回复
                     </shiro:guest>
-                    <%-- 用户已登录时 --%>
+                    <%-- 若用户已登录 --%>
                     <shiro:user>
+
                         <div class="panel panel-default" style="position:relative;top:10%">
                             <textarea id="replyContent" cols="120" rows="5" placeholder="评论点什么吧"></textarea>
                             <br/><br/>
@@ -217,6 +238,12 @@
                             </Button>
                         </div>
                     </shiro:user>
+                        </c:if>
+                        <%-- 主贴关闭时显示主贴已关闭提示 --%>
+                        <c:if test="${topic.isBlock eq 'true'}">
+                            <div class="alert alert-warning" role="alert">该主贴已被关闭，禁止添加新回复</div>
+
+                        </c:if>
 
 
                 </div>

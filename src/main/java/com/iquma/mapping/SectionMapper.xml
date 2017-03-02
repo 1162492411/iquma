@@ -15,6 +15,13 @@
     where id = #{id,jdbcType=TINYINT}
   </select>
 
+  <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from common_section
+    where name = #{name,jdbcType=VARCHAR}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Byte">
     delete from common_section
     where id = #{id,jdbcType=TINYINT}

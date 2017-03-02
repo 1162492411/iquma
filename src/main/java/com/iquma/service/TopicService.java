@@ -21,10 +21,18 @@ public interface TopicService {
 
     boolean update(Topic topic);//更新主题信息
 
+    boolean increaseReply(Integer id);//将主题回复数加1
+
+    boolean reduceReply(Integer id);//将主题回复数减1
+
+    boolean adopt(Integer id);//主题采纳回复
+
     boolean insert(Topic topic);//新增主题
 
     boolean deleteById(Integer id);//根据id删除主题
 
     boolean changeStatus(Integer id);//根据id关闭主贴
+
+
 
 }

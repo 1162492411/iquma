@@ -55,6 +55,21 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    public boolean increaseReply(Integer id) {
+        return this.topicMapper.increaseReply(id) > 0;
+    }
+
+    @Override
+    public boolean reduceReply(Integer id) {
+        return this.topicMapper.reduceReply(id) > 0;
+    }
+
+    @Override
+    public boolean adopt(Integer id) {
+        return this.topicMapper.adopt(id) > 0;
+    }
+
+    @Override
     public boolean insert(Topic topic) {
         return this.topicMapper.insertSelective(topic) > 0;
     }

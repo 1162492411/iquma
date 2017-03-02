@@ -12,4 +12,6 @@ public interface SectionService {
     List selectAll();//获取所有版块
 
     Section selectById(Byte id);//根据id获取版块
+
+    Section selectByName(String name);//根据名称获取版块
 }

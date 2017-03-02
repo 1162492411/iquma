@@ -26,4 +26,9 @@ public class SectionServiceImpl implements SectionService {
     public Section selectById(Byte id) {
         return this.sectionMapper.selectByPrimaryKey(id);
     }
+
+    @Override
+    public Section selectByName(String name) {
+        return this.sectionMapper.selectByName(name);
+    }
 }
