@@ -7,6 +7,9 @@
         <result column="title" jdbcType="VARCHAR" property="title"/>
         <result column="uid" jdbcType="VARCHAR" property="uid"/>
         <result column="addTime" jdbcType="TIMESTAMP" property="addTime"/>
+        <result column="likeCount" jdbcType="DOUBLE" property="likeCount" />
+        <result column="hateCount" jdbcType="DOUBLE" property="hateCount" />
+        <result column="rateCount" jdbcType="TINYINT" property="rateCount" />
         <result column="isBest" jdbcType="BIT" property="isBest"/>
         <result column="isBlock" jdbcType="BIT" property="isBlock"/>
         <result column="rateCount" jdbcType="INTEGER" property="rateCount"/>
@@ -24,7 +27,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-    id, tid, title, uid, addTime, isBest,isBlock, rateCount
+    id, tid, title, uid, addTime, likeCount, hateCount, rateCount, isBest,isBlock, rateCount
   </sql>
 
     <sql id="Blob_Column_List">
@@ -47,10 +50,10 @@
 
     <insert id="insert" parameterType="com.iquma.pojo.Reply">
     insert into topic_repinfo (tid, title, uid, 
-      addTime, isBest, isBlock, rateCount,
+      addTime, likeCount, hateCount, rateCount, isBest, isBlock, rateCount,
       content)
     values (#{tid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{uid,jdbcType=VARCHAR},
-      #{addTime,jdbcType=TIMESTAMP}, #{isBest,jdbcType=BIT}, #{isBlock,jdbcType=BIT}, #{rateCount,jdbcType=INTEGER},
+      #{addTime,jdbcType=TIMESTAMP}, #{likeCount,jdbcType=DOUBLE}, #{hateCount,jdbcType=DOUBLE},#{rateCount,jdbcType=TINYINT}, #{isBest,jdbcType=BIT}, #{isBlock,jdbcType=BIT}, #{rateCount,jdbcType=INTEGER},
       #{content,jdbcType=LONGVARCHAR})
   </insert>
 
@@ -68,6 +71,15 @@
             </if>
             <if test="addTime != null">
                 addTime,
+            </if>
+            <if test="likeCount != null">
+                likeCount,
+            </if>
+            <if test="hateCount != null">
+                hateCount,
+            </if>
+            <if test="rateCount != null">
+                rateCount,
             </if>
             <if test="isBest != null">
                 isBest,
@@ -94,6 +106,15 @@
             </if>
             <if test="addTime != null">
                 #{addTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="likeCount != null">
+                #{likeCount,jdbcType=DOUBLE},
+            </if>
+            <if test="hateCount != null">
+                #{hateCount,jdbcType=DOUBLE},
+            </if>
+            <if test="rateCount != null">
+                #{rateCount,jdbcType=TINYINT},
             </if>
             <if test="isBest != null">
                 #{isBest,jdbcType=BIT},
@@ -126,6 +147,15 @@
             <if test="addTime != null">
                 addTime = #{addTime,jdbcType=TIMESTAMP},
             </if>
+            <if test="likeCount != null">
+                likeCount = #{likeCount,jdbcType=DOUBLE},
+            </if>
+            <if test="hateCount != null">
+                hateCount = #{hateCount,jdbcType=DOUBLE},
+            </if>
+            <if test="rateCount != null">
+                rateCount = #{rateCount,jdbcType=TINYINT},
+            </if>
             <if test="isBest != null">
                 isBest = #{isBest,jdbcType=BIT},
             </if>
@@ -148,6 +178,9 @@
       title = #{title,jdbcType=VARCHAR},
       uid = #{uid,jdbcType=VARCHAR},
       addTime = #{addTime,jdbcType=TIMESTAMP},
+      likeCount = #{likeCount,jdbcType=DOUBLE},
+      hateCount = #{hateCount,jdbcType=DOUBLE},
+      rateCount = #{rateCount,jdbcType=TINYINT},
       isBest = #{isBest,jdbcType=BIT},
       isBlock = #{isBlock,jdbcType=BIT},
       rateCount = #{rateCount,jdbcType=INTEGER},
@@ -161,6 +194,9 @@
       title = #{title,jdbcType=VARCHAR},
       uid = #{uid,jdbcType=VARCHAR},
       addTime = #{addTime,jdbcType=TIMESTAMP},
+      likeCount = #{likeCount,jdbcType=DOUBLE},
+      hateCount = #{hateCount,jdbcType=DOUBLE},
+      rateCount = #{rateCount,jdbcType=TINYINT},
       isBest = #{isBest,jdbcType=BIT},
       isBlock = #{isBlock,jdbcType=BIT},
       rateCount = #{rateCount,jdbcType=INTEGER}
@@ -179,7 +215,7 @@
 
     <select id="selectByCondition" parameterType="com.iquma.pojo.Reply" resultMap="ResultMapWithBLOBs">
         select
-        r.id, r.tid, r.title, r.uid, u.name as usname, u.avatar as usavatar, r.addTime, r.isBest,r.isBlock, r.rateCount, r.content, u.prestige as usprestige
+        r.id, r.tid, r.title, r.uid, u.name as usname, u.avatar as usavatar, r.addTime, r.likeCount, r.hateCount, r.rateCount, r.isBest,r.isBlock, r.rateCount, r.content, u.prestige as usprestige
         from topic_repinfo r
         left join user_basinfo u on r.uid = u.id
         <trim prefix="where" prefixOverrides="and">
@@ -197,6 +233,15 @@
             </if>
             <if test="addTime != null">
                and addTime = #{addTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="likeCount != null">
+                and likeCount >= #{likeCount,jdbcType=DOUBLE}
+            </if>
+            <if test="hateCount != null">
+                and hateCount >= #{hateCount,jdbcType=DOUBLE}
+            </if>
+            <if test="rateCount != null">
+                and rateCount >= #{rateCount,jdbcType=TINYINT}
             </if>
             <if test="isBest != null">
                and isBest = #{isBest,jdbcType=BIT}
@@ -216,7 +261,7 @@
 
     <select id="selectByConditionSortByTime" parameterType="com.iquma.pojo.Reply" resultMap="ResultMapWithBLOBs">
         select
-        r.id, r.tid, r.title, r.uid, u.name as usname, u.avatar as usavatar, r.addTime, r.isBest,r.isBlock, r.rateCount, r.content, u.prestige as usprestige
+        r.id, r.tid, r.title, r.uid, u.name as usname, u.avatar as usavatar, r.addTime, r.addTime, r.likeCount, r.hateCount, r.rateCount, r.isBest,r.isBlock, r.rateCount, r.content, u.prestige as usprestige
         from topic_repinfo r
         left join user_basinfo u on r.uid = u.id
         <trim prefix="where" prefixOverrides="and">
@@ -234,6 +279,15 @@
             </if>
             <if test="addTime != null">
                 and addTime = #{addTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="likeCount != null">
+                and likeCount >= #{likeCount,jdbcType=DOUBLE}
+            </if>
+            <if test="hateCount != null">
+                and hateCount >= #{hateCount,jdbcType=DOUBLE}
+            </if>
+            <if test="rateCount != null">
+                and rateCount >= #{rateCount,jdbcType=TINYINT}
             </if>
             <if test="isBest != null">
                 and isBest = #{isBest,jdbcType=BIT}

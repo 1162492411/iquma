@@ -2,6 +2,7 @@ package com.iquma.controller;
 
 import com.iquma.pojo.Reply;
 import com.iquma.service.ReplyService;
+import com.iquma.utils.BinomialUtil;
 import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,8 @@ public class ReplyController {
 
     @Autowired
     private ReplyService replyService;
+    @Autowired
+    private BinomialUtil binomialUtil;
 
     //发表评论
     @RequiresUser
@@ -44,4 +47,21 @@ public class ReplyController {
         return replyService.adopt(record.getId());
     }
 
+    //赞同评论
+    @RequestMapping( value = "like" , method = RequestMethod.PUT)
+    public @ResponseBody Boolean like(@RequestBody Reply record){
+        record = replyService.selectById(record.getId());
+        double likeCount = binomialUtil.getLikeCount(record.getLikeCount());
+        double hateCount = record.getHateCount();
+        return replyService.rate(new Reply(record.getId(),likeCount,hateCount,binomialUtil.getRateCount(likeCount,hateCount)));
+    }
+
+    //反对评论
+    @RequestMapping( value = "hate" , method = RequestMethod.PUT)
+    public @ResponseBody Boolean hate(@RequestBody Reply record){
+        record = replyService.selectById(record.getId());
+        double likeCount = record.getLikeCount();
+        double hateCount = binomialUtil.getHateCount(record.getHateCount());
+        return replyService.rate(new Reply(record.getId(),likeCount,hateCount,binomialUtil.getRateCount(likeCount,hateCount)));
+    }
 }

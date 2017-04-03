@@ -1,5 +1,7 @@
 package com.iquma.pojo;
 
+import com.iquma.utils.ENUMS;
+
 import java.util.Date;
 
 public class Topic {
@@ -9,15 +11,17 @@ public class Topic {
 
     private Tag tag;
 
-    private Section section;
+    private Attachment attachment;
 
     private String title;
 
-    private Byte sid;
+    private String section;
 
     private Byte tid;
 
     private String aid;
+
+    private Integer attid;
 
     private Date addTime;
 
@@ -25,7 +29,11 @@ public class Topic {
 
     private Integer viewCount;
 
-    private Integer rateCount;
+    private Double likeCount;
+
+    private Double hateCount;
+
+    private Byte rateCount;
 
     private Integer replyCount;
 
@@ -52,12 +60,12 @@ public class Topic {
         this.title = title == null ? null : title.trim();
     }
 
-    public Byte getSid() {
-        return sid;
+    public void setSection(String section) {
+        this.section = section;
     }
 
-    public void setSid(Byte sid) {
-        this.sid = sid;
+    public String getSection() {
+        return section;
     }
 
     public Byte getTid() {
@@ -74,6 +82,14 @@ public class Topic {
 
     public void setAid(String aid) {
         this.aid = aid == null ? null : aid.trim();
+    }
+
+    public Integer getAttid() {
+        return attid;
+    }
+
+    public void setAttid(Integer attid) {
+        this.attid = attid;
     }
 
     public Date getaddTime() {
@@ -100,9 +116,6 @@ public class Topic {
         this.viewCount = viewCount;
     }
 
-    public Integer getRateCount() {
-        return rateCount;
-    }
 
     public Integer getReplyCount() {
         return replyCount;
@@ -112,7 +125,27 @@ public class Topic {
         this.replyCount = replyCount;
     }
 
-    public void setRateCount(Integer rateCount) {
+    public Double getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(Double likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public Double getHateCount() {
+        return hateCount;
+    }
+
+    public void setHateCount(Double hateCount) {
+        this.hateCount = hateCount;
+    }
+
+    public Byte getRateCount() {
+        return rateCount;
+    }
+
+    public void setRateCount(Byte rateCount) {
         this.rateCount = rateCount;
     }
 
@@ -156,12 +189,12 @@ public class Topic {
         this.tag = tag;
     }
 
-    public Section getSection() {
-        return section;
+    public Attachment getAttachment() {
+        return attachment;
     }
 
-    public void setSection(Section section) {
-        this.section = section;
+    public void setAttachment(Attachment attachment) {
+        this.attachment = attachment;
     }
 
     @Override
@@ -171,13 +204,17 @@ public class Topic {
                 ", user=" + user +
                 ", tag=" + tag +
                 ", section=" + section +
+                ", attachment=" + attachment +
                 ", title='" + title + '\'' +
-                ", sid=" + sid +
+                ", section=" + section +
                 ", tid=" + tid +
                 ", aid='" + aid + '\'' +
+                ", attid=" + attid +
                 ", addTime=" + addTime +
                 ", reTime=" + reTime +
                 ", viewCount=" + viewCount +
+                ", likeCount=" + likeCount +
+                ", hateCount=" + hateCount +
                 ", rateCount=" + rateCount +
                 ", replyCount=" + replyCount +
                 ", isBlock=" + isBlock +
@@ -193,33 +230,37 @@ public class Topic {
         this.id = id;
     }
 
+    public Topic(Integer id, Double likeCount, Double hateCount, Byte rateCount) {
+        this.id = id;
+        this.likeCount = likeCount;
+        this.hateCount = hateCount;
+        this.rateCount = rateCount;
+    }
+
     //初始化默认教程主贴
     public void parseDefaultTutorial(){
-        sid = Byte.valueOf("1");
+        section = ENUMS.SECTION_TUTORIAL;
         addTime = new Date();
         reTime = new Date();
     }
 
     //初始化默认提问主贴
     public void parseDefaultDiscuss(){
-        sid = Byte.valueOf("2");
+        section = ENUMS.SECTION_DISCUSS;
         addTime = new Date();
-        reTime = new Date();
     }
 
     //初始化默认经验主贴
     public void parseDefaultArticle(){
-        sid = Byte.valueOf("3");
+        section = ENUMS.SECTION_ARTICLE;
         addTime = new Date();
-        reTime = new Date();
     }
 
 
     //初始化默认代码主贴
     public void parseDefaultCode(){
-        sid = Byte.valueOf("4");
+        section = ENUMS.SECTION_CODE;
         addTime = new Date();
-        reTime = new Date();
     }
 
 

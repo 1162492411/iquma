@@ -3,17 +3,15 @@
 <mapper namespace="com.iquma.dao.AttachmentMapper">
   <resultMap id="BaseResultMap" type="com.iquma.pojo.Attachment">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="tid" jdbcType="INTEGER" property="tid" />
     <result column="uid" jdbcType="VARCHAR" property="uid" />
     <result column="addTime" jdbcType="TIMESTAMP" property="addtime" />
-    <result column="fileName" jdbcType="VARCHAR" property="filename" />
-    <result column="fileSize" jdbcType="DOUBLE" property="filesize" />
-    <result column="attPath" jdbcType="VARCHAR" property="attpath" />
-    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="size" jdbcType="DOUBLE" property="size" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
     <result column="price" jdbcType="TINYINT" property="price" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, tid, uid, addTime, fileName, fileSize, attPath, description, price
+    id, uid, addTime, name, size, path, price
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -26,23 +24,23 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.iquma.pojo.Attachment">
-    insert into topic_attinfo (id, tid, uid, 
-      addTime, fileName, fileSize, 
-      attPath, description, price
+    insert into topic_attinfo (id, uid,
+      addTime, name, size, 
+      path, price
       )
-    values (#{id,jdbcType=INTEGER}, #{tid,jdbcType=INTEGER}, #{uid,jdbcType=VARCHAR}, 
-      #{addtime,jdbcType=TIMESTAMP}, #{filename,jdbcType=VARCHAR}, #{filesize,jdbcType=DOUBLE}, 
-      #{attpath,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{price,jdbcType=TINYINT}
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=VARCHAR},
+      #{addtime,jdbcType=TIMESTAMP}, #{name,jdbcType=VARCHAR}, #{size,jdbcType=DOUBLE}, 
+      #{path,jdbcType=VARCHAR}, #{price,jdbcType=TINYINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.iquma.pojo.Attachment">
+    <selectKey resultType="int" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID() AS id
+    </selectKey>
     insert into topic_attinfo
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
-      </if>
-      <if test="tid != null">
-        tid,
       </if>
       <if test="uid != null">
         uid,
@@ -50,17 +48,14 @@
       <if test="addtime != null">
         addTime,
       </if>
-      <if test="filename != null">
-        fileName,
+      <if test="name != null">
+        name,
       </if>
-      <if test="filesize != null">
-        fileSize,
+      <if test="size != null">
+        size,
       </if>
-      <if test="attpath != null">
-        attPath,
-      </if>
-      <if test="description != null">
-        description,
+      <if test="path != null">
+        path,
       </if>
       <if test="price != null">
         price,
@@ -70,26 +65,20 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="tid != null">
-        #{tid,jdbcType=INTEGER},
-      </if>
       <if test="uid != null">
         #{uid,jdbcType=VARCHAR},
       </if>
       <if test="addtime != null">
         #{addtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="filename != null">
-        #{filename,jdbcType=VARCHAR},
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
       </if>
-      <if test="filesize != null">
-        #{filesize,jdbcType=DOUBLE},
+      <if test="size != null">
+        #{size,jdbcType=DOUBLE},
       </if>
-      <if test="attpath != null">
-        #{attpath,jdbcType=VARCHAR},
-      </if>
-      <if test="description != null">
-        #{description,jdbcType=VARCHAR},
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
       </if>
       <if test="price != null">
         #{price,jdbcType=TINYINT},
@@ -99,26 +88,20 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Attachment">
     update topic_attinfo
     <set>
-      <if test="tid != null">
-        tid = #{tid,jdbcType=INTEGER},
-      </if>
       <if test="uid != null">
         uid = #{uid,jdbcType=VARCHAR},
       </if>
       <if test="addtime != null">
         addTime = #{addtime,jdbcType=TIMESTAMP},
       </if>
-      <if test="filename != null">
-        fileName = #{filename,jdbcType=VARCHAR},
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="filesize != null">
-        fileSize = #{filesize,jdbcType=DOUBLE},
+      <if test="size != null">
+        size = #{size,jdbcType=DOUBLE},
       </if>
-      <if test="attpath != null">
-        attPath = #{attpath,jdbcType=VARCHAR},
-      </if>
-      <if test="description != null">
-        description = #{description,jdbcType=VARCHAR},
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
       </if>
       <if test="price != null">
         price = #{price,jdbcType=TINYINT},
@@ -128,13 +111,12 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Attachment">
     update topic_attinfo
-    set tid = #{tid,jdbcType=INTEGER},
+    set
       uid = #{uid,jdbcType=VARCHAR},
       addTime = #{addtime,jdbcType=TIMESTAMP},
-      fileName = #{filename,jdbcType=VARCHAR},
-      fileSize = #{filesize,jdbcType=DOUBLE},
-      attPath = #{attpath,jdbcType=VARCHAR},
-      description = #{description,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      size = #{size,jdbcType=DOUBLE},
+      path = #{path,jdbcType=VARCHAR},
       price = #{price,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>

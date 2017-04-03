@@ -15,7 +15,9 @@
     <script src="${pageContext.request.contextPath}/static/js/iquma.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            initTopicStatus();
+            initTopicStatus('${topic.section}');
+            initPag(${currentPage},${totalPage});
+            initRateInfo('${topic.id}',0);
         });
     </script>
 </head>
@@ -38,24 +40,10 @@
                 <div class="row">
                     <!-- 数据区顶部-主贴顶部 -->
                     <div class="col-md-9 col-sm-8 col-xs-12">
-                        <span class="post-topheader__title--icon-symbol">
-                            <c:if test="${topic.section.name eq 'tutorial'}">
-                                教
-                            </c:if>
-                            <c:if test="${topic.section.name eq 'discuss'}">
-                                问
-                            </c:if>
-                            <c:if test="${topic.section.name eq 'article'}">
-                                文
-                            </c:if>
-                            <c:if test="${topic.section.name eq 'code'}">
-                                码
-                            </c:if>
-                        </span>
-
+                        <span class="post-topheader__title--icon-symbol" id="topicText"></span>
                         <div class="post-topheader__info">
                             <h1 class="h3 post-topheader__info--title" id="questionTitle">
-                                <a href="${pageContext.request.contextPath}/${topic.section.name}/${topic.id}">${topic.title}</a>
+                                <a href="${pageContext.request.contextPath}/${topic.section}/${topic.id}">${topic.title}</a>
                             </h1>
                             <ul class="taglist--inline inline-block question__title--tag mr10">
                                 <li class="tagPopup mb5">
@@ -81,9 +69,9 @@
                     <article class="widget-question__item">
                         <div class="post-col">
                             <div class="widget-vote  ">
-                                <button class="like" onclick="likeTopic()"></button>
+                                <button class="like" id="like-0" onclick="likeTopic('${topic.section}','${topic.id}')"></button>
                                 <span class="count">${topic.rateCount}</span>
-                                <button class="hate" onclick="hateTopic()"></button>
+                                <button class="hate" id="hate-0" onclick="hateTopic('${topic.section}','${topic.id}')"></button>
                             </div>
                             <!-- end .widget-vote -->
                         </div>
@@ -91,6 +79,13 @@
                         <div class="post-offset">
                             <div class="question fmt">
                                 ${topic.content}
+                                <br />
+                                <%-- 如果该主贴存在附件则显示 --%>
+                                    <input type="hidden" id="att" value="${topic.attid}" />
+                                <c:if test="${topic.attid ne null}">
+                                    <input type="hidden" id="attSize" value="${topic.attachment.size}" />
+                                    <span class="glyphicon glyphicon-file"><a href="${pageContext.request.contextPath}/download/${topic.attid}" id="attHref">${topic.attachment.name}</a></span>
+                                </c:if>
                             </div>
                             <div class="row">
                                 <div class="post-opt col-md-8">
@@ -100,26 +95,26 @@
                                             <fmt:formatDate value="${topic.addTime}"
                                             pattern="yyyy-MM-dd"/>
                                         </a></li>
-                                        <shiro:hasPermission name="${topic.section.name}:update:${topic.id}">
-                                            <a href="${pageContext.request.contextPath}/${topic.section.name}/${topic.id}/update">
+                                        <shiro:hasPermission name="${topic.section}:update:${topic.id}">
+                                            <a href="${pageContext.request.contextPath}/${topic.section}/${topic.id}/update">
                                                 <Button class="btn btn-primary">编辑</Button>
                                             </a>
                                             </li>
                                         </shiro:hasPermission>
-<shiro:hasPermission name="${topic.section.name}:block:${topic.id}">
+<shiro:hasPermission name="${topic.section}:block:${topic.id}">
                                         <li>
-                                            <Button class="btn btn-primary" id="blockButton" onclick="blockTopic('${topic.section.name}')" disabled>关闭</Button>
+                                            <Button class="btn btn-primary" id="blockButton" onclick="blockTopic('${topic.section}')" disabled>关闭</Button>
                                         </li>
     </shiro:hasPermission>
-<shiro:hasPermission name="${topic.section.name}:delete:${topic.id}">
+<shiro:hasPermission name="${topic.section}:delete:${topic.id}">
                                         <li>
                                             <Button class="btn btn-danger"
-                                                   onclick="deleteTopic('${topic.section.name}')">删除</Button>
+                                                   onclick="deleteTopic('${topic.section}')">删除</Button>
                                         </li>
     </shiro:hasPermission>
                                         <shiro:user>
                                             <li>
-                                                <Button class="btn btn-primary" id="favoriteButton" onclick="favoriteTopic('${topic.section.name}')" disabled>收藏</Button>
+                                                <Button class="btn btn-primary" id="favoriteButton" onclick="favoriteTopic('${topic.section}')" disabled>收藏</Button>
                                             </li>
                                         </shiro:user>
                                     </ul>
@@ -133,11 +128,11 @@
                         <!-- 回复排序方式 -->
                         <div class="btn-group pull-right" role="group">
                             <a class="btn btn-default btn-xs active">默认排序</a>
-                            <a href="${pageContext.request.contextPath}/${topic.section.name}/${topic.id}/time"
+                            <a href="${pageContext.request.contextPath}/${topic.section}/${topic.id}/time"
                                class="btn btn-default btn-xs">时间排序</a>
                         </div>
                         <!-- 回复排序方式结束 -->
-                        <h2 class="title h4 mt30 mb20 post-title" id="answers-title">${replies.size()}个回答</h2>
+                        <h2 class="title h4 mt30 mb20 post-title" id="answers-title">${total}个回答</h2>
                         <c:forEach var="reply" items="${replies}">
                             <!-- 单项回复 -->
                             <article class="clearfix widget-answers__item accepted" id="replyArticle-${reply.id}">
@@ -150,9 +145,9 @@
                                 <!-- 回复-操作按钮 -->
                                 <div class="post-col">
                                     <div class="widget-vote ">
-                                        <button class="like" onclick="likeReply()"></button>
+                                        <button class="like" id="like-${reply.id}" onclick="likeReply('${reply.id}','${reply.uid}')"></button>
                                         <span class="count">${reply.rateCount}</span>
-                                        <button class="hate" onclick="hateReply()"></button>
+                                        <button class="hate" id="hate-${reply.id}" onclick="hateReply('${reply.id}','${reply.uid}')"></button>
                                     </div>
                                     <!-- 回复-操作按钮结束 -->
                                     <!-- 该答案被采纳 -->
@@ -216,6 +211,14 @@
                             </article>
                             <!-- 单项回复结束 -->
                         </c:forEach>
+                        <%-- 分页按钮 --%>
+                        <nav>
+                            <ul class="pagination col-xs-12 col-md-9" id="Pagination">
+                                <li id="pagTop"><a href="./1">首页</a></li>
+                                <li id="pagCurrent" class="active"><a>${currentPage}</a></li>
+                                <li id="pagBottom"><a href="./${totalPage}">尾页</a></li>
+                            </ul>
+                        </nav>
                     </div>
                     <!-- 回复列表结束 -->
 
@@ -248,23 +251,6 @@
 
                 </div>
                 <!-- 主数据区结束 -->
-                <!-- 主数据区右侧 -->
-                <div class="col-xs-12 col-md-3 side">
-                    <!-- 相似内容 -->
-                    <div class="widget_headline widget-box mt20 mb30">
-                        <h2 class="h4 widget-box__title">相似问题</h2>
-                        <ul class="taglist--block pl20">
-                            <!-- 单项相似数据 -->
-                            <li class="">
-                                <a href="${pageContext.request.contextPath}/p/1210000008300936"
-                                   data-id="1210000008300936" data-original-title="">前端基础进阶：详细图解JavaScript内存空间</a>
-                                <p class=""><span class="mr5 color_F5A623">43 赞</span> | <span class="ml5">8 评论</span>
-                                </p>
-                            </li><!-- 单项相似数据结束 -->
-                            <a href="${pageContext.request.contextPath}/news" target="_blank" class="f12">更多→</a>
-                        </ul>
-                    </div><!-- 相似内容结束 -->
-                </div><!-- 主数据区右侧结束 -->
             </div>
         </div>
     </div>

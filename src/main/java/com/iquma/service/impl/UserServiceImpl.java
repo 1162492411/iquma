@@ -45,6 +45,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean updatePrestige(String id, Integer prestige) {
+        System.out.println("Service中更新用户" + id +"的威望,即将" + prestige);
+        return this.userMapper.updatePrestige(id,prestige) > 0;
+    }
+
+    @Override
+    public boolean updateRid(String id, Byte rid) {
+        return this.userMapper.updateRid(id,rid) > 0;
+    }
+
+    @Override
     public boolean validatorUserPass(String id, String pass) {
         return this.selectById(id).getPass().equals(pass);
     }

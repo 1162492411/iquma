@@ -21,6 +21,14 @@ public class Section {
         this.name = name == null ? null : name.trim();
     }
 
+    public Section() {
+    }
+
+    public Section(Byte id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     @Override
     public String toString() {
         return "Section{" +

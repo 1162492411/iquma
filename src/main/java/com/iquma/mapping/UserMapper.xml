@@ -178,4 +178,15 @@
 
     </select>
 
+    <update id="updatePrestige">
+        update user_basinfo
+        set prestige = prestige + #{prestige,jdbcType=INTEGER}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <update id="updateRid">
+        update user_basinfo
+        set rid = #{rid,jdbcType=TINYINT}
+        where id = #{id,jdbcType=VARCHAR}
+    </update>
 </mapper>

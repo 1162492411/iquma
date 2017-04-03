@@ -24,12 +24,16 @@
                     <div class="ProfileMain-header">
                         <ul role="tablist" class="Tabs ProfileMain-tabs">
                             <li role="tab" class="Tabs-item">
+                                <a class="Tabs-link" id="Tabs-tutorials"
+                                   href="${pageContext.request.contextPath}/user/${user.id}/tutorials">教程</a>
+                            </li>
+                            <li role="tab" class="Tabs-item">
                                 <a class="Tabs-link"
                                    href="${pageContext.request.contextPath}/user/${user.id}/answers">回答</a>
                             </li>
                             <li role="tab" class="Tabs-item">
                                 <a class="Tabs-link"
-                                   href="${pageContext.request.contextPath}/user/${user.id}/asks">提问</a>
+                                   href="${pageContext.request.contextPath}/user/${user.id}/discuss">提问</a>
                             </li>
                             <li role="tab" class="Tabs-item">
                                 <a class="Tabs-link"
@@ -47,6 +51,11 @@
                     </div>
                     <!-- 用户动态详细数据区 -->
                     <div class="List" id="Profile-activities">
+                        <c:if test="${emptyResult eq true }">
+                            查询的数据不存在！
+                        </c:if>
+                        <%-- 查询结果非空时将其遍历 --%>
+                        <c:if test="${emptyResult eq null}">
                         <c:forEach var="favorite" items="${collections}">
                             <!-- 用户动态详细数据单项 -->
                             <div class="List-item">
@@ -67,6 +76,7 @@
                                 </div> <!-- 回复信息结束 -->
                             </div><!-- 用户动态详细数据单项结束 -->
                         </c:forEach>
+                            </c:if>
                     </div><!-- 用户动态详细数据区结束 -->
                 </div><!-- 用户动态数据区左侧结束 -->
             </div><!-- 用户动态数据区结束 -->

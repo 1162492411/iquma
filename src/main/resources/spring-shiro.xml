@@ -92,14 +92,18 @@
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
             </util:map>
         </property>
+        <!--
+         /index.jsp = anon
+                /unauthorized.jsp = anon
+        /static/** = anon
+         /login.jsp = authc
+        /user/login = anon
+        /user/logindo = anon -->
         <property name="filterChainDefinitions">
             <value>
-                /index.jsp = anon
-                /unauthorized.jsp = anon
-                /login.jsp = authc
-                /static/** = anon
-                /user/login = anon
-                /user/logindo = anon
+                /ask = authc
+                /write = authc
+                /upload = authc
             </value>
         </property>
     </bean>

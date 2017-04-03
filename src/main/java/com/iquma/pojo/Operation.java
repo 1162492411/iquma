@@ -11,7 +11,9 @@ public class Operation {
 
     private Byte pid;
 
-    private Date optime;
+    private Date opTime;
+
+    private Permission permission;
 
     public Integer getId() {
         return id;
@@ -45,26 +47,46 @@ public class Operation {
         this.pid = pid;
     }
 
-    public Date getOptime() {
-        return optime;
+    public Date getOpTime() {
+        return opTime;
     }
 
-    public void setOptime(Date optime) {
-        this.optime = optime;
+    public void setOpTime(Date opTime) {
+        this.opTime = opTime;
     }
 
+    public Permission getPermission() {
+        return permission;
+    }
+
+    public void setPermission(Permission permission) {
+        this.permission = permission;
+    }
+
+    @Override
     public String toString() {
-        return "[记录id : " + id + ",操作人id : " + uid + ",操作对象id : " + opid + ",所用权限 : " + pid
-                + ",操作时间 : " + optime + "]";
+        return "Operation{" +
+                "id=" + id +
+                ", uid='" + uid + '\'' +
+                ", opid='" + opid + '\'' +
+                ", pid=" + pid +
+                ", optime=" + opTime +
+                ", permission=" + permission +
+                '}';
     }
 
     public Operation() {
+    }
+
+    public Operation(String uid, String opid) {
+        this.uid = uid;
+        this.opid = opid;
     }
 
     public Operation(String uid, String opid, Byte pid, Date optime) {
         this.uid = uid;
         this.opid = opid;
         this.pid = pid;
-        this.optime = optime;
+        this.opTime = optime;
     }
 }

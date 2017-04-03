@@ -21,14 +21,20 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
-    public List selectByConditionSortByTime(Reply condition) {
+    public List selectByConditionSortByTime(int page, Reply condition) {
+        PageHelper.startPage(page,10);
         return this.replyMapper.selectByConditionSortByTime(condition);
     }
 
     @Override
     public List selectByConditionAndPage(int page, Reply condition) {
-        PageHelper.startPage(page,5);
+        PageHelper.startPage(page,10);
         return this.replyMapper.selectByCondition(condition);
+    }
+
+    @Override
+    public Boolean rate(Reply record) {
+        return this.replyMapper.updateByPrimaryKeySelective(record) > 0;
     }
 
     @Override
@@ -54,5 +60,10 @@ public class ReplyServiceImpl implements ReplyService {
     @Override
     public Boolean adopt(Integer id) {
         return this.replyMapper.adopt(id);
+    }
+
+    @Override
+    public Reply selectById(Integer id) {
+        return this.replyMapper.selectByPrimaryKey(id);
     }
 }

@@ -30,10 +30,6 @@
                             <div class="ProfileMain-header">
                                 <ul role="tablist" class="Tabs ProfileMain-tabs">
                                     <li role="tab" class="Tabs-item">
-                                        <a class="Tabs-link" id="Tabs-activities"
-                                           href="${pageContext.request.contextPath}/user/${user.id}/activities">动态</a>
-                                    </li>
-                                    <li role="tab" class="Tabs-item">
                                         <a class="Tabs-link" id="Tabs-tutorials"
                                            href="${pageContext.request.contextPath}/user/${user.id}/tutorials">教程</a>
                                     </li>
@@ -61,6 +57,11 @@
                             </div>
                             <!-- 用户动态详细数据区 -->
                             <div class="List" id="Profile-activities">
+                                <c:if test="${emptyResult eq true }">
+                                    查询的数据不存在！
+                                </c:if>
+                                <%-- 查询结果非空时将其遍历 --%>
+                                <c:if test="${emptyResult eq null}">
                                 <c:forEach var="topic" items="${topics}">
                                     <!-- 用户动态详细数据单项 -->
                                     <div class="List-item">
@@ -82,6 +83,7 @@
                                         </div> <!-- 操作主贴信息结束 -->
                                     </div><!-- 用户动态详细数据单项结束 -->
                                 </c:forEach>
+                                    </c:if>
                             </div><!-- 用户动态详细数据区结束 -->
                         </div><!-- 用户动态数据区左侧结束 -->
                     </div><!-- 用户动态数据区结束 -->

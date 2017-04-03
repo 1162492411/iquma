@@ -2,6 +2,7 @@ package com.iquma.controller;
 
 import com.iquma.pojo.*;
 import com.iquma.service.*;
+import com.iquma.utils.CASTS;
 import com.iquma.utils.PasswordHelper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
@@ -35,8 +36,6 @@ public class UserController {
     private FavoriteService favoriteService;
     @Autowired
     private PasswordHelper passwordHelper;
-    @Autowired
-    private SectionService sectionService;
     public String result;
 
     //前往登录页面
@@ -71,16 +70,8 @@ public class UserController {
 
     //前往用户个人主页
     @RequestMapping(value = "{uid}/home", method = RequestMethod.GET)
-    public String toHome(@PathVariable String uid, Model model, Topic topic) {
-        User user = this.userService.selectById(uid);
-        if(user == null) throw new UnknownAccountException();
-        else{
-            model.addAttribute("user", user);
-            topic.setAid(uid);
-            topic.setSid(Byte.valueOf("1"));
-            model.addAttribute("topics",getSimpleTopics(topicService.selectsByCondition(topic)));
-            return "user/home";
-        }
+    public String toHome(@PathVariable String uid, Model model, Reply condition) {
+        return toAnswers(uid,model,condition);
     }
 
     //获取简短的主贴集合
@@ -91,16 +82,19 @@ public class UserController {
         return topics;
     }
 
-    //前往用户相关主贴列表
+    //前往用户相关主贴列表--通用
     private String toList(String uid,String section,Topic topic,Model model){
         User user = this.userService.selectById(uid);
         if(user == null) throw new UnknownAccountException();
         else{
             model.addAttribute("user", user);
             topic.setAid(uid);
-            topic.setSid(sectionService.selectByName(section).getId());
+            topic.setSection(section);
+            System.out.println("topic条件参数是" + topic);
             model.addAttribute("topicType",section);
-            model.addAttribute("topics",getSimpleTopics(topicService.selectsByCondition(topic)));
+            List topics = topicService.selectsByCondition(topic);
+            if(topics.size() == 0) model.addAttribute("emptyResult",Boolean.TRUE);//查询结果为空时绑定信息
+            else model.addAttribute("topics",getSimpleTopics(topics));//查询结果非空时绑定结果
             return "user/lists";
         }
     }
@@ -125,7 +119,9 @@ public class UserController {
         else{
             model.addAttribute("user", user);
             condition.setUid(uid);
-            model.addAttribute("replies",replyService.selectByCondition(condition));
+            List results = replyService.selectByCondition(condition);
+            if(results.size() == 0) model.addAttribute("emptyResult",Boolean.TRUE);
+            else model.addAttribute("replies",results);
             return "user/answers";
         }
     }
@@ -149,7 +145,9 @@ public class UserController {
         if(user == null) throw new UnknownAccountException();
         else{
             model.addAttribute("user", user);
-            model.addAttribute("collections",favoriteService.selectsByCondition(favorite));
+            List results = favoriteService.selectsByCondition(favorite);
+            if(results.size() == 0) model.addAttribute("emptyResult",Boolean.TRUE);
+            else model.addAttribute("collections",results);
             return "user/collections";
         }
     }
@@ -168,10 +166,11 @@ public class UserController {
 
     //个人资料验证
     @RequestMapping(value = "{uid}/profile", method = RequestMethod.PUT)
-    public @ResponseBody String profileValidator(User record) {
+    public @ResponseBody Boolean profileValidator(@RequestBody User record) {
+        System.out.println("修改用户资料时传入参数" + record);
         if (this.userService.update(record))
-            return "suc";
-        else return"err";
+            return Boolean.TRUE;
+        else return Boolean.FALSE;
     }
 
     //前往邮箱及密码页面

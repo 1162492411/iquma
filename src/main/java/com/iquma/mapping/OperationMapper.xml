@@ -6,19 +6,28 @@
         <result column="uid" jdbcType="VARCHAR" property="uid"/>
         <result column="opid" jdbcType="VARCHAR" property="opid"/>
         <result column="pid" jdbcType="TINYINT" property="pid"/>
-        <result column="optime" jdbcType="TIMESTAMP" property="opTime"/>
+        <result column="opTime" jdbcType="TIMESTAMP" property="opTime"/>
+        <association property="permission" resultMap="PermissionResultMap" />
     </resultMap>
+
+    <resultMap id="PermissionResultMap" type="com.iquma.pojo.Permission">
+        <id column="perid" jdbcType="TINYINT" property="id" />
+        <result column="perpermission" jdbcType="VARCHAR" property="permission" />
+        <result column="perdescription" jdbcType="VARCHAR" property="description" />
+    </resultMap>
+
     <sql id="Base_Column_List">
-        id, uid, opid, pid, optime
+        id, uid, opid, pid, opTime
     </sql>
 
     <select id="selectsByCondition" parameterType="com.iquma.pojo.Operation" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List"/>
-        from user_opinfo
+        o.id, o.uid, o.opid, o.pid, o.opTime, p.permission as perpermission, p.description as perdescription
+        from user_opinfo o
+        left join user_perinfo p on o.pid = p.id
         <trim prefix="where" prefixOverrides="and">
             <if test="id != null">
-                id = #{id,jdbcType=INTEGER}
+                o.id = #{id,jdbcType=INTEGER}
             </if>
             <if test="uid != null">
                 and uid = #{uid,jdbcType=VARCHAR}
@@ -53,8 +62,8 @@
             <if test="pid != null">
                 pid,
             </if>
-            <if test="optime != null">
-                optime,
+            <if test="opTime != null">
+                opTime,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -70,8 +79,8 @@
             <if test="pid != null">
                 #{pid,jdbcType=TINYINT},
             </if>
-            <if test="optime != null">
-                #{optime,jdbcType=TIMESTAMP},
+            <if test="opTime != null">
+                #{opTime,jdbcType=TIMESTAMP},
             </if>
         </trim>
     </insert>

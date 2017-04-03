@@ -25,4 +25,8 @@ public interface UserService {
     boolean insert(User user);//添加用户
 
     boolean delete(String id);//删除用户
+
+    boolean updatePrestige(String id,Integer prestige);//更新用户威望
+
+    boolean updateRid(String id, Byte rid);//更新用户角色等级
 }

@@ -20,9 +20,13 @@ public interface ReplyService {
 
     Boolean adopt(Integer id);//采纳回复
 
+    Reply selectById(Integer id);//查找指定id的回复
+
     List selectByCondition(Reply condition);//查找主贴的所有回复
 
-    List selectByConditionSortByTime(Reply condition);//查找主贴的所有回复并按时间排序
+    List selectByConditionSortByTime(int page,Reply condition);//查找主贴的所有回复并按时间排序
 
     List selectByConditionAndPage(int page, Reply condition);//分页查找符合条件的回复
+
+    Boolean rate(Reply record);//更新回复评分
 }

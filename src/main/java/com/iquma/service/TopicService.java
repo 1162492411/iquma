@@ -33,6 +33,6 @@ public interface TopicService {
 
     boolean changeStatus(Integer id);//根据id关闭主贴
 
-
+    boolean rate(Topic topic);//更新主贴评分
 
 }

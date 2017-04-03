@@ -4,20 +4,23 @@
   <resultMap id="BaseResultMap" type="com.iquma.pojo.Topic">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="title" jdbcType="VARCHAR" property="title" />
-    <result column="sid" jdbcType="TINYINT" property="sid" />
+    <result column="section" jdbcType="VARCHAR" property="section" />
     <result column="tid" jdbcType="TINYINT" property="tid" />
     <result column="aid" jdbcType="VARCHAR" property="aid" />
+    <result column="attid" jdbcType="INTEGER" property="attid" />
     <result column="addTime" jdbcType="TIMESTAMP" property="addTime" />
     <result column="reTime" jdbcType="TIMESTAMP" property="reTime" />
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
     <result column="viewCount" jdbcType="INTEGER" property="viewCount" />
-    <result column="rateCount" jdbcType="INTEGER" property="rateCount" />
+    <result column="likeCount" jdbcType="DOUBLE" property="likeCount" />
+    <result column="hateCount" jdbcType="DOUBLE" property="hateCount" />
+    <result column="rateCount" jdbcType="TINYINT" property="rateCount" />
     <result column="replyCount" jdbcType="INTEGER" property="replyCount" />
     <result column="hasBest" jdbcType="BIT" property="hasBest" />
     <result column="isBlock" jdbcType="BIT" property="isBlock" />
     <association property="user" resultMap="UserResultMap" />
     <association property="tag" resultMap="TagResultMap" />
-    <association property="section" resultMap="SectionResultMap" />
+    <association property="attachment" resultMap="AttachmentResultMap" />
   </resultMap>
 
   <resultMap id="UserResultMap" type="com.iquma.pojo.User">
@@ -30,17 +33,19 @@
     <result column="tagname" jdbcType="VARCHAR" property="name" />
   </resultMap>
 
-  <resultMap id="SectionResultMap" type="com.iquma.pojo.Section">
-    <id column="sectionid" jdbcType="TINYINT" property="id" />
-    <result column="sectionname" jdbcType="VARCHAR" property="name" />
+  <resultMap id="AttachmentResultMap" type="com.iquma.pojo.Attachment">
+    <id column="atttid" jdbcType="INTEGER" property="id" />
+    <result column="attName" jdbcType="VARCHAR" property="name" />
+    <result column="attSize" jdbcType="DOUBLE" property="size" />
+    <result column="attPath" jdbcType="VARCHAR" property="path" />
+    <result column="attPrice" jdbcType="TINYINT" property="price" />
   </resultMap>
-
 
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.iquma.pojo.Topic">
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, title, sid, tid, aid, addTime, reTime, viewCount, rateCount, replyCount, hasBest, isBlock
+    id, title, section, tid, aid, addTime, reTime, viewCount, likeCount, hateCount, rateCount, replyCount, hasBest, isBlock
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -48,11 +53,11 @@
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
-    t.id as id, t.title, t.sid, t.aid, u.name as username, q.name as tagname, t.addTime, t.reTime,   t.content, t.viewCount, t.rateCount, t.replyCount, t.hasBest, t.isBlock, s.id as sectionid, s.name as sectionname
+    t.id as id, t.title, t.section, t.aid, t.attid, u.name as username, q.name as tagname, t.addTime, t.reTime,   t.content, t.viewCount, t.likeCount, t.hateCount, t.rateCount, t.replyCount, t.hasBest, t.isBlock, a.name as attName, a.size as attSize, a.path as attPath, a.price as attPrice
     from topic_topinfo t
     left join user_basinfo u on t.aid = u.id
     left join common_tag q on t.tid = q.id
-    left join common_section s on t.sid = s.id
+    left join topic_attinfo a on t.attid = a.id
     where t.id = #{id,jdbcType=INTEGER}
   </select>
 
@@ -61,29 +66,33 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.iquma.pojo.Topic">
-    insert into topic_topinfo (title, sid, tid,
-      aid, addTime, reTime, 
-      viewCount, rateCount, replyCount, hasBest, isBlock,
+    insert into topic_topinfo (title, section, tid,
+      aid, attid,addTime, reTime,
+      viewCount, likeCount, hateCount, rateCount, replyCount, hasBest, isBlock,
       content)
-    values (#{title,jdbcType=VARCHAR}, #{sid,jdbcType=TINYINT}, #{tid,jdbcType=TINYINT},
-      #{aid,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, #{reTime,jdbcType=TIMESTAMP}, 
-      #{viewCount,jdbcType=INTEGER}, #{rateCount,jdbcType=INTEGER}, #{replyCount,jdbcType=INTEGER}, #{hasBest,jdbcType=BIT}, #{isBlock,jdbcType=BIT},
+    values (#{title,jdbcType=VARCHAR}, #{section,jdbcType=VARCHAR}, #{tid,jdbcType=TINYINT},#{aid,jdbcType=VARCHAR}, #{attid,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{reTime,jdbcType=TIMESTAMP},#{viewCount,jdbcType=INTEGER}, #{likeCount,jdbcType=DOUBLE}, #{hateCount,jdbcType=DOUBLE},#{rateCount,jdbcType=TINYINT}, #{replyCount,jdbcType=INTEGER}, #{hasBest,jdbcType=BIT}, #{isBlock,jdbcType=BIT},
       #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.iquma.pojo.Topic">
+    <selectKey resultType="int" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID() AS id
+    </selectKey>
     insert into topic_topinfo
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="title != null">
         title,
       </if>
-      <if test="sid != null">
-        sid,
+      <if test="section != null">
+        section,
       </if>
       <if test="tid != null">
         tid,
       </if>
       <if test="aid != null">
         aid,
+      </if>
+      <if test="attid != null">
+        attid,
       </if>
       <if test="addTime != null">
         addTime,
@@ -93,6 +102,12 @@
       </if>
       <if test="viewCount != null">
         viewCount,
+      </if>
+      <if test="likeCount != null">
+        likeCount,
+      </if>
+      <if test="hateCount != null">
+        hateCount,
       </if>
       <if test="rateCount != null">
         rateCount,
@@ -114,14 +129,17 @@
       <if test="title != null">
         #{title,jdbcType=VARCHAR},
       </if>
-      <if test="sid != null">
-        #{sid,jdbcType=TINYINT},
+      <if test="section != null">
+        #{section,jdbcType=VARCHAR},
       </if>
       <if test="tid != null">
         #{tid,jdbcType=TINYINT},
       </if>
       <if test="aid != null">
         #{aid,jdbcType=VARCHAR},
+      </if>
+      <if test="attid != null">
+        #{attid,jdbcType=INTEGER},
       </if>
       <if test="addTime != null">
         #{addTime,jdbcType=TIMESTAMP},
@@ -132,8 +150,14 @@
       <if test="viewCount != null">
         #{viewCount,jdbcType=INTEGER},
       </if>
+      <if test="likeCount != null">
+        #{likeCount,jdbcType=DOUBLE},
+      </if>
+      <if test="hateCount != null">
+        #{hateCount,jdbcType=DOUBLE},
+      </if>
       <if test="rateCount != null">
-        #{rateCount,jdbcType=INTEGER},
+        #{rateCount,jdbcType=TINYINT},
       </if>
       <if test="replyCount != null">
         #{replyCount,jdbcType=INTEGER},
@@ -155,14 +179,17 @@
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="sid != null">
-        sid = #{sid,jdbcType=TINYINT},
+      <if test="section != null">
+        section = {section,jdbcType=VARCHAR},
       </if>
       <if test="tid != null">
         tid = #{tid,jdbcType=TINYINT},
       </if>
       <if test="aid != null">
         aid = #{aid,jdbcType=VARCHAR},
+      </if>
+      <if test="attid != null">
+        attid = #{attid, jdbcType=INTEGER},
       </if>
       <if test="addTime != null">
         addTime = #{addTime,jdbcType=TIMESTAMP},
@@ -173,8 +200,14 @@
       <if test="viewCount != null">
         viewCount = #{viewCount,jdbcType=INTEGER},
       </if>
+      <if test="likeCount != null">
+        likeCount = #{likeCount,jdbcType=DOUBLE},
+      </if>
+      <if test="hateCount != null">
+        hateCount = #{hateCount,jdbcType=DOUBLE},
+      </if>
       <if test="rateCount != null">
-        rateCount = #{rateCount,jdbcType=INTEGER},
+        rateCount = #{rateCount,jdbcType=TINYINT},
       </if>
       <if test="replyCount != null">
         replyCount = #{replyCount,jdbcType=INTEGER},
@@ -194,13 +227,16 @@
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.iquma.pojo.Topic">
     update topic_topinfo
     set title = #{title,jdbcType=VARCHAR},
-      sid = #{sid,jdbcType=TINYINT},
+      section = {section,jdbcType=VARCHAR},
       tid = #{tid,jdbcType=TINYINT},
       aid = #{aid,jdbcType=VARCHAR},
+      attid = #{attid,jdbcType=INTEGER},
       addTime = #{addTime,jdbcType=TIMESTAMP},
       reTime = #{reTime,jdbcType=TIMESTAMP},
       viewCount = #{viewCount,jdbcType=INTEGER},
-      rateCount = #{rateCount,jdbcType=INTEGER},
+      likeCount = #{likeCount,jdbcType=DOUBLE},
+      hateCount = #{hateCount,jdbcType=DOUBLE},
+      rateCount = #{rateCount,jdbcType=TINYINT},
       replyCount = #{replyCount,jdbcType=INTEGER},
       hasBest = #{hasBest,jdbcType=BIT},
       isBlock = #{isBlock,jdbcType=BIT},
@@ -210,13 +246,16 @@
   <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Topic">
     update topic_topinfo
     set title = #{title,jdbcType=VARCHAR},
-      sid = #{sid,jdbcType=TINYINT},
+      section = {section,jdbcType=VARCHAR},
       tid = #{tid,jdbcType=TINYINT},
       aid = #{aid,jdbcType=VARCHAR},
+      attid = #{attid,jdbcType=INTEGER},
       addTime = #{addTime,jdbcType=TIMESTAMP},
       reTime = #{reTime,jdbcType=TIMESTAMP},
       viewCount = #{viewCount,jdbcType=INTEGER},
-      rateCount = #{rateCount,jdbcType=INTEGER},
+      likeCount = #{likeCount,jdbcType=DOUBLE},
+      hateCount = #{hateCount,jdbcType=DOUBLE},
+      rateCount = #{rateCount,jdbcType=TINYINT},
       replyCount = #{replyCount,jdbcType=INTEGER},
       hasBest = #{hasBest,jdbcType=BIT},
       isBlock = #{isBlock,jdbcType=BIT}
@@ -246,23 +285,26 @@
 
   <select id="selectsByCondition" parameterType="com.iquma.pojo.Topic" resultMap="BaseResultMap">
     select
-    t.id as id, t.title, t.sid, t.aid, u.name as username, q.name as tagname, t.addTime, t.reTime, t.viewCount, t.rateCount, t.replyCount, t.hasBest, t.isBlock, t.content, s.id as sectionid, s.name as sectionname
+    t.id as id, t.title, t.section, t.aid, t.attid, u.name as username, q.name as tagname, t.addTime, t.reTime,   t.content, t.viewCount, t.likeCount, t.hateCount, t.rateCount, t.replyCount, t.hasBest, t.isBlock, a.name as attName, a.size as attSize, a.path as attPath, a.price as attPrice
     from topic_topinfo t
-        left join user_basinfo u on t.aid = u.id
-        left join common_tag q on t.tid = q.id
-        left join common_section s on t.sid = s.id
+    left join user_basinfo u on t.aid = u.id
+    left join common_tag q on t.tid = q.id
+    left join topic_attinfo a on t.attid = a.id
     <where>
       <if test="title != null">
         title = #{title,jdbcType=VARCHAR}
       </if>
-      <if test="sid != null">
-        and sid = #{sid,jdbcType=TINYINT}
+      <if test="section != null">
+        and section = #{section,jdbcType=VARCHAR}
       </if>
       <if test="tid != null">
         and tid = #{tid,jdbcType=TINYINT}
       </if>
       <if test="aid != null">
         and aid = #{aid,jdbcType=VARCHAR}
+      </if>
+      <if test="attid != null">
+        and attid = #{attid,jdbcType=INTEGER}
       </if>
       <if test="addTime != null">
         and addTime = #{addTime,jdbcType=TIMESTAMP}
@@ -273,8 +315,14 @@
       <if test="viewCount != null">
         and viewCount >= #{viewCount,jdbcType=INTEGER}
       </if>
+      <if test="likeCount != null">
+        and likeCount >= #{likeCount,jdbcType=DOUBLE}
+      </if>
+      <if test="hateCount != null">
+        and hateCount >= #{hateCount,jdbcType=DOUBLE}
+      </if>
       <if test="rateCount != null">
-        and rateCount >= #{rateCount,jdbcType=INTEGER}
+        and rateCount >= #{rateCount,jdbcType=TINYINT}
       </if>
       <if test="replyCount != null">
         and replyCount = #{replyCount,jdbcType=INTEGER}
@@ -289,15 +337,16 @@
         and content = #{content,jdbcType=LONGVARCHAR}
       </if>
     </where>
-    order by t.addTime desc
+    order by t.addTime desc, t.rateCount desc
   </select>
 
   <select id="selectByCondition" parameterType="com.iquma.pojo.Topic" resultMap="BaseResultMap">
     select
-    t.id as id, t.title, t.sid, t.aid, u.name as username, q.name as tagname, t.addTime, t.reTime, t.viewCount, t.rateCount, t.replyCount, t.hasBest, t.isBlock, t.content
+    t.id as id, t.title, t.section, t.aid,t.attid, u.name as username, q.name as tagname, t.addTime, t.reTime,t.content, t.viewCount, t.likeCount, t.hateCount, t.rateCount, t.replyCount, t.hasBest, t.isBlock, a.name as attName, a.size as attSize, a.path as attPath, a.price as attPrice
     from topic_topinfo t
     left join user_basinfo u on t.aid = u.id
     left join common_tag q on t.tid = q.id
+    left join topic_attinfo a on t.attid = a.id
     <where>
       <if test="id != null">
         t.id = #{id,jdbcType=INTEGER}
@@ -305,14 +354,17 @@
       <if test="title != null">
         t.title = #{title,jdbcType=VARCHAR}
       </if>
-      <if test="sid != null">
-        and t.sid = #{sid,jdbcType=TINYINT}
+      <if test="section != null">
+        and t.section = {section,jdbcType=VARCHAR}
       </if>
       <if test="tid != null">
         and t.tid = #{tid,jdbcType=TINYINT}
       </if>
       <if test="aid != null">
         and t.aid = #{aid,jdbcType=VARCHAR}
+      </if>
+      <if test="attid != mull">
+        and t.attid = #{attid,jdbcType=INTEGER}
       </if>
       <if test="addTime != null">
         and t.addTime = #{addTime,jdbcType=TIMESTAMP}
@@ -323,8 +375,14 @@
       <if test="viewCount != null">
         and t.viewCount >= #{viewCount,jdbcType=INTEGER}
       </if>
+      <if test="likeCount != null">
+        and t.likeCount >= #{likeCount,jdbcType=DOUBLE}
+      </if>
+      <if test="hateCount != null">
+        and t.hateCount >= #{hateCount,jdbcType=DOUBLE}
+      </if>
       <if test="rateCount != null">
-        and t.rateCount >= #{rateCount,jdbcType=INTEGER}
+        and t.rateCount >= #{rateCount,jdbcType=TINYINT}
       </if>
       <if test="replyCount != null">
         and t.replyCount = #{replyCount,jdbcType=INTEGER}

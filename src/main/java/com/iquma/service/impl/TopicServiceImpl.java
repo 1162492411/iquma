@@ -84,6 +84,10 @@ public class TopicServiceImpl implements TopicService {
         return this.topicMapper.changeStatusByPrimaryKey(id);
     }
 
+    @Override
+    public boolean rate(Topic topic) {
+        return this.topicMapper.updateByPrimaryKeySelective(topic) > 0;
+    }
 
 
 }

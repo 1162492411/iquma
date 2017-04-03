@@ -13,11 +13,15 @@ public class Reply {
 
     private Date addTime;
 
+    private Double likeCount;
+
+    private Double hateCount;
+
+    private Byte rateCount;
+
     private Boolean isBest;
 
     private Boolean isBlock;
-
-    private Integer rateCount;
 
     private String content;
 
@@ -80,11 +84,27 @@ public class Reply {
         isBlock = block;
     }
 
-    public Integer getRateCount() {
+    public Double getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(Double likeCount) {
+        this.likeCount = likeCount;
+    }
+
+    public Double getHateCount() {
+        return hateCount;
+    }
+
+    public void setHateCount(Double hateCount) {
+        this.hateCount = hateCount;
+    }
+
+    public Byte getRateCount() {
         return rateCount;
     }
 
-    public void setRateCount(Integer rateCount) {
+    public void setRateCount(Byte rateCount) {
         this.rateCount = rateCount;
     }
 
@@ -112,12 +132,24 @@ public class Reply {
                 ", title='" + title + '\'' +
                 ", uid='" + uid + '\'' +
                 ", addTime=" + addTime +
+                ", likeCount=" + likeCount +
+                ", hateCount=" + hateCount +
+                ", rateCount=" + rateCount +
                 ", isBest=" + isBest +
                 ", isBlock=" + isBlock +
-                ", rateCount=" + rateCount +
                 ", content='" + content + '\'' +
                 ", user=" + user +
                 '}';
+    }
+
+    public Reply() {
+    }
+
+    public Reply(Integer id, Double likeCount, Double hateCount, Byte rateCount) {
+        this.id = id;
+        this.likeCount = likeCount;
+        this.hateCount = hateCount;
+        this.rateCount = rateCount;
     }
 
     //初始化默认回复

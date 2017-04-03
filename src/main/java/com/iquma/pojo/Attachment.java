@@ -5,19 +5,15 @@ import java.util.Date;
 public class Attachment {
     private Integer id;
 
-    private Integer tid;
-
     private String uid;
 
     private Date addtime;
 
-    private String filename;
+    private String name;
 
-    private Double filesize;
+    private Long size;
 
-    private String attpath;
-
-    private String description;
+    private String path;
 
     private Byte price;
 
@@ -29,13 +25,6 @@ public class Attachment {
         this.id = id;
     }
 
-    public Integer getTid() {
-        return tid;
-    }
-
-    public void setTid(Integer tid) {
-        this.tid = tid;
-    }
 
     public String getUid() {
         return uid;
@@ -53,36 +42,28 @@ public class Attachment {
         this.addtime = addtime;
     }
 
-    public String getFilename() {
-        return filename;
+    public String getName() {
+        return name;
     }
 
-    public void setFilename(String filename) {
-        this.filename = filename == null ? null : filename.trim();
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public Double getFilesize() {
-        return filesize;
+    public Long getSize() {
+        return size;
     }
 
-    public void setFilesize(Double filesize) {
-        this.filesize = filesize;
+    public void setSize(Long size) {
+        this.size = size;
     }
 
-    public String getAttpath() {
-        return attpath;
+    public String getPath() {
+        return path;
     }
 
-    public void setAttpath(String attpath) {
-        this.attpath = attpath == null ? null : attpath.trim();
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
+    public void setPath(String path) {
+        this.path = path;
     }
 
     public Byte getPrice() {
@@ -91,5 +72,29 @@ public class Attachment {
 
     public void setPrice(Byte price) {
         this.price = price;
+    }
+
+    public Attachment() {
+    }
+
+    public Attachment(String uid, Date addtime, String name, Long size, String path) {
+        this.uid = uid;
+        this.addtime = addtime;
+        this.name = name;
+        this.size = size;
+        this.path = path;
+    }
+
+    @Override
+    public String toString() {
+        return "Attachment{" +
+                "id=" + id +
+                ", uid='" + uid + '\'' +
+                ", addtime=" + addtime +
+                ", name='" + name + '\'' +
+                ", size=" + size +
+                ", path='" + path + '\'' +
+                ", price=" + price +
+                '}';
     }
 }
