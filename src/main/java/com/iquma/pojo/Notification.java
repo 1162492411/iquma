@@ -3,7 +3,7 @@ package com.iquma.pojo;
 import java.util.Date;
 
 public class Notification {
-    private Integer id;
+    private String id;
 
     private String uid;
 
@@ -13,11 +13,11 @@ public class Notification {
 
     private Boolean isnew;
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 

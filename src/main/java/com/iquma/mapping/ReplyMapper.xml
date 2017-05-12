@@ -48,15 +48,6 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-    <insert id="insert" parameterType="com.iquma.pojo.Reply">
-    insert into topic_repinfo (tid, title, uid, 
-      addTime, likeCount, hateCount, rateCount, isBest, isBlock, rateCount,
-      content)
-    values (#{tid,jdbcType=INTEGER}, #{title,jdbcType=VARCHAR}, #{uid,jdbcType=VARCHAR},
-      #{addTime,jdbcType=TIMESTAMP}, #{likeCount,jdbcType=DOUBLE}, #{hateCount,jdbcType=DOUBLE},#{rateCount,jdbcType=TINYINT}, #{isBest,jdbcType=BIT}, #{isBlock,jdbcType=BIT}, #{rateCount,jdbcType=INTEGER},
-      #{content,jdbcType=LONGVARCHAR})
-  </insert>
-
     <insert id="insertSelective" parameterType="com.iquma.pojo.Reply">
         insert into topic_repinfo
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -171,37 +162,6 @@
         </set>
         where id = #{id,jdbcType=INTEGER}
     </update>
-
-    <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.iquma.pojo.Reply">
-    update topic_repinfo
-    set tid = #{tid,jdbcType=INTEGER},
-      title = #{title,jdbcType=VARCHAR},
-      uid = #{uid,jdbcType=VARCHAR},
-      addTime = #{addTime,jdbcType=TIMESTAMP},
-      likeCount = #{likeCount,jdbcType=DOUBLE},
-      hateCount = #{hateCount,jdbcType=DOUBLE},
-      rateCount = #{rateCount,jdbcType=TINYINT},
-      isBest = #{isBest,jdbcType=BIT},
-      isBlock = #{isBlock,jdbcType=BIT},
-      rateCount = #{rateCount,jdbcType=INTEGER},
-      content = #{content,jdbcType=LONGVARCHAR}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
-
-    <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Reply">
-    update topic_repinfo
-    set tid = #{tid,jdbcType=INTEGER},
-      title = #{title,jdbcType=VARCHAR},
-      uid = #{uid,jdbcType=VARCHAR},
-      addTime = #{addTime,jdbcType=TIMESTAMP},
-      likeCount = #{likeCount,jdbcType=DOUBLE},
-      hateCount = #{hateCount,jdbcType=DOUBLE},
-      rateCount = #{rateCount,jdbcType=TINYINT},
-      isBest = #{isBest,jdbcType=BIT},
-      isBlock = #{isBlock,jdbcType=BIT},
-      rateCount = #{rateCount,jdbcType=INTEGER}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
 
     <update id="changeStatusByPrimaryKey" parameterType="java.lang.Integer">
         update topic_repinfo

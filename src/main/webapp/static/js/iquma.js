@@ -1,17 +1,5 @@
-//-----------------------------------------------------------
+//------------------- 编辑器页面 ------------------------//
 
-//初始化版块下拉框
-function initSid() {
-    $('#sidSelection').html('');
-    $.post('/api/getAllSections',
-        function (data) {
-            document.getElementById('sidSelection').options[0] = new Option("请选择版块", 0);
-            for (var i = 0; i < data.length; i++)
-                document.getElementById('sidSelection').options[i + 1] = new Option(data[i].name, data[i].id);
-        },
-        "json"
-    );
-}
 
 //初始化类别下拉框
 function initTypeSelection() {
@@ -43,20 +31,6 @@ function updateTagSelection(id) {
     });
 }
 
-//初始化角色下拉框
-function initRid() {
-    $('#ridSelection').html('');
-    $.post('/api/getAllRoles',
-        function (data) {
-            document.getElementById('ridSelection').options[0] = "请选择角色";
-            for (var i = 0; i < data.length; i++)
-                document.getElementById('ridSelection').options[i + 1] = new Option(data[i].name, data[i].id);
-        },
-        "json"
-    );
-}
-
-//------------------------------------------------------
 //编辑器提交
 function editorSubmit(type) {
     var editor = new wangEditor('contentDiv');
@@ -69,9 +43,13 @@ function editorSubmit(type) {
             "addTime" : new Date(),
             "content" : filterXSS(editor.$txt.html())
         };
+        if(d.title == "" || d.tid == 0 || d.aid == "" || d.content == "<p><br></p>"){
+            alert("存在未填写字段，请填写后再提交！");
+            return;
+        }
         $.ajax({
             type: 'PUT',
-            url: '/' + type,
+            url: '/user/' + type,
             data: JSON.stringify(d),
             contentType: 'application/json',
             success: function (data) {
@@ -80,14 +58,14 @@ function editorSubmit(type) {
                 }
             },
             error: function () {
-                alert("提问失败，请稍后重试！");
+                alert("发布失败，请稍后重试！");
             }
         });
     });
 }
 
 
-//------------------------------------------------------------------------------------------------
+//------------------------- 主贴页面 ---------------------------//
 
 //初始化列表页面相关状态
 function initListStatus() {
@@ -138,15 +116,15 @@ function initTopicStatus(topicType) {
         $('#blockButton').removeAttr('disabled');
     else if ($('#condition_isBlock').val() == "true")
         $('#blockTip').attr('type', 'text');
-    //处理被关闭的评论
+    //处理被关闭的回复
     $('article[id^=replyArticle-]').each(function () {
         var id = $(this).attr("id").substring(13);
-        //对于被关闭的评论，隐藏它的内容
+        //对于被关闭的回复，隐藏它的内容
         if ($('#condition-replyStatus-' + id).val() == "true")
-            $('#replyContent-' + id).html("该评论已被关闭");
-        //对于未被关闭的评论
+            $('#replyContent-' + id).html("该回复已被关闭");
+        //对于未被关闭的回复
         else if ($('#condition-replyStatus-' + id).val() == "false") {
-            //在关闭评论按钮存在的情况下，启用该按钮
+            //在关闭回复按钮存在的情况下，启用该按钮
             if ($('#blockReplyButton-' + id).length > 0)
                 $('#blockReplyButton-' + id).removeAttr("disabled");
         }
@@ -221,7 +199,7 @@ function likeTopic(topicType,id) {
         success: function (data) {
             if(data == "err" && $('#condition_uid').val() != ""){
                 $.ajax({
-                    type: 'PUT',
+                    type: 'POST',
                     url: '/' + topicType + '/' + id + '/like',
                     contentType: 'application/json',
                     data: JSON.stringify(da),
@@ -261,7 +239,7 @@ function hateTopic(topicType,id) {
         success: function (data) {
             if(data == "err" && $('#condition_uid').val() != ""){
                 $.ajax({
-                    type: 'PUT',
+                    type: 'POST',
                     url: '/' + topicType + '/' + id + '/hate',
                     data : JSON.stringify(da),
                     contentType: 'application/json',
@@ -345,7 +323,7 @@ function updateTopic(topicType) {
 }
 
 
-//收藏话题
+//收藏主贴
 function favoriteTopic(topicType) {
     var d = {
         "id": parseInt($("#condition_id").val()),
@@ -401,8 +379,8 @@ function blockTopic(resultType) {
     });
 }
 
-//------------------------------------------------------------------------------------------------
-//发表评论
+//---------------------- 回复部分 -----------------------------------------//
+//发表回复
 function addReply() {
     var d = {
         "tid": Number($('#condition_id').val()),
@@ -419,11 +397,11 @@ function addReply() {
         contentType: 'application/json',
         success: function (data) {
             if (data == true) {
-                alert('成功发表评论');
+                alert('成功发表回复');
                 location.reload();
             }
             else {
-                alert('未能发表评论，请稍后重试' +data);
+                alert('未能发表回复，请稍后重试' +data);
             }
         },
         error: function () {
@@ -432,7 +410,7 @@ function addReply() {
     });
 }
 
-//删除评论
+//删除回复
 function deleteReply(id, uid) {
     var d = {
         "id": Number(id),
@@ -447,11 +425,11 @@ function deleteReply(id, uid) {
         contentType: 'application/json',
         success: function (data) {
             if (data == true) {
-                alert('成功删除评论');
+                alert('成功删除回复');
                 location.reload();
             }
             else {
-                alert('未能删除评论，请稍后重试');
+                alert('未能删除回复，请稍后重试');
             }
         },
         error: function () {
@@ -461,7 +439,7 @@ function deleteReply(id, uid) {
 }
 
 
-//关闭评论
+//关闭回复
 function blockReply(id, uid) {
     var d = {
         "id": Number(id),
@@ -470,17 +448,17 @@ function blockReply(id, uid) {
         "uid": uid
     };
     $.ajax({
-        type: 'PUT',
-        url: '/reply',
+        type: 'POST',
+        url: '/reply/block',
         data: JSON.stringify(d),
         contentType: 'application/json',
         success: function (data) {
             if (data == true) {
-                alert('成功关闭评论');
+                alert('成功关闭回复');
                 location.reload();
             }
             else {
-                alert('未能关闭评论，请稍后重试');
+                alert('未能关闭回复，请稍后重试');
             }
         },
         error: function () {
@@ -489,7 +467,7 @@ function blockReply(id, uid) {
     });
 }
 
-//采纳评论
+//采纳回复
 function adoptReply(id, uid) {
     var d = {
         "id": Number(id),
@@ -504,11 +482,11 @@ function adoptReply(id, uid) {
         contentType: 'application/json',
         success: function (data) {
             if (data == true) {
-                alert('成功采纳评论');
+                alert('成功采纳回复');
                 location.reload();
             }
             else {
-                alert('未能采纳评论，请稍后重试');
+                alert('未能采纳回复，请稍后重试');
             }
         },
         error: function () {
@@ -529,7 +507,7 @@ function likeReply(id,uid) {
         success: function (data) {
             if(data == "err" && $('#condition_uid').val() != ""){
                 $.ajax({
-                    type: 'PUT',
+                    type: 'POST',
                     url: '/reply/like',
                     data : JSON.stringify(da),
                     contentType: 'application/json',
@@ -564,7 +542,7 @@ function hateReply(id,uid) {
         success: function (data) {
             if(data == "err" && $('#condition_uid').val() != ""){
                 $.ajax({
-                    type: 'PUT',
+                    type: 'POST',
                     url: '/reply/hate',
                     data : JSON.stringify(da),
                     contentType: 'application/json',
@@ -587,7 +565,7 @@ function hateReply(id,uid) {
     });
 }
 
-//------------------
+//--------------------- 用户主页  -------------------------//
 //将消息标记为已读
 function signNtf(uid, id) {
     $.ajax({
@@ -608,7 +586,6 @@ function signNtf(uid, id) {
     });
 }
 
-//--------------------
 
 //加载用户主页分类样式
 function initUserList(type) {
@@ -731,7 +708,6 @@ function uploadFile() {
     });
 }
 
-//----------
 //扩展：用户上传头像实时预览
 jQuery.fn.extend({
     uploadPreview: function (opts) {
@@ -784,3 +760,67 @@ jQuery.fn.extend({
         })
     }
 });
+
+
+function blockUser(uid) {
+    $.ajax({
+        url: '/user/' + uid + "/block",
+        type: 'POST',
+        success: function (data) {
+            if (data == true) {
+                alert("封禁成功~");
+            }
+            else {
+                alert("封禁失败~");
+            }
+        },
+        error: function () {
+            alert('发送请求失败！');
+        }
+    });
+}
+
+function deleteUser(uid) {
+    $.ajax({
+        url: '/user/' + uid + "/delete",
+        type: 'POST',
+        success: function (data) {
+            if (data == true) {
+                alert("删除成功~");
+            }
+            else {
+                alert("删除失败~");
+            }
+        },
+        error: function () {
+            alert('发送请求失败！');
+        }
+    });
+}
+
+//添加学生账户
+function addUser(type) {
+    var d = {
+        "id" : $("#id").val(),
+        "name" : $("#name").val(),
+        "email" : $("#email").val()
+    };
+    $.ajax({
+        type: 'post',
+        url: '/user/add' + type,
+        data: JSON.stringify(d),
+        contentType: 'application/json',
+        success: function (data) {
+            if (data == true) {
+                alert("成功添加账户");
+            }
+            else {
+                alert("未能添加账户");
+            }
+            location.reload();
+        },
+        error: function () {
+            alert("提交请求失败");
+        }
+    });
+}

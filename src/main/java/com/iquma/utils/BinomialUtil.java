@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
+ * 评分计算类
  * Created by Mo on 2017/3/19.
  */
 @Component
@@ -48,6 +49,8 @@ public class BinomialUtil {
         double score = ( p + Math.pow(Z, 2) / ( 2 * n) + Z / (2 * n) * Math.sqrt(4 * n * p * (1 - p) + Math.pow(Z, 2) ) ) / ( 1 + Math.pow(Z,2) / n );
         return (byte)(score * 10) ;
     }
+
+
 
 
 }

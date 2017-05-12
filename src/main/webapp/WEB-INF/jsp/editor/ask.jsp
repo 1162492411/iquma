@@ -60,8 +60,5 @@
     </div>
     </div>
 </form>
-<script type="text/javascript">
-
-</script>
 </body>
 </html>

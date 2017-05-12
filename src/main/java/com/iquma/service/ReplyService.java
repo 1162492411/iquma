@@ -18,6 +18,8 @@ public interface ReplyService {
 
     Boolean changeStatus(Integer id);//关闭回复
 
+    Boolean rate(Reply record);//更新回复评分
+
     Boolean adopt(Integer id);//采纳回复
 
     Reply selectById(Integer id);//查找指定id的回复
@@ -28,5 +30,4 @@ public interface ReplyService {
 
     List selectByConditionAndPage(int page, Reply condition);//分页查找符合条件的回复
 
-    Boolean rate(Reply record);//更新回复评分
 }

@@ -9,7 +9,21 @@ import java.util.List;
  */
 public interface TopicService {
 
-    List selectAll();//获取所有主题
+    boolean insert(Topic topic);//新增主题
+
+    boolean deleteById(Integer id);//根据id删除主题
+
+    boolean update(Topic topic);//更新主题信息
+
+    boolean rate(Topic topic);//更新主贴评分
+
+    boolean changeStatus(Integer id);//根据id关闭主贴
+
+    boolean increaseReply(Integer id);//将主题回复数加1
+
+    boolean reduceReply(Integer id);//将主题回复数减1
+
+    boolean adopt(Integer id);//主题采纳回复
 
     Topic selectById(Integer id);//根据id获取主题
 
@@ -19,20 +33,5 @@ public interface TopicService {
 
     List selectsByConditionAndPage(int page, Topic condition);//根据条件和页码获取主题集合
 
-    boolean update(Topic topic);//更新主题信息
-
-    boolean increaseReply(Integer id);//将主题回复数加1
-
-    boolean reduceReply(Integer id);//将主题回复数减1
-
-    boolean adopt(Integer id);//主题采纳回复
-
-    boolean insert(Topic topic);//新增主题
-
-    boolean deleteById(Integer id);//根据id删除主题
-
-    boolean changeStatus(Integer id);//根据id关闭主贴
-
-    boolean rate(Topic topic);//更新主贴评分
-
+    List selectAll();//获取所有主题
 }

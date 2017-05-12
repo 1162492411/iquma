@@ -4,32 +4,23 @@
 <html>
 <head>
     <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/static/css/login.css">
+    <link rel="stylesheet"
           href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
-    <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
     <title>用户登录页面</title>
 </head>
 <body>
 <!-- 登录框开始 -->
-<div id="login-part">
-    <form action="${pageContext.request.contextPath}/user/loginValidator"
-          style="height: 400px; width: 250px; margin-left: 50px; margin-top: 20px">
-
-        <!-- 学号-->
-        <div class="form-group">
-            <input type="text" class="form-control" name="id" placeholder="学号" required=""
-            />
-        </div>
-        <!-- 密码 -->
-        <div class="form-group">
-            <input type="password" class="form-control" name="pass"
-                   placeholder="密码" required=""/>
-        </div>
-        <!-- 登录按钮 -->
-        <div class="form-group clearfix">
-            <button type="submit" class="btn btn-primary pull-right pl20 pr20">登录</button>
-        </div>
-
+<div class="signin">
+    <div class="signin-head">
+        <img src="${pageContext.request.contextPath}/static/image/logo.png" alt="" class="img-circle"></div>
+    <form class="form-signin" action="${pageContext.request.contextPath}/user/loginValidator" role="form">
+        <input type="text" name="id" class="form-control" placeholder="用户名" required autofocus />
+        <input type="password" name="pass" class="form-control" placeholder="密码" required />
+        <%--<label class="checkbox" >--%>
+            <%--<input type="checkbox" name="rememberMe" value="true"> 记住我--%>
+        <%--</label>--%>
+        <button class="btn btn-lg btn-warning btn-block" type="submit">登录</button>
     </form>
 </div>
 <!-- 登录框结束 -->

@@ -13,7 +13,7 @@
 <body>
 <!-- 账户安全邮箱及密码修改 -->
 <form action="${pageContext.request.contextPath}/user/${user.id}/account" method="post" id="updateAccountForm">
-    <div class="panel panel-default">
+    <div class="panel panel-default" style="position:relative;left:35%;width:30%;top:20px" >
         <div class="panel-heading">修改密码</div>
         <input type="hidden" name="_method" value="PUT">
         <input type="hidden" name="id" value="${ user.id }"/>
@@ -29,7 +29,7 @@
                     <input type="password" class="form-control" id="confirmPass" placeholder="请再次输入" required />
                 </div>
             <%--保存按钮 --%>
-            <input type="button" class="btn btn-primary" value="更新" onclick="updateAccount(${userid})" />
+            <input type="button" class="btn btn-primary" value="修改" onclick="updateAccount(${userid})" />
             <input type="reset" class="btn btn-default" value="取消"/>
         </div>
     </div>

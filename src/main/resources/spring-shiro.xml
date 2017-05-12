@@ -38,10 +38,12 @@
     <bean id="sessionIdCookie" class="org.apache.shiro.web.servlet.SimpleCookie">
         <constructor-arg value="sid"/>
         <property name="httpOnly" value="true"/>
-        <property name="maxAge" value="180000"/>
+        <!--<property name="maxAge" value="180000"/>-->
+        <property name="maxAge" value="-1" /><!-- -1表示浏览器关闭时Session失效 -->
     </bean>
 
-    <!-- 会话DAO -->
+
+        <!-- 会话DAO -->
     <bean id="sessionDAO" class="org.apache.shiro.session.mgt.eis.EnterpriseCacheSessionDAO">
         <property name="activeSessionsCacheName" value="shiro-activeSessionCache"/>
         <property name="sessionIdGenerator" ref="sessionIdGenerator"/>
@@ -92,13 +94,6 @@
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
             </util:map>
         </property>
-        <!--
-         /index.jsp = anon
-                /unauthorized.jsp = anon
-        /static/** = anon
-         /login.jsp = authc
-        /user/login = anon
-        /user/logindo = anon -->
         <property name="filterChainDefinitions">
             <value>
                 /ask = authc

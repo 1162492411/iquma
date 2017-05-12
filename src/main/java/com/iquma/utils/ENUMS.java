@@ -22,6 +22,16 @@ public class ENUMS {
     public static final int PRESTIGE_RID_5 = 800;//5级账户--白金账户
     public static final int PRESTIGE_RID_4 = 2000;//4级账户--王者账户
 
+    //各级角色的ID
+    public static final int ROLE_SUPERADMIN = 1;//超级管理员账户
+    public static final int ROLE_ADMIN = 2;//管理员账户
+    public static final int ROLE_TEACHER = 3;//教师账户
+    public static final int ROLE_DIAMOND = 4;//钻石账户
+    public static final int ROLE_PLATNUM = 5;//白金账户
+    public static final int ROLE_GOLD = 6;//黄金账户
+    public static final int ROLE_SILVER = 7;//白银账户
+    public static final int ROLE_BRONZE = 8;//青铜账户
+
     //版块ID
     public static final String SECTION_TUTORIAL = "tutorial";//教程
     public static final String SECTION_DISCUSS = "discuss";//提问

@@ -11,6 +11,6 @@ public interface TagService {
 
     Tag selectByCondition(Tag condition);//获取符合条件的标签
 
-    List selectTagsByCondition(Tag coditon);//获取符合条件的标签集合
+    List selectTagsByCondition(Tag condition);//获取符合条件的标签集合
 
 }

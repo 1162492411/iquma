@@ -5,11 +5,14 @@ import com.iquma.service.PermissionService;
 import com.iquma.service.RolePerService;
 import com.iquma.service.RoleService;
 import com.iquma.service.UserService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.apache.shiro.subject.Subject;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,7 +41,8 @@ public class LoginRealm extends AuthorizingRealm {
 
     //验证登录
     @Override
-    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws ShiroException {
+
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         User user = userService.selectById(token.getUsername());//数据库查询用户
         if(null == user) throw new UnknownAccountException();//未找到用户时抛出异常

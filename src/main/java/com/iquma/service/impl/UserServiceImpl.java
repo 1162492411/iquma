@@ -34,7 +34,6 @@ public class UserServiceImpl implements UserService {
 
 
     public boolean insert(User user) {
-
         passwordHelper.encryptPassword(user);
         return this.userMapper.insert(user) > 0;
     }
@@ -53,26 +52,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean updateRid(String id, Byte rid) {
         return this.userMapper.updateRid(id,rid) > 0;
-    }
-
-    @Override
-    public boolean validatorUserPass(String id, String pass) {
-        return this.selectById(id).getPass().equals(pass);
-    }
-
-    @Override
-    public boolean validatorIsAdmin(String id) {
-        return this.selectById(id).getRid() >= SUPER_ADMIN_ID && this.selectById(id).getRid() <= SUPER_STUDENT_ID;
-    }
-
-    @Override
-    public boolean validatorEmail(String id, String email) {
-        return this.selectById(id).getEmail().equals(email);
-    }
-
-    @Override
-    public boolean validatorStatus(String id) {
-        return this.selectById(id).getIsBlock();
     }
 
     @Override

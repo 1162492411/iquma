@@ -9,7 +9,9 @@ import java.util.List;
  */
 public interface FavoriteService {
 
-    boolean insert(Favorite record);//插入记录
+    boolean insert(Favorite record);//插入收藏记录
+
+    boolean delete(Integer id);//删除收藏记录
 
     List selectsByCondition(Favorite condition);//筛选符合条件的收藏信息
 

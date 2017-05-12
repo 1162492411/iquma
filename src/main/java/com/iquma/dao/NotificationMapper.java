@@ -5,13 +5,14 @@ import com.iquma.pojo.Notification;
 import java.util.List;
 
 public interface NotificationMapper {
-    int deleteByPrimaryKey(Integer id);
 
-    int insertSelective(Notification record);
+    int insertSelective(Notification record);//插入通知
 
-    Notification selectByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(String id);//删除通知
 
-    List selectsByCondition(Notification condition);
+    Boolean read(Notification record);//将通知标为已读
 
-    Boolean read(Notification record);
+    Notification selectByPrimaryKey(String id);//按id获取通知
+
+    List selectsByCondition(Notification condition);//获取符合条件的通知列表
 }

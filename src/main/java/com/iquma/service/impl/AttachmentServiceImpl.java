@@ -21,6 +21,16 @@ public class AttachmentServiceImpl implements AttachmentService {
     }
 
     @Override
+    public boolean delete(Integer id) {
+        return this.attachmentMapper.deleteByPrimaryKey(id) > 0;
+    }
+
+    @Override
+    public boolean update(Attachment attachment) {
+        return this.attachmentMapper.updateByPrimaryKeySelective(attachment) > 0;
+    }
+
+    @Override
     public Attachment selectById(Integer id) {
         return this.attachmentMapper.selectByPrimaryKey(id);
     }

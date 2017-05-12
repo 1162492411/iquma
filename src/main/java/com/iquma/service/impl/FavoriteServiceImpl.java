@@ -21,6 +21,11 @@ public class FavoriteServiceImpl implements FavoriteService {
     }
 
     @Override
+    public boolean delete(Integer id) {
+        return this.favoriteMapper.deleteByPrimaryKey(id) > 0;
+    }
+
+    @Override
     public List selectsByCondition(Favorite condition) {
         return this.favoriteMapper.selectsByCondition(condition);
     }

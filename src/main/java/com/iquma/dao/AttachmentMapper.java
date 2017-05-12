@@ -3,15 +3,13 @@ package com.iquma.dao;
 import com.iquma.pojo.Attachment;
 
 public interface AttachmentMapper {
-    int deleteByPrimaryKey(Integer id);
 
-    int insert(Attachment record);
+    int insertSelective(Attachment record);//插入附件
 
-    int insertSelective(Attachment record);
+    int deleteByPrimaryKey(Integer id);//删除附件
 
-    Attachment selectByPrimaryKey(Integer id);
+    int updateByPrimaryKeySelective(Attachment record);//修改附件信息
 
-    int updateByPrimaryKeySelective(Attachment record);
+    Attachment selectByPrimaryKey(Integer id);//根据id查找附件
 
-    int updateByPrimaryKey(Attachment record);
 }

@@ -6,23 +6,23 @@
 <head>
     <title>教程</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/global.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/qa.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/responsive.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/zhihu.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/iquma.css">
+
     <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/iquma.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
+            hljs.initHighlightingOnLoad();
             initTopicStatus('${topic.section}');
             initPag(${currentPage},${totalPage});
             initRateInfo('${topic.id}',0);
+
         });
     </script>
 </head>
 <body>
-<jsp:include page="${pageContext.request.contextPath}/common/bannar.jsp"/>
+<jsp:include page="/common/bannar.jsp" />
 <!-- 隐藏数据区 -->
 <div>
 <input type="hidden" id="condition_id" value="${topic.id}"/>
@@ -256,7 +256,7 @@
     </div>
 </main>
 
-<jsp:include page="${pageContext.request.contextPath}/common/footer.jsp"/>
+<jsp:include page="/common/footer.jsp"/>
 
 
 </body>

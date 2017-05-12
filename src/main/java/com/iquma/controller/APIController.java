@@ -28,21 +28,18 @@ public class APIController {
     private OperationService operationService;
 
 
+    //获取分类
     @RequestMapping("getFirstTags")
     public @ResponseBody List getFirstTags(Tag tag){
         tag.setPid(Byte.valueOf("0"));
         return tagService.selectTagsByCondition(tag);
     }
 
+    //获取分类所属的所有标签
     @RequestMapping("getTagsByPid/{pid}")
     public @ResponseBody List getTags(@PathVariable String pid,Tag condition){
         condition.setPid(Byte.parseByte(pid));
         return tagService.selectTagsByCondition(condition);
-    }
-
-    @RequestMapping("getAllRoles")
-    public @ResponseBody List getAllRoles(){
-        return roleService.selectAll();
     }
 
     //检测主贴是否被用户收藏

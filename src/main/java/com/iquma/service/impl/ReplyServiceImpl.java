@@ -49,7 +49,7 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     public Boolean update(Reply record) {
-        return this.replyMapper.updateByPrimaryKeyWithBLOBs(record) > 0;
+        return this.replyMapper.updateByPrimaryKeySelective(record) > 0;
     }
 
     @Override

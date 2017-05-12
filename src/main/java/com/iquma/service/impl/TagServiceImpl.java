@@ -16,15 +16,13 @@ public class TagServiceImpl implements TagService {
     @Autowired
     private TagMapper tagMapper;
 
-
-
     @Override
     public Tag selectByCondition(Tag condition) {
         return this.tagMapper.selectByCondition(condition);
     }
 
     @Override
-    public List selectTagsByCondition(Tag coditon) {
-        return this.tagMapper.selectTagsByCondition(coditon);
+    public List selectTagsByCondition(Tag condition) {
+        return this.tagMapper.selectTagsByCondition(condition);
     }
 }

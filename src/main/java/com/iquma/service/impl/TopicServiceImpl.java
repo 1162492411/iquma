@@ -48,7 +48,6 @@ public class TopicServiceImpl implements TopicService {
         return this.topicMapper.selectsByCondition(condition);
     }
 
-
     @Override
     public boolean update(Topic topic) {
         return this.topicMapper.updateByPrimaryKeySelective(topic) > 0;

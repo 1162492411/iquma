@@ -147,20 +147,6 @@
         </set>
         where id = #{id,jdbcType=VARCHAR}
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.User">
-        update user_basinfo
-        set rid = #{rid,jdbcType=TINYINT},
-        name = #{name,jdbcType=VARCHAR},
-        pass = #{pass,jdbcType=VARCHAR},
-        avatar = #{avatar,jdbcType=VARCHAR},
-        description = #{description,jdbcType=VARCHAR},
-        email = #{email,jdbcType=VARCHAR},
-        isBlock = #{isBlock,jdbcType=BIT},
-        prestige = #{prestige,jdbcType=INTEGER},
-        appCount = #{appCount,jdbcType=INTEGER},
-        salt = #{salt,jdbcType=VARCHAR}
-        where id = #{id,jdbcType=VARCHAR}
-    </update>
 
     <update id="changeStatusByPrimaryKey" parameterType="java.lang.String">
         update user_basinfo

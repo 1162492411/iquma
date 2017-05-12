@@ -3,12 +3,15 @@ package com.iquma.controller;
 import com.iquma.pojo.*;
 import com.iquma.service.*;
 import com.iquma.utils.CASTS;
+import com.iquma.utils.ENUMS;
 import com.iquma.utils.PasswordHelper;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresGuest;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +52,8 @@ public class UserController {
     //TODO :该方法可以改造为返回json信息，登录失败时显示回传的失败提示信息，登录成功时跳转到登陆前页面(自定义shiro拦截器)
     @RequiresGuest
     @RequestMapping(value = "loginValidator")
-    public String loginValidator(User user, HttpServletRequest request,Notification condition) throws AuthenticationException {
+    public String loginValidator(User user, HttpServletRequest request,Notification condition) throws ShiroException {
+        System.out.println("验证前台登录" + user.getId() + "..." + user.getPass());
         Subject subject = SecurityUtils.getSubject();
         UsernamePasswordToken token = new UsernamePasswordToken(user.getId(),user.getPass());
         subject.login(token);//会跳到自定义的realm中
@@ -77,26 +81,26 @@ public class UserController {
     //获取简短的主贴集合
     public List<Topic> getSimpleTopics(List<Topic> topics){
         for (Topic topic: topics) {
-            topic.setContent(topic.getContent().substring(0,topic.getContent().length()>=300?300:topic.getContent().length()));
+            String temp = topic.getContent().substring(0,topic.getContent().length() >= 300?300:topic.getContent().length());//首先截取前300个字符
+            if(temp.contains("<pre>") && ! temp.contains("</pre>"))
+                temp = temp + "</code></pre>";//若未结束代码则结束代码
+            topic.setContent(temp);
         }
         return topics;
     }
 
     //前往用户相关主贴列表--通用
-    private String toList(String uid,String section,Topic topic,Model model){
-        User user = this.userService.selectById(uid);
-        if(user == null) throw new UnknownAccountException();
-        else{
-            model.addAttribute("user", user);
-            topic.setAid(uid);
-            topic.setSection(section);
-            System.out.println("topic条件参数是" + topic);
-            model.addAttribute("topicType",section);
-            List topics = topicService.selectsByCondition(topic);
-            if(topics.size() == 0) model.addAttribute("emptyResult",Boolean.TRUE);//查询结果为空时绑定信息
-            else model.addAttribute("topics",getSimpleTopics(topics));//查询结果非空时绑定结果
-            return "user/lists";
-        }
+    private String toList(String aid,String section,Topic topic,Model model){
+        User user = userService.selectById(aid);
+        if(null == user) throw new UnknownAccountException();//若用户不存在则抛出异常
+        topic.setAid(aid);
+        topic.setSection(section);
+        System.out.println("topic条件参数是" + topic);
+        List topics = topicService.selectsByCondition(topic);
+        if(topics.size() == 0) model.addAttribute("emptyResult",Boolean.TRUE);//查询结果为空时绑定信息
+        else model.addAttribute("topics",getSimpleTopics(topics));//查询结果非空时绑定结果
+        model.addAttribute("user",user);
+        return "user/lists";
     }
 
     //前往用户的教程列表
@@ -106,7 +110,7 @@ public class UserController {
     }
 
     //前往用户的提问列表
-    @RequestMapping(value = "{uid}/discuss", method = RequestMethod.GET)
+    @RequestMapping(value = "{uid}/discusses", method = RequestMethod.GET)
     public String toAsks(@PathVariable String uid, Model model, Topic topic) {
         return toList(uid,"discuss",topic,model);
     }
@@ -114,16 +118,13 @@ public class UserController {
     //前往用户的回答列表
     @RequestMapping(value = "{uid}/answers", method = RequestMethod.GET)
     public String toAnswers(@PathVariable String uid, Model model,Reply condition) {
-        User user = this.userService.selectById(uid);
-        if(user == null) throw new UnknownAccountException();
-        else{
-            model.addAttribute("user", user);
-            condition.setUid(uid);
-            List results = replyService.selectByCondition(condition);
-            if(results.size() == 0) model.addAttribute("emptyResult",Boolean.TRUE);
-            else model.addAttribute("replies",results);
-            return "user/answers";
-        }
+        User user = userService.selectById(uid);
+        if(null == user) throw new UnknownAccountException();//若用户不存在则抛出异常
+        model.addAttribute("user",user);
+        List results = replyService.selectByCondition(condition);
+        if(results.size() == 0) model.addAttribute("emptyResult",Boolean.TRUE);
+        else model.addAttribute("replies",results);
+        return "user/answers";
     }
 
     //前往用户的文章列表
@@ -156,24 +157,24 @@ public class UserController {
     //前往个人资料页面
     @RequestMapping(value = "{uid}/profile", method = RequestMethod.GET)
     public String toProfile(Model model) {
-        User user = this.userService.selectById(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
-        if(user == null) {return "status/emptyQuery";}
-        else{
-            model.addAttribute("user", user);
-            return "user/profile";
-        }
+        User user = this.userService.selectById(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));//为保证安全从session中取值
+        if(user == null) throw new UnknownAccountException();
+        model.addAttribute("user", user);
+        return "user/profile";
     }
 
     //个人资料验证
     @RequestMapping(value = "{uid}/profile", method = RequestMethod.PUT)
     public @ResponseBody Boolean profileValidator(@RequestBody User record) {
         System.out.println("修改用户资料时传入参数" + record);
-        if (this.userService.update(record))
+        if (this.userService.update(record)){//成功修改用户资料后修改session中的useravatar的值(bannar.jsp访问该值)
+            SecurityUtils.getSubject().getSession().setAttribute("useravatar",record.getAvatar());
             return Boolean.TRUE;
+        }
         else return Boolean.FALSE;
     }
 
-    //前往邮箱及密码页面
+    //前往修改密码页面
     @RequestMapping(value = "{uid}/account", method = RequestMethod.GET)
     public String toAccount( Model model) {
         User user = this.userService.selectById(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
@@ -181,7 +182,7 @@ public class UserController {
         return "user/account";
     }
 
-    //邮箱及密码验证
+    //修改密码验证
     @RequestMapping(value = "{uid}/account", method = RequestMethod.PUT)
     public @ResponseBody Boolean accountValidator(@RequestBody String pass,User record) {
         record.setId(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
@@ -190,20 +191,6 @@ public class UserController {
         if (this.userService.update(record))
             return Boolean.TRUE;
         else return Boolean.FALSE;
-    }
-
-    //前往重置密码页面
-    @RequestMapping(value = "forgot", method = RequestMethod.GET)
-    public String toForgot() {
-        return "user/forgot";
-    }
-
-    //重置密码验证
-    @RequestMapping(value = "forgot", method = RequestMethod.POST)
-    public String forgotValidator(User record) {
-        if (this.userService.validatorEmail(record.getId(), record.getEmail()) && this.userService.update(record))
-            return "suc";
-        else return "err";
     }
 
     //退出登录
@@ -238,6 +225,94 @@ public class UserController {
         return result;
     }
 
+    //前往提问页面
+    //TODO: 待更新前台路径(提问、分享经验、上传代码)
+    @RequestMapping(value = "ask", method = RequestMethod.GET)
+    public String toAsk() {
+        return "editor/ask";
+    }
+
+    //提问验证页面
+    @RequestMapping(value = "ask", method = RequestMethod.PUT)
+    public @ResponseBody Boolean ask(@RequestBody Topic record) {
+        record.parseDefaultDiscuss();
+        return topicService.insert(record);
+    }
 
 
+    //前往分享经验页面
+    @RequestMapping(value = "write", method = RequestMethod.GET)
+    public String toWrite() {
+        return "editor/write";
+    }
+
+    //分享经验验证页面
+    @RequestMapping(value = "write", method = RequestMethod.PUT)
+    public @ResponseBody Boolean write(@RequestBody  Topic record) {
+        record.parseDefaultArticle();
+        return topicService.insert(record);
+    }
+
+
+    //前往分享代码页面
+    @RequestMapping(value = "upload", method = RequestMethod.GET)
+    public String toUpload() {
+        return "editor/upload";
+    }
+
+    //分享代码验证
+    @RequestMapping(value = "upload", method = RequestMethod.PUT)
+    public @ResponseBody Boolean upload(@RequestBody Topic record) {
+        record.parseDefaultCode();
+        return topicService.insert(record);
+    }
+
+    //封禁账户
+    @RequiresPermissions("suser:block")
+    @RequestMapping(value = "{uid}/block", method = RequestMethod.POST)
+    public @ResponseBody boolean blockUser(@PathVariable String uid){
+        if(hasEnoughRole(uid)) return userService.changeStatus(uid);//仅当角色符合条件时进行操作
+        else return false;
+    }
+
+    //删除账户
+    @RequiresPermissions("suser:delete")
+    @RequestMapping(value = "{uid}/delete", method = RequestMethod.POST)
+    public @ResponseBody boolean deleteUser(@PathVariable String uid){
+        if(hasEnoughRole(uid)) return userService.delete(uid);//仅当角色符合条件时进行操作
+        else return false;
+    }
+
+    //前往添加用户页面
+    @RequestMapping(value = {"addStudent","addTeacher"}, method = RequestMethod.GET)
+    public String toAddUser(){
+        return "user/add";
+    }
+
+    //添加学生用户验证
+    @RequiresPermissions("suser:create")
+    @RequestMapping(value = "addStudent", method = RequestMethod.POST)
+    public @ResponseBody boolean addStudent(@RequestBody User user){
+        user.setRid(Byte.parseByte(String.valueOf(ENUMS.ROLE_BRONZE)));//设置待添加账户的角色为青铜账户
+        user.parseDefaultAddUser();
+        return userService.insert(user);
+    }
+
+    //添加教师用户验证
+    @RequiresPermissions("muser:create")
+    @RequestMapping(value = "addTeacher", method = RequestMethod.POST)
+    public @ResponseBody boolean addTeacher(@RequestBody User user){
+        user.setRid(Byte.parseByte(String.valueOf(ENUMS.ROLE_TEACHER)));//设置待添加账户的角色为教师账户
+        user.parseDefaultAddUser();
+        return userService.insert(user);
+    }
+
+
+    //当前登录用户是否角色等级高于待操作用户
+    private boolean hasEnoughRole(String uid){
+        User currentUser = userService.selectById(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));//取出当前登录账户
+        User user = userService.selectById(uid); //查询待操作的账户
+        //判断二者角色等级:仅当当前登录账户是教师级以上账户且当前账户角色高于待操作账户时允许对账户进行操作
+        return currentUser.getRid() <= ENUMS.ROLE_TEACHER && currentUser.getRid() < user.getRid();
+    }
 }

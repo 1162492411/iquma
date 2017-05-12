@@ -121,6 +121,7 @@ public class User {
         this.setIsBlock(defaultIsBlock);
         this.setPrestige(defaultPrestige);
         this.setAppCount(defaultAppCount);
+        this.setDescription("这个人懒得这都不写~");
         this.setAvatar(null == this.getAvatar() ? defaultAvatar : this.getAvatar());
         this.setPass(this.getId().substring(this.getId().length() - 6, this.getId().length()));
     }

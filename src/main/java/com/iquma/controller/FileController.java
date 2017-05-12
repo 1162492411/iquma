@@ -40,7 +40,7 @@ public class FileController {
         return String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid"));
     }
 
-    //上传图像到服务器--通用
+    //上传文件到服务器--通用
     private String upload(HttpServletRequest request, String type) {
         //创建一个通用的多部分解析器
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
@@ -71,10 +71,10 @@ public class FileController {
                         } catch (IOException e) {
                             return "error";
                         }
-                        if("img".equals(type))//如果是图片需要传回预览地址
-                            return DOMAIN +  "/static/" + type + "/" + fileName;
-                        else if("avatar".equals(type))//如果是头像需要传回相对服务器的地址
-                            return "/static/" + type + "/" + fileName;
+                        if ("img".equals(type) || "avatar".equals(type))//如果是图片需要传回预览地址
+                            return DOMAIN + "/static/" + type + "/" + fileName;
+//                        else if ("avatar".equals(type))//如果是头像需要传回相对服务器的地址
+//                            return "/static/" + type + "/" + fileName;
                         else {//如果是上传附件，保存信息到数据库并返回插入的记录的id
                             Attachment attachment = new Attachment(initUserId(), new Date(), fileName, file.getSize(), path);
                             if (attachmentService.insert(attachment)) {
@@ -89,47 +89,44 @@ public class FileController {
         return "error";
     }
 
+    //上传用户头像
     @RequestMapping(value = "upload/avatar", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    String avatarUpload(HttpServletRequest request) {
+    public @ResponseBody String avatarUpload(HttpServletRequest request) {
         return upload(request, "avatar");
     }
 
+    //上传图片
     @RequestMapping(value = "upload/image", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    String imgUpload(HttpServletRequest request) {
+    public @ResponseBody String imgUpload(HttpServletRequest request) {
         return upload(request, "img");
     }
 
-
+    //上传附件
     @RequestMapping(value = "upload/file", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    String fileUpload(HttpServletRequest request) {
+    public @ResponseBody String fileUpload(HttpServletRequest request) {
         return upload(request, "file");
     }
 
 
+    //下载文件
     @RequestMapping(value = "download/{id}")
-    public ResponseEntity<byte[]> testResponseEntity(@PathVariable Integer id, HttpSession session,Attachment attachment) throws IOException{
+    public ResponseEntity<byte[]> testResponseEntity(@PathVariable Integer id, HttpSession session, Attachment attachment) throws IOException {
         attachment = attachmentService.selectById(id);
-        byte[] body=null;
-        ServletContext servletContext=session.getServletContext();
+        byte[] body = null;
+        ServletContext servletContext = session.getServletContext();
 
-        InputStream in=servletContext.getResourceAsStream(attachment.getPath());
+        InputStream in = servletContext.getResourceAsStream(attachment.getPath());
         System.out.println("成功查询文件");
-        body=new byte[in.available()];
+        body = new byte[in.available()];
         in.read(body);
 
-        HttpHeaders headers=new HttpHeaders();
+        HttpHeaders headers = new HttpHeaders();
         //响应头的名字和响应头的值
         headers.add("Content-Disposition", "attachment;filename=" + attachment.getName());
 
-        HttpStatus statusCode=HttpStatus.OK;
+        HttpStatus statusCode = HttpStatus.OK;
 
-        ResponseEntity<byte[]> response=new ResponseEntity<byte[]>(body, headers, statusCode);
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>(body, headers, statusCode);
         return response;
     }
 

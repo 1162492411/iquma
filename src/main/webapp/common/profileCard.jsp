@@ -1,3 +1,5 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -58,10 +60,23 @@
                                               </span>
                     </div>
                     <div class="ProfileHeader-contentFooter">
-                        <div class="ProfileButtonGroup ProfileHeader-buttons"><a
-                                class="Button Button--blue"
+                        <div class="ProfileButtonGroup ProfileHeader-buttons">
+                            <!-- 若登录账户查看的是自己的主页，则显示编辑资料按钮 -->
+                            <c:if test="${userid eq user.id}">
+                            <a class="Button Button--blue"
                                 href="${pageContext.request.contextPath}/user/${user.id}/profile"
-                                role="button">编辑个人资料</a>
+                                role="button">编辑资料</a>
+                            </c:if>
+                            <!-- 若账户具有关闭账户的权限则显示关闭按钮 -->
+                            <shiro:hasPermission name="suser:block">
+                                <button class="Button Button--primary Button--blue"
+                                   role="button" onclick="blockUser(${user.id})">关闭</button>
+                            </shiro:hasPermission>
+                            <!-- 若账户具有删除账户的权限则显示删除账户按钮 -->
+                            <shiro:hasPermission name="suser:delete">
+                                <button class="Button Button--primary Button--red"
+                                   role="button" onclick="deleteUser(${user.id})">删除</button>
+                            </shiro:hasPermission>
                         </div>
                     </div>
                 </div>

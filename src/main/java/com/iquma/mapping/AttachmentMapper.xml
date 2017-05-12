@@ -23,16 +23,7 @@
     delete from topic_attinfo
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.iquma.pojo.Attachment">
-    insert into topic_attinfo (id, uid,
-      addTime, name, size, 
-      path, price
-      )
-    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=VARCHAR},
-      #{addtime,jdbcType=TIMESTAMP}, #{name,jdbcType=VARCHAR}, #{size,jdbcType=DOUBLE}, 
-      #{path,jdbcType=VARCHAR}, #{price,jdbcType=TINYINT}
-      )
-  </insert>
+
   <insert id="insertSelective" parameterType="com.iquma.pojo.Attachment">
     <selectKey resultType="int" keyProperty="id" order="AFTER" >
       SELECT LAST_INSERT_ID() AS id
@@ -109,15 +100,5 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Attachment">
-    update topic_attinfo
-    set
-      uid = #{uid,jdbcType=VARCHAR},
-      addTime = #{addtime,jdbcType=TIMESTAMP},
-      name = #{name,jdbcType=VARCHAR},
-      size = #{size,jdbcType=DOUBLE},
-      path = #{path,jdbcType=VARCHAR},
-      price = #{price,jdbcType=TINYINT}
-    where id = #{id,jdbcType=INTEGER}
-  </update>
+
 </mapper>

@@ -6,23 +6,18 @@ import com.iquma.pojo.Reply;
 import java.util.List;
 
 public interface ReplyMapper {
-    int deleteByPrimaryKey(Integer id);
 
-    int insert(Reply record);
+    int insertSelective(Reply record);//插入回复
 
-    int insertSelective(Reply record);
+    int deleteByPrimaryKey(Integer id);//删除回复
 
-    Reply selectByPrimaryKey(Integer id);
+    int updateByPrimaryKeySelective(Reply record);//更新回复
 
-    int updateByPrimaryKeySelective(Reply record);
-
-    int updateByPrimaryKeyWithBLOBs(Reply record);
-
-    int updateByPrimaryKey(Reply record);
-
-    boolean changeStatusByPrimaryKey(Integer id);//改变回复状态--建议替换blockByPrimaryKey
+    boolean changeStatusByPrimaryKey(Integer id);//改变回复状态
 
     boolean adopt(Integer id);//采纳回复
+
+    Reply selectByPrimaryKey(Integer id);//根据id查找回复
 
     List selectByCondition(Reply record);//查找符合条件的所有回复
 
