@@ -1,5 +1,6 @@
 //------------------- 编辑器页面 ------------------------//
 
+rootPath = "http://localhost:8080";
 
 //初始化类别下拉框
 function initTypeSelection() {
@@ -30,6 +31,48 @@ function updateTagSelection(id) {
         }
     });
 }
+
+// //获取所有标签--测试用
+// function getTags() {
+//     $.ajax({
+//         type: 'get',
+//         url: '/api/getAllTags',
+//         dataType: 'json',
+//         success: function (data) {
+//             $('#tags-input').selectivity({
+//                 items: data,
+//                 multiple: true,
+//                 tokenSeparators: [' ']
+//             });
+//         },
+//         error: function (data) {
+//             alert("请求标签失败~");
+//         }
+//     });
+// }
+
+// //提交标签数据--测试用
+// function tagsSubmit() {
+//     arr = new Array();
+//     $(".selectivity-multiple-selected-item").each(function (i){
+//         // arr[i] = $(this).attr("data-item-id");
+//         arr.push($(this).attr("data-item-id"));
+//     });
+//     $.ajax({
+//         type: 'post',
+//         url: '/api/tagsSubmit',
+//         dataType: 'json',
+//         data: JSON.stringify(arr),
+//         success: function (data) {
+//             if(true == data) alert("提交标签成功~");
+//             else alert("~~~");
+//         },
+//         error: function (data) {
+//             alert("提交标签失败~");
+//         }
+//     });
+//
+// }
 
 //编辑器提交
 function editorSubmit(type) {
@@ -67,40 +110,69 @@ function editorSubmit(type) {
 
 //------------------------- 主贴页面 ---------------------------//
 
+//返回拼接后的版块
+function getSec() {
+    //首先获取页面中的隐藏变量
+    var sec = $("#sec").val();
+
+
+    return sec;
+}
+
+//返回拼接后的带版块的路径--用于相关标签中标签等超链接的地址
+function getSecsPath() {
+  return rootPath + "/" + getSec() + "s";
+}
+
+//返回拼接后的带版块的路径--用于主贴列表的每条主贴的超链接的地址
+function getSecPath() {
+    return rootPath + "/" + getSec();
+}
+
+//返回拼接后的带标签的路径--用于相关标签中标签等超链接的地址
+function getTagPath() {
+    var path = getSecsPath();
+    var tag = $("#tag").val();
+    if(tag != " " && tag != "null") path = path + "/" + tag;
+    return path;
+}
+
+//返回拼接后的带类别的路径--用于主贴列表中分页
+function getTypesPath() {
+    return getTagPath() + "/" + $("#type").val();
+}
+
 //初始化列表页面相关状态
 function initListStatus() {
+
+    //处理主贴分类方式
+    var path = getTagPath();
+    $("#nav_new_a").attr("href", path + "/new/1");
+    $("#nav_hottest_a").attr("href", path + "/hottest/1");
+    $("#nav_unanswered_a").attr("href", path + "/unanswered/1");
+
     //处理页面类型
-    if ($("#type").val() != "") {//如果是按未回答和最热筛选
+    if ( $("#type").val() != "") {//如果是按未回答和最热筛选
         $("#nav_new").removeAttr("class");
         $("#nav_" + $("#type").val()).attr("class", "active");
     }
-    //处理筛选方式超链接
-    var type = $("#type").val();
-    if (type == "") {//如果按默认分类
-        $("#nav_new_a").attr("href", "./new/1");
-        $("#nav_hottest_a").attr("href", "./hottest/1");
-        $("#nav_unanswered_a").attr("href", "./unanswered/1");
-    }
-    else {//如果按unanswered或hottest筛选或new
-        $("#nav_new_a").attr("href", "../new/1");
-        $("#nav_hottest_a").attr("href", "../hottest/1");
-        $("#nav_unanswered_a").attr("href", "../unanswered/1");
-    }
+
 }
 
 //初始化分页
-function initPag(currentPage,totalPage){
+function initListPag(currentPage,totalPage,path){
     var c = parseInt(currentPage);
     var t = parseInt(totalPage);
-    if(t <=1 ) $("#Pagination").remove();
-    //绘制首页上一页和上上一页
-    if(c -2 <= 1) $("#pagTop").remove();
-    if(c -2 >= 1) $("#pagCurrent").before("<li><a href='./" + (c- 2) +  "'>" +(c-2) +  "</a></li>");
-    if(c - 1 >= 1) $("#pagCurrent").before("<li><a href='./" + (c- 1) +  "'>" +(c-1) +  "</a></li>");
-    //绘制尾页下一页和下下一页
-    if(c +2 < t) $("#pagCurrent").after("<li><a href='./" + (c + 2) +  "'>" +(c + 2) +  "</a></li>");
-    if(c + 1 <= t) $("#pagCurrent").after("<li><a href='./" + (c + 1) +  "'>" +(c + 1) +  "</a></li>");
-    if(c + 1 > t) $("#pagBottom").remove();
+    if(t <=1 ) {//总页数过少时移除分页
+        $("#topicsPagination").remove();
+        return ;
+    }
+    if(c > 1)  $("#topicsPagination").append("<li id='pagLast' ><a href='" + path +"/" + (c - 1) + "'> << </a></li>");//处理"上一页"
+    for(var i = 1; i < c; i++) $("#topicsPagination").append("<li><a href='" + path +"/" + i + "'>" + i + "</a></li>");//添加当前页码前的页数
+    $("#topicsPagination").append("<li id='pagCurrent' class='active'><span>" + c + "</span></li>");//添加当前页码
+    for(var j = c + 1; j <= t; j++) $("#topicsPagination").append("<li><a href='" + path +"/" + j + "'>" + j + "</a></li>");//添加当前页码后的页数
+    if(c < t) $("#topicsPagination").append("<li id='pagNext' ><a href='" + path +"/" + (c + 1) + "'> >> </a></li>");//处理"下一页"
+
 }
 
 
@@ -163,6 +235,15 @@ function initTopicStatus(topicType) {
     }
 }
 
+//批量显示服务器端获取的标签
+function initTags(tags) {
+    var path = getSecsPath();
+    for(var i = 0; i < tags.length; i++){
+        $("#tag-list").append("<li class='tagPopup'><a class='tag' href='" + path + "/" + tags[i] + "/1" + "'>" + tags[i] +  "</a></li>");
+    }
+}
+
+
 //查询投票信息
 function initRateInfo(id,dom) {
     var d = {"opid"  :id};
@@ -186,6 +267,56 @@ function initRateInfo(id,dom) {
 
 }
 
+//加载主题信息--批量处理信息
+function initTopics(topics) {
+    for(var i=0; i < topics.length; i++){
+        initTopic(topics[i]);
+    }
+}
+
+//加载主题信息--批量调用
+function initTopic(topic) {
+    var temp = "<section class='stream-list__item'>";
+    temp += "<div class='qa-rank'><div class='votes hidden-xs'>" + topic.rateCount + "<small>评分</small></div>";
+
+    if(topic.replyCount > 0) temp += "<div class='answers answered'>"+ topic.replyCount +"<small>回复</small></div>";
+    else temp += "<div class='answers'>"+ topic.replyCount +"<small>回复</small></div>";
+
+    temp += "<div class='views hidden-xs viewswordgreater999'>" + topic.viewCount + "<small>浏览</small></div></div><div class='summary'><ul class='author list-inline'><li>";
+
+    temp +="<a href='" + rootPath + "/user/" + topic.aid + "/home'>" + topic.user.name + "</a>";
+
+    temp += "<span class='split'></span> <span>" + formateTime(topic.reTime) + "</span></li></ul>";
+
+    temp += "<h2 class='title'><a href='" + getSecPath() + "/" + topic.id + "'>" + topic.title + "</a></h2>";
+
+    temp += "<ul class='taglist--inline ib'><li class='tagPopup'><a class='tag tag-sm'>" + topic.tag.name + "</a></li></ul></div></section>";
+
+    $("#topic-list").append(temp);
+
+}
+
+//加载主题信息--格式化时间
+function formateTime(time) {
+    if(time != null && time != "null" && time != " "){
+        var d1 = new Date(time);
+        var now = new Date().getTime();
+        console.log("当前" + now + ",格式前" + time + ",格式后" + d1);
+        var seconds = (now - d1 + 14*60*60*1000)/1000/60;//取得两次相差的分钟数
+        if(seconds < 60) return parseInt(seconds) + "分钟前被回复";
+        else var hours = seconds / 60;
+        if(hours < 24) return parseInt(hours) + "小时前被回复";
+        else var days = hours / 24;
+        if(days < 30) return parseInt(days) + "天前被回复";
+        else var months = days / 30;
+        if(months < 12) return parseInt(months) + "个月前被回复";
+        else return parseInt(months / 12)  + "年前被回复";
+    }
+    else return " ";
+
+}
+
+//加载主题信息之
 
 //赞同主贴
 function likeTopic(topicType,id) {

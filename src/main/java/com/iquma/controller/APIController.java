@@ -1,5 +1,6 @@
 package com.iquma.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.iquma.pojo.Favorite;
 import com.iquma.pojo.Operation;
 import com.iquma.pojo.Permission;
@@ -32,15 +33,34 @@ public class APIController {
     @RequestMapping("getFirstTags")
     public @ResponseBody List getFirstTags(Tag tag){
         tag.setPid(Byte.valueOf("0"));
-        return tagService.selectTagsByCondition(tag);
+        return tagService.selectsByCondition(tag);
     }
 
     //获取分类所属的所有标签
-    @RequestMapping("getTagsByPid/{pid}")
-    public @ResponseBody List getTags(@PathVariable String pid,Tag condition){
-        condition.setPid(Byte.parseByte(pid));
-        return tagService.selectTagsByCondition(condition);
+    @RequestMapping("getTagsByPid/{id}")
+    public @ResponseBody List getTags(@PathVariable Byte id,Tag condition){
+//        condition.setPid(Byte.parseByte(pid));
+        condition.setId(id);
+        System.out.println("即将传递标签参数：" + condition);
+        return tagService.selectsByCondition(condition);
     }
+
+    //获取所有标签
+    @RequestMapping("getAllTags")
+    public @ResponseBody List getAllTags(){
+        return tagService.selectAll();
+    }
+
+//    //接收标签--测试用
+//    @RequestMapping("tagsSubmit")
+//    public @ResponseBody Boolean tagsSubmit(@RequestBody String tags){
+////        JSONArray tag = JSONArray.parseArray(tags);
+////        for (int i = 0; i < tag.size(); i++) {
+////            System.out.println("分离出标签:" + tag.get(i));
+////        }
+//        System.out.println("测试接收标签时收到参数:" + tags);
+//        return false;
+//    }
 
     //检测主贴是否被用户收藏
     @RequestMapping(value = "getIsFavorite" , method = RequestMethod.POST)

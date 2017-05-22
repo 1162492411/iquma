@@ -4,12 +4,15 @@
     <title>提问</title>
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/editor/css/wangEditor.min.css">
+    <link rel="stylesheet" type="text/css"
+          href="${pageContext.request.contextPath}/static/editor/css/wangEditor.min.css">
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/css/selectivity-jquery.css">
     <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/static/editor/js/wangEditor.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/xss.min.js" ></script>
+    <script src="${pageContext.request.contextPath}/static/js/xss.min.js"></script>
     <script src="${pageContext.request.contextPath}/static/js/iquma.js"></script>
+    <script src="${pageContext.request.contextPath}/static/js/selectivity-jquery.js"></script>
     <script type="text/javascript">
         $(function () {
             initTypeSelection();
@@ -44,6 +47,13 @@
                 <select name="tid" id="tidSelection">
                 </select>
             </div>
+
+            <div class="form-group" id="tagPanel">
+                <label>选择标签</label>
+                <span id="tags-input" class="selectivity-input"></span>
+                <input id="subTags" type="button" value="测试提交标签" onclick="tagsSubmit()"/>
+            </div>
+
             <%--作者id --%>
             <input type="hidden" id="aid" value="${userid}"/>
             <%-- 内容--%>
@@ -53,7 +63,7 @@
             </div>
             <%-- 按钮 --%>
             <div class="form-group" id="buttonPanel">
-                <input type="button" class="btn btn-primary" value="提问" id="subBtn" />
+                <input type="button" class="btn btn-primary" value="提问" id="subBtn"/>
                 <input type="reset" class="btn btn-default" value="重置"/>
             </div>
         </div>

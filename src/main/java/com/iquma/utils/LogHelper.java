@@ -76,7 +76,7 @@ public class LogHelper {
     }
 
     //用户提问、发表经验、上传代码后记录日志
-    @AfterReturning(value = "execution(* com.iquma.controller.BBSController.ask(..)) || execution(* com.iquma.controller.BBSController.write(..)) || execution(* com.iquma.controller.BBSController.upload(..)) ", returning = "result")
+    @AfterReturning(value = "execution(* com.iquma.controller.UserController.ask(..)) || execution(* com.iquma.controller.UserController.write(..)) || execution(* com.iquma.controller.UserController.upload(..)) ", returning = "result")
     public  void afterAddTopic(JoinPoint joinPoint, Object result){
         if(Boolean.valueOf(String.valueOf(result))){//当方法返回结果是TRUE时
             //获取用户操作信息
@@ -100,15 +100,13 @@ public class LogHelper {
         }
     }
 
-
-
     //有权限的用户编辑/关闭/删除/收藏/赞同/反对主贴后通知该主贴作者并记录日志
     @AfterReturning(value = "execution(* com.iquma.controller.TopicController.update(..)) || execution(* com.iquma.controller.TopicController.block(..)) || execution(* com.iquma.controller.TopicController.delete(..)) || execution(* com.iquma.controller.TopicController.favorite(..)) || execution(* com.iquma.controller.TopicController.like(..)) || execution(* com.iquma.controller.TopicController.hate(..))", returning = "result")
     public  void afterTopic(JoinPoint joinPoint, Object result){
         if(Boolean.valueOf(String.valueOf(result))){//当方法返回结果是TRUE时
             //获取用户操作信息
             Topic record = (Topic)joinPoint.getArgs()[0];
-            String topicType = record.getSection();
+            String topicType = record.getSec();
             String uid = initUserId();
             String opid = String.valueOf(record.getId());
             String methodName = joinPoint.getSignature().getName();

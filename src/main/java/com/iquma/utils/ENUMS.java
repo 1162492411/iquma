@@ -1,8 +1,11 @@
 package com.iquma.utils;
 
+import org.springframework.stereotype.Component;
+
 /**
  * Created by Mo on 2017/3/30.
  */
+@Component
 public class ENUMS {
 
     //威望增加/减少
@@ -33,10 +36,13 @@ public class ENUMS {
     public static final int ROLE_BRONZE = 8;//青铜账户
 
     //版块ID
-    public static final String SECTION_TUTORIAL = "tutorial";//教程
-    public static final String SECTION_DISCUSS = "discuss";//提问
-    public static final String SECTION_ARTICLE = "article";//经验
-    public static final String SECTION_CODE = "code";//代码
+    public static final String SEC_TUTORIAL = "tutorial";//教程
+    public static final String SEC_DISCUSS = "discuss";//提问
+    public static final String SEC_ARTICLE = "article";//经验
+    public static final String SEC_CODE = "code";//代码
+
+    //高评分主贴标准
+    public static final byte HIGH_RATE_COUNT = 8;
 
     
 }

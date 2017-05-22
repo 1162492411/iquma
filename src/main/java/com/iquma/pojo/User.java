@@ -128,17 +128,17 @@ public class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id='" + id + '\'' +
-                ", rid=" + rid +
-                ", name='" + name + '\'' +
-                ", pass='" + pass + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", email='" + email + '\'' +
-                ", isBlock=" + isBlock +
-                ", prestige=" + prestige +
-                ", appCount=" + appCount +
-                ", salt='" + salt + '\'' +
-                '}';
+        return "{" +
+                "\"id\":\"" + id + "\"" +
+                ", \"rid\":" + rid +
+                ", \"name\":\"" + name + "\"" +
+                ", \"pass\":\"" + pass + "\"" +
+                ", \"avatar\":\"" + avatar + "\"" +
+                ", \"email\":\"" + email + "\"" +
+                ", \"isBlock\":" + isBlock +
+                ", \"prestige\":" + prestige +
+                ", \"appCount\":" + appCount +
+                ", \"salt\":\"" + salt + "\"" +
+                "}";
     }
 }

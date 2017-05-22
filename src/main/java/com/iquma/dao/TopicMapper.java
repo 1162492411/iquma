@@ -28,6 +28,8 @@ public interface TopicMapper {
 
     List selectsByCondition(Topic record);//获取符合条件的主贴列表
 
+    List<Topic> selectsSimpleByCondition(Topic record);//获取符合条件的主贴简略信息列表
+
     List selectAll();//获取所有主贴
 
 }

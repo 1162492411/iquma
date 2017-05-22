@@ -33,5 +33,9 @@ public interface TopicService {
 
     List selectsByConditionAndPage(int page, Topic condition);//根据条件和页码获取主题集合
 
+    List<Topic> selectsSimpleByCondition(Topic condition);//根据条件和页码获取简略的主题集合
+
+    List<Topic> selectsSimpleByConditionAndPage(int page, Topic condition);//根据条件和页码获取简略的主题集合--按页数
+
     List selectAll();//获取所有主题
 }

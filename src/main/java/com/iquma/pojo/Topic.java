@@ -3,6 +3,7 @@ package com.iquma.pojo;
 import com.iquma.utils.ENUMS;
 
 import java.util.Date;
+import java.util.Objects;
 
 public class Topic {
     private Integer id;
@@ -15,7 +16,7 @@ public class Topic {
 
     private String title;
 
-    private String section;
+    private String sec;
 
     private Byte tid;
 
@@ -60,12 +61,12 @@ public class Topic {
         this.title = title == null ? null : title.trim();
     }
 
-    public void setSection(String section) {
-        this.section = section;
+    public void setSec(String sec) {
+        this.sec = sec;
     }
 
-    public String getSection() {
-        return section;
+    public String getSec() {
+        return sec;
     }
 
     public Byte getTid() {
@@ -199,28 +200,59 @@ public class Topic {
 
     @Override
     public String toString() {
-        return "Topic{" +
-                "id=" + id +
-                ", user=" + user +
-                ", tag=" + tag +
-                ", section=" + section +
-                ", attachment=" + attachment +
-                ", title='" + title + '\'' +
-                ", section=" + section +
-                ", tid=" + tid +
-                ", aid='" + aid + '\'' +
-                ", attid=" + attid +
-                ", addTime=" + addTime +
-                ", reTime=" + reTime +
-                ", viewCount=" + viewCount +
-                ", likeCount=" + likeCount +
-                ", hateCount=" + hateCount +
-                ", rateCount=" + rateCount +
-                ", replyCount=" + replyCount +
-                ", isBlock=" + isBlock +
-                ", hasBest=" + hasBest +
-                ", content='" + content + '\'' +
-                '}';
+        return "{" +
+                "\"id\":" + id +
+                ", \"user\":" + user +
+                ", \"tag\":" + tag +
+                ", \"sec\":\"" + sec + "\"" +
+                ", \"attachment\":" + attachment +
+                ", \"title\":\"" + title + "\"" +
+                ", \"sec\":\"" + sec + "\"" +
+                ", \"tid\":" + tid +
+                ", \"aid\":\"" + aid + "\"" +
+                ", \"attid\":" + attid +
+                ", \"addTime\":\"" + addTime + "\"" +
+                ", \"reTime\":\"" + reTime + "\"" +
+                ", \"viewCount\":" + viewCount +
+                ", \"likeCount\":" + likeCount +
+                ", \"hateCount\":" + hateCount +
+                ", \"rateCount\":" + rateCount +
+                ", \"replyCount\":" + replyCount +
+                ", \"isBlock\":" + isBlock +
+                ", \"hasBest\":" + hasBest +
+                ", \"content\":\"" + content + "\"" +
+                "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Topic topic = (Topic) o;
+        return Objects.equals(id, topic.id) &&
+                Objects.equals(user, topic.user) &&
+                Objects.equals(tag, topic.tag) &&
+                Objects.equals(attachment, topic.attachment) &&
+                Objects.equals(title, topic.title) &&
+                Objects.equals(sec, topic.sec) &&
+                Objects.equals(tid, topic.tid) &&
+                Objects.equals(aid, topic.aid) &&
+                Objects.equals(attid, topic.attid) &&
+                Objects.equals(addTime, topic.addTime) &&
+                Objects.equals(reTime, topic.reTime) &&
+                Objects.equals(viewCount, topic.viewCount) &&
+                Objects.equals(likeCount, topic.likeCount) &&
+                Objects.equals(hateCount, topic.hateCount) &&
+                Objects.equals(rateCount, topic.rateCount) &&
+                Objects.equals(replyCount, topic.replyCount) &&
+                Objects.equals(isBlock, topic.isBlock) &&
+                Objects.equals(hasBest, topic.hasBest) &&
+                Objects.equals(content, topic.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, user, tag, attachment, title, sec, tid, aid, attid, addTime, reTime, viewCount, likeCount, hateCount, rateCount, replyCount, isBlock, hasBest, content);
     }
 
     public Topic() {
@@ -239,27 +271,27 @@ public class Topic {
 
     //初始化默认教程主贴
     public void parseDefaultTutorial(){
-        section = ENUMS.SECTION_TUTORIAL;
+        sec = ENUMS.SEC_TUTORIAL;
         addTime = new Date();
         reTime = new Date();
     }
 
     //初始化默认提问主贴
     public void parseDefaultDiscuss(){
-        section = ENUMS.SECTION_DISCUSS;
+        sec = ENUMS.SEC_DISCUSS;
         addTime = new Date();
     }
 
     //初始化默认经验主贴
     public void parseDefaultArticle(){
-        section = ENUMS.SECTION_ARTICLE;
+        sec = ENUMS.SEC_ARTICLE;
         addTime = new Date();
     }
 
 
     //初始化默认代码主贴
     public void parseDefaultCode(){
-        section = ENUMS.SECTION_CODE;
+        sec = ENUMS.SEC_CODE;
         addTime = new Date();
     }
 

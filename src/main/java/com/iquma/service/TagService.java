@@ -11,6 +11,10 @@ public interface TagService {
 
     Tag selectByCondition(Tag condition);//获取符合条件的标签
 
-    List selectTagsByCondition(Tag condition);//获取符合条件的标签集合
+    List selectsByCondition(Tag condition);//获取符合条件的标签集合
+
+    List selectAll();//获取所有标签的名称
+
+    List selectsRelevant(Byte id);//获取相关标签
 
 }

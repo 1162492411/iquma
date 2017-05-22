@@ -89,12 +89,17 @@ public class UserController {
         return topics;
     }
 
-    //前往用户相关主贴列表--通用
+    /**
+     * 前往用户相关主贴列表--通用
+     * @param aid 待查看用户的id
+     * @param section 待查看的版块--tutorials/discusses/articles/codes
+     */
+
     private String toList(String aid,String section,Topic topic,Model model){
         User user = userService.selectById(aid);
         if(null == user) throw new UnknownAccountException();//若用户不存在则抛出异常
         topic.setAid(aid);
-        topic.setSection(section);
+        topic.setSec(section);
         System.out.println("topic条件参数是" + topic);
         List topics = topicService.selectsByCondition(topic);
         if(topics.size() == 0) model.addAttribute("emptyResult",Boolean.TRUE);//查询结果为空时绑定信息

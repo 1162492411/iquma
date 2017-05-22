@@ -45,11 +45,11 @@ public class Tag {
 
     @Override
     public String toString() {
-        return "Tag{" +
-                "id=" + id +
-                ", pid=" + pid +
-                ", name='" + name + '\'' +
-                ", path='" + path + '\'' +
-                '}';
+        return "{" +
+                "\"id\":" + id +
+                ", \"pid\":" + pid +
+                ", \"name\":\"" + name + "\"" +
+                ", \"path\":\"" + path + "\"" +
+                "}";
     }
 }

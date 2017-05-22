@@ -49,6 +49,17 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
+    public List<Topic> selectsSimpleByCondition(Topic condition) {
+        return this.topicMapper.selectsSimpleByCondition(condition);
+    }
+
+    @Override
+    public List<Topic> selectsSimpleByConditionAndPage(int page, Topic condition) {
+        PageHelper.startPage(page,5);
+        return this.topicMapper.selectsSimpleByCondition(condition);
+    }
+
+    @Override
     public boolean update(Topic topic) {
         return this.topicMapper.updateByPrimaryKeySelective(topic) > 0;
     }

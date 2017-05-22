@@ -87,14 +87,14 @@ public class Attachment {
 
     @Override
     public String toString() {
-        return "Attachment{" +
-                "id=" + id +
-                ", uid='" + uid + '\'' +
-                ", addtime=" + addtime +
-                ", name='" + name + '\'' +
-                ", size=" + size +
-                ", path='" + path + '\'' +
-                ", price=" + price +
-                '}';
+        return "{" +
+                "\"id\":" + id +
+                ", \"uid\":\"" + uid + "\"" +
+                ", \"addtime\":" + addtime +
+                ", \"name\":\"" + name + "\"" +
+                ", \"size\":" + size +
+                ", \"path\":\"" + path + "\"" +
+                ", \"price\":" + price +
+                "}";
     }
 }

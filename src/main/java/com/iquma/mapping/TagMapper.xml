@@ -12,7 +12,7 @@
   </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Byte" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from common_tag
     where id = #{id,jdbcType=TINYINT}
@@ -83,10 +83,8 @@
   </update>
 
 
-  <select id="selectAll"  resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from common_tag
+  <select id="selectAll"  resultType="java.lang.String">
+    select concat("'",name,"'") from common_tag
   </select>
 
   <select id="selectByCondition" parameterType="com.iquma.pojo.Tag" resultMap="BaseResultMap">
@@ -109,13 +107,13 @@
     </trim>
   </select>
 
-  <select id="selectTagsByCondition" parameterType="com.iquma.pojo.Tag" resultMap="BaseResultMap">
+  <select id="selectsByCondition" parameterType="com.iquma.pojo.Tag" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from common_tag
     <trim prefix="where" prefixOverrides="and">
       <if test="id != null">
-        id = #{id,jdbcType=TINYINT}
+        path like concat((select path from common_tag where id = #{id,jdbcType=TINYINT}), '%')
       </if>
       <if test="pid != null">
         and pid = #{pid,jdbcType=TINYINT}
@@ -123,10 +121,10 @@
       <if test="name != null">
         and name = #{name,jdbcType=VARCHAR}
       </if>
-      <if test="path != null">
-        and path = #{path,jdbcType=VARCHAR}
-      </if>
     </trim>
+  </select>
+  <select id="selectsRelevant" parameterType="java.lang.Byte" resultType="java.lang.String">
+    select concat("'",name,"'") from common_tag where find_in_set((select substring(path,2,1) from common_tag where id=#{id,jdbcType=TINYINT}),path)
   </select>
 
 </mapper>

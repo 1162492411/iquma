@@ -22,7 +22,17 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public List selectTagsByCondition(Tag condition) {
-        return this.tagMapper.selectTagsByCondition(condition);
+    public List selectsByCondition(Tag condition) {
+        return this.tagMapper.selectsByCondition(condition);
+    }
+
+    @Override
+    public List selectAll() {
+        return this.tagMapper.selectAll();
+    }
+
+    @Override
+    public List selectsRelevant(Byte id) {
+        return this.tagMapper.selectsRelevant(id);
     }
 }
