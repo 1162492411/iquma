@@ -224,36 +224,7 @@ public class Topic {
                 "}";
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Topic topic = (Topic) o;
-        return Objects.equals(id, topic.id) &&
-                Objects.equals(user, topic.user) &&
-                Objects.equals(tag, topic.tag) &&
-                Objects.equals(attachment, topic.attachment) &&
-                Objects.equals(title, topic.title) &&
-                Objects.equals(sec, topic.sec) &&
-                Objects.equals(tid, topic.tid) &&
-                Objects.equals(aid, topic.aid) &&
-                Objects.equals(attid, topic.attid) &&
-                Objects.equals(addTime, topic.addTime) &&
-                Objects.equals(reTime, topic.reTime) &&
-                Objects.equals(viewCount, topic.viewCount) &&
-                Objects.equals(likeCount, topic.likeCount) &&
-                Objects.equals(hateCount, topic.hateCount) &&
-                Objects.equals(rateCount, topic.rateCount) &&
-                Objects.equals(replyCount, topic.replyCount) &&
-                Objects.equals(isBlock, topic.isBlock) &&
-                Objects.equals(hasBest, topic.hasBest) &&
-                Objects.equals(content, topic.content);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, user, tag, attachment, title, sec, tid, aid, attid, addTime, reTime, viewCount, likeCount, hateCount, rateCount, replyCount, isBlock, hasBest, content);
-    }
 
     public Topic() {
     }
@@ -278,7 +249,7 @@ public class Topic {
 
     //初始化默认提问主贴
     public void parseDefaultDiscuss(){
-        sec = ENUMS.SEC_DISCUSS;
+        sec = ENUMS.SEC_QUESTION;
         addTime = new Date();
     }
 

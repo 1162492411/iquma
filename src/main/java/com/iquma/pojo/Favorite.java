@@ -55,12 +55,12 @@ public class Favorite {
 
     @Override
     public String toString() {
-        return "Favorite{" +
-                "id=" + id +
-                ", uid='" + uid + '\'' +
-                ", obid=" + obid +
-                ", favTime=" + favTime +
-                ", topic=" + topic +
+        return "{" +
+                "\"id\":" + id +
+                ", \"uid\":\"" + uid + '\"' +
+                ", \"obid\":" + obid +
+                ", \"favTime\":\"" + favTime + '\"' +
+                ", \"topic\":" + topic +
                 '}';
     }
 

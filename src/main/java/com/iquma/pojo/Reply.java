@@ -126,19 +126,19 @@ public class Reply {
 
     @Override
     public String toString() {
-        return "Reply{" +
-                "id=" + id +
-                ", tid=" + tid +
-                ", title='" + title + '\'' +
-                ", uid='" + uid + '\'' +
-                ", addTime=" + addTime +
-                ", likeCount=" + likeCount +
-                ", hateCount=" + hateCount +
-                ", rateCount=" + rateCount +
-                ", isBest=" + isBest +
-                ", isBlock=" + isBlock +
-                ", content='" + content + '\'' +
-                ", user=" + user +
+        return "{" +
+                "\"id\":" + id +
+                ", \"tid\":" + tid +
+                ", \"title\":\"" + title + "\"" +
+                ", \"uid\":\"" + uid + "\"" +
+                ", \"addTime\":\"" + addTime + "\"" +
+                ", \"likeCount\":" + likeCount +
+                ", \"hateCount\":" + hateCount +
+                ", \"rateCount\":" + rateCount +
+                ", \"isBest\":" + isBest +
+                ", \"isBlock\":" + isBlock +
+                ", \"content\":\"" + content + "\"" +
+                ", \"user\":" + user +
                 '}';
     }
 

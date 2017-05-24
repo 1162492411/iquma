@@ -1,6 +1,52 @@
-//------------------- 编辑器页面 ------------------------//
+//------------------------- 公共函数 ---------------------------//
 
 rootPath = "http://localhost:8080";
+
+//公共函数--返回拼接后的带版块的路径--用于相关标签中标签等超链接的地址
+function getSecsPath() {
+    return rootPath + "/" + $("#sec").val() + "s";
+}
+
+//公共函数--返回拼接后的带版块的路径--用于主贴列表的每条主贴的超链接的地址
+function getSecPath() {
+    return rootPath + "/" + $("#sec").val();
+}
+
+//公共函数--返回拼接后的带标签的路径--用于相关标签中标签等超链接的地址
+function getTagPath() {
+    var path = getSecsPath();
+    var tag = $("#tag").val();
+    if(tag != " " && tag != "null") path = path + "/" + tag;
+    return path;
+}
+
+//公共函数--返回拼接后的带类别的路径--用于主贴列表中分页
+function getTypesPath() {
+    return getTagPath() + "/" + $("#type").val();
+}
+
+//公共函数--格式化时间
+function formateTime(time) {
+    if(time != null && time != "null" && time != " "){
+        var d1 = new Date(time);
+        var now = new Date().getTime();
+        console.log("当前" + now + ",格式前" + time + ",格式后" + d1);
+        var seconds = (now - d1 + 14*60*60*1000)/1000/60;//取得两次相差的分钟数
+        if(seconds < 60) return parseInt(seconds) + "分钟前";
+        else var hours = seconds / 60;
+        if(hours < 24) return parseInt(hours) + "小时前";
+        else var days = hours / 24;
+        if(days < 30) return parseInt(days) + "天前";
+        else var months = days / 30;
+        if(months < 12) return parseInt(months) + "个月前";
+        else return parseInt(months / 12)  + "年前";
+    }
+    else return " ";
+}
+
+//------------------- 编辑器页面 ------------------------//
+
+
 
 //初始化类别下拉框
 function initTypeSelection() {
@@ -110,38 +156,6 @@ function editorSubmit(type) {
 
 //------------------------- 主贴页面 ---------------------------//
 
-//返回拼接后的版块
-function getSec() {
-    //首先获取页面中的隐藏变量
-    var sec = $("#sec").val();
-
-
-    return sec;
-}
-
-//返回拼接后的带版块的路径--用于相关标签中标签等超链接的地址
-function getSecsPath() {
-  return rootPath + "/" + getSec() + "s";
-}
-
-//返回拼接后的带版块的路径--用于主贴列表的每条主贴的超链接的地址
-function getSecPath() {
-    return rootPath + "/" + getSec();
-}
-
-//返回拼接后的带标签的路径--用于相关标签中标签等超链接的地址
-function getTagPath() {
-    var path = getSecsPath();
-    var tag = $("#tag").val();
-    if(tag != " " && tag != "null") path = path + "/" + tag;
-    return path;
-}
-
-//返回拼接后的带类别的路径--用于主贴列表中分页
-function getTypesPath() {
-    return getTagPath() + "/" + $("#type").val();
-}
-
 //初始化列表页面相关状态
 function initListStatus() {
 
@@ -180,7 +194,7 @@ function initListPag(currentPage,totalPage,path){
 function initTopicStatus(topicType) {
     //处理顶部主贴类型文字
     if('tutorial' == topicType) $("#topicText").text('教');
-    else if ('discuss' == topicType) $("#topicText").text('问');
+    else if ('question' == topicType) $("#topicText").text('问');
     else if ('article' == topicType) $("#topicText").text('文');
     else $("#topicText").text('码');
     //处理被关闭的主贴
@@ -282,11 +296,14 @@ function initTopic(topic) {
     if(topic.replyCount > 0) temp += "<div class='answers answered'>"+ topic.replyCount +"<small>回复</small></div>";
     else temp += "<div class='answers'>"+ topic.replyCount +"<small>回复</small></div>";
 
-    temp += "<div class='views hidden-xs viewswordgreater999'>" + topic.viewCount + "<small>浏览</small></div></div><div class='summary'><ul class='author list-inline'><li>";
+    var viewCount = topic.viewCount;
+    if(viewCount >= 0 && viewCount <= 99) temp += "<div class='views hidden-xs viewsword0to99'>" + topic.viewCount + "<small>浏览</small></div></div><div class='summary'><ul class='author list-inline'><li>";
+    else if(viewCount > 99 && viewCount < 999) temp += "<div class='views hidden-xs viewsword100to999'>" + topic.viewCount + "<small>浏览</small></div></div><div class='summary'><ul class='author list-inline'><li>";
+    else temp += "<div class='views hidden-xs viewswordgreater999'>" + topic.viewCount + "<small>浏览</small></div></div><div class='summary'><ul class='author list-inline'><li>";
 
     temp +="<a href='" + rootPath + "/user/" + topic.aid + "/home'>" + topic.user.name + "</a>";
 
-    temp += "<span class='split'></span> <span>" + formateTime(topic.reTime) + "</span></li></ul>";
+    temp += "<span class='split'></span> <span>" + formateTime(topic.reTime) + "被回复</span></li></ul>";
 
     temp += "<h2 class='title'><a href='" + getSecPath() + "/" + topic.id + "'>" + topic.title + "</a></h2>";
 
@@ -295,28 +312,6 @@ function initTopic(topic) {
     $("#topic-list").append(temp);
 
 }
-
-//加载主题信息--格式化时间
-function formateTime(time) {
-    if(time != null && time != "null" && time != " "){
-        var d1 = new Date(time);
-        var now = new Date().getTime();
-        console.log("当前" + now + ",格式前" + time + ",格式后" + d1);
-        var seconds = (now - d1 + 14*60*60*1000)/1000/60;//取得两次相差的分钟数
-        if(seconds < 60) return parseInt(seconds) + "分钟前被回复";
-        else var hours = seconds / 60;
-        if(hours < 24) return parseInt(hours) + "小时前被回复";
-        else var days = hours / 24;
-        if(days < 30) return parseInt(days) + "天前被回复";
-        else var months = days / 30;
-        if(months < 12) return parseInt(months) + "个月前被回复";
-        else return parseInt(months / 12)  + "年前被回复";
-    }
-    else return " ";
-
-}
-
-//加载主题信息之
 
 //赞同主贴
 function likeTopic(topicType,id) {
@@ -511,6 +506,7 @@ function blockTopic(resultType) {
 }
 
 //---------------------- 回复部分 -----------------------------------------//
+
 //发表回复
 function addReply() {
     var d = {
@@ -697,6 +693,80 @@ function hateReply(id,uid) {
 }
 
 //--------------------- 用户主页  -------------------------//
+
+//加载回复信息--用户回答页面--批量加载
+function initAnswers(answers) {
+    for(var i = 0 ;i < answers.length; i ++){
+        initAnswer(answers[i]);
+    }
+}
+
+//加载回复信息--用户回答页面--被调用
+function initAnswer(answer) {
+    var temp = "<div class='List-item'><div class='ContentItem'><h2 class='ContentItem-title'><a href='" + rootPath + "/tutorial/" + answer.tid + "'>" + answer.title + "</a></h2><div class='ContentItem-content is-collapsed'><span class='RichText CopyrightRichText-richText'>" + answer.content + "</span><a class='Button ContentItem-more Button--plain' type='button' href='" + rootPath + "/tutorial/" + answer.tid + "'>查看</a></div></div></div>";
+    $("#Profile-answers").append(temp);
+}
+
+//加载收藏信息--用户收藏页面--批量加载
+function initCollections(collections) {
+    for(var i = 0 ;i < collections.length; i ++){
+        initCollection(collections[i]);
+    }
+}
+
+//加载收藏信息--用户收藏页面--被调用
+function initCollection(collection) {
+    var temp = "<div class='List-item'><div class='ContentItem'><h2 class='ContentItem-title'><a href='" + rootPath + "/tutorial/" + collection.obid + "'>" + collection.topic.title + "</a></h2><div class='ContentItem-content is-collapsed'><span class='RichText CopyrightRichText-richText'>" + collection.topic.content + "</span><a class='Button ContentItem-more Button--plain' type='button' href='" + rootPath + "/tutorial/" + collection.obid + "'>查看</a></div></div></div>";
+    $("#Profile-collections").append(temp);
+}
+
+//加载话题列表信息--用户列表页面--批量加载
+function initLists(lists,cid) {
+    for(var i = 0 ;i < lists.length; i ++){
+        initList(lists[i],cid);
+    }
+}
+
+//加载话题列表信息--用户列表页面--被调用
+//TODO:由于content中可能存在换行，而js在解析换行内容时会失败，因此需要考虑对换行进行过滤--此问题广泛存在于解析content的函数中
+function initList(list,cid) {
+    var temp = "<div class='List-item'><div class='ContentItem'><h2 class='ContentItem-title'><a href='" + rootPath + "/" + list.sec + "/" + list.id + "'>" + list.title + "</a></h2><div class='ContentItem-content is-collapsed'><span class='RichText CopyrightRichText-richText'>" + list.content + "</span><a class='Button ContentItem-more Button--plain' type='button' href='" + rootPath + "/" + list.sec + "/" + list.id + "'>查看</a></div></div></div>";
+    $("#Profile-" + cid + "s").append(temp);
+}
+
+//加载用户主页中的主贴分类框
+function initProHeaders(id,cid) {
+    var temp = "<div class='ProfileMain-header'><ul role='tablist' class='Tabs ProfileMain-tabs'>";
+
+    temp += "<li role='tab' class='Tabs-item'><a class='Tabs-link' id='Tabs-tutorials' href='" + rootPath + "/user/" + id +"/tutorials'>教程</a></li>";
+    temp += "<li role='tab' class='Tabs-item'><a class='Tabs-link' id='Tabs-answers' href='" + rootPath + "/user/" + id +"/answers'>回答</a></li>";
+    temp += "<li role='tab' class='Tabs-item'><a class='Tabs-link' id='Tabs-questions' href='" + rootPath + "/user/" + id +"/questions'>提问</a></li>";
+    temp += "<li role='tab' class='Tabs-item'><a class='Tabs-link' id='Tabs-articles' href='" + rootPath + "/user/" + id +"/articles'>文章</a></li>";
+    temp += "<li role='tab' class='Tabs-item'><a class='Tabs-link' id='Tabs-codes' href='" + rootPath + "/user/" + id +"/codes'>代码</a></li>";
+    temp += "<li role='tab' class='Tabs-item'><a class='Tabs-link' id='Tabs-collections' href='" + rootPath + "/user/" + id +"/collections'>收藏</a></li>";
+    temp += "</ul></div>";
+
+    $("#Profile-" + cid + "s").before(temp);
+    $("#Tabs-" + cid + "s").attr("class", "Tabs-link is-active");
+}
+
+//加载用户通知中心--批量加载
+function initNtfs(ntfs,id) {
+    for(var i = 0; i < ntfs.length; i ++)
+        initEachNtf(ntfs[i],id);
+}
+
+//加载用户通知中心--被调用
+function initEachNtf(ntf,id) {
+    var temp = "<div class='List-item'><div class='ContentItem'><div class='ContentItem-content is-collapsed'><span class='RichText CopyrightRichText-richText'>" + ntf.content + "</span><br />" + ntf.ntftime;
+    if(ntf.isnew == true)
+        temp += "<a class='Button ContentItem-more Button--plain' type='button' onclick='signNtf(" + id + "," + ntf.id + ")'>标记为已读</a>";
+    else
+        temp += "<a class='Button ContentItem-more Button--plain' type='button'>已读</a>";
+    temp += "</div></div></div>";
+    $("#Profile-ntfs").append(temp);
+}
+
 //将消息标记为已读
 function signNtf(uid, id) {
     $.ajax({
@@ -715,12 +785,6 @@ function signNtf(uid, id) {
             alert('发送请求失败！');
         }
     });
-}
-
-
-//加载用户主页分类样式
-function initUserList(type) {
-    $("#Tabs-" + type + "s").attr("class", "Tabs-link is-active");
 }
 
 //用户修改密码
@@ -891,7 +955,6 @@ jQuery.fn.extend({
         })
     }
 });
-
 
 function blockUser(uid) {
     $.ajax({

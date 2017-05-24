@@ -55,7 +55,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public List<Topic> selectsSimpleByConditionAndPage(int page, Topic condition) {
-        PageHelper.startPage(page,5);
+        PageHelper.startPage(page,10);
         return this.topicMapper.selectsSimpleByCondition(condition);
     }
 

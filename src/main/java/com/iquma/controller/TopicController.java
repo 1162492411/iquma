@@ -4,6 +4,7 @@ package com.iquma.controller;
 import com.iquma.pojo.*;
 import com.iquma.service.*;
 import com.iquma.utils.BinomialUtil;
+import com.iquma.utils.CASTS;
 import com.iquma.utils.ENUMS;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresUser;
@@ -50,7 +51,7 @@ public class TopicController {
         model.addAttribute("tags",tags);
         model.addAttribute("type", type);
         if(0 == results.size()) model.addAttribute("searchEmpty",Boolean.TRUE);
-        else model.addAttribute("topics",translateToSB(results));
+        else model.addAttribute("topics", CASTS.translateToSB(results));
         int totalPage = getTotalPage(topic);
         model.addAttribute("totalPage",totalPage);
         model.addAttribute("currentPage",page >= totalPage?totalPage : page <= 0? 1 : page);
@@ -75,20 +76,10 @@ public class TopicController {
         else if ("unanswered".equals(type)) topic.setReplyCount(0);//按回答数加载主贴
     }
 
-    //将查询到的主贴列表转化为字符串
-    private StringBuffer translateToSB(List list){
-        StringBuffer stringBuffer = new StringBuffer();
-        stringBuffer.append("[");
-        for (int i = 0; i < list.size() - 1; i++)
-            stringBuffer.append(list.get(i) + ",");
-        stringBuffer.append(list.get(list.size() - 1) + "]");
-        return stringBuffer;
-    }
-
     //获取符合条件的主贴的总页数
     private int getTotalPage(Topic condition){
         int total = topicService.selectsSimpleByCondition(condition).size();
-        return total % 5 == 0 ? total / 5 : total / 5 + 1;
+        return total % 10 == 0 ? total / 10 : total / 10 + 1;
     }
 
     //前往教程列表页面--默认
@@ -120,31 +111,31 @@ public class TopicController {
     }
 
     //前往提问列表页面--默认
-    @RequestMapping("discusses")
-    public String toDiscusses(Tag tag, Topic topic, Model model){
-        return toTopicsByCondition(null,"new",1,tag,topic,model,ENUMS.SEC_DISCUSS);
+    @RequestMapping("questions")
+    public String toQuestions(Tag tag, Topic topic, Model model){
+        return toTopicsByCondition(null,"new",1,tag,topic,model,ENUMS.SEC_QUESTION);
     }
 
     //前往提问列表页面--按页数
-    @RequestMapping("discusses/{page}")
-    public String toDiscussesByPage(@PathVariable int page,Tag tag, Topic topic, Model model) {
-        return toTopicsByCondition(null,"new",page,tag,topic,model,ENUMS.SEC_DISCUSS);
+    @RequestMapping("questions/{page}")
+    public String toQuestionsByPage(@PathVariable int page,Tag tag, Topic topic, Model model) {
+        return toTopicsByCondition(null,"new",page,tag,topic,model,ENUMS.SEC_QUESTION);
     }
 
     //前往提问列表页面--按页数和类型
-    @RequestMapping("discusses/{type}/{page}")
-    public String toDiscussesByType(@PathVariable String type, @PathVariable int page,Tag tag, Topic topic, Model model) {
+    @RequestMapping("questions/{type}/{page}")
+    public String toQuestionsByType(@PathVariable String type, @PathVariable int page,Tag tag, Topic topic, Model model) {
         //如果是按类型获取主贴
         if("hottest".equals(type) || "unanswered".equals(type) || "new".equals(type))
-            return toTopicsByCondition(null,type,page,tag,topic,model,ENUMS.SEC_DISCUSS);
+            return toTopicsByCondition(null,type,page,tag,topic,model,ENUMS.SEC_QUESTION);
         else//如果是按标签获取主贴
-            return toTopicsByCondition(type,null,page,tag,topic,model,ENUMS.SEC_DISCUSS);
+            return toTopicsByCondition(type,null,page,tag,topic,model,ENUMS.SEC_QUESTION);
     }
 
     //前往提问列表页面--按页数和类型和分类
-    @RequestMapping("discusses/{tname}/{type}/{page}")
-    public String toDiscussesByTag(@PathVariable String tname, @PathVariable String type, @PathVariable int page, Tag ta, Topic topic, Model model) {
-        return toTopicsByCondition(tname,type,page,ta,topic,model,ENUMS.SEC_DISCUSS);
+    @RequestMapping("questions/{tname}/{type}/{page}")
+    public String toQuestionsByTag(@PathVariable String tname, @PathVariable String type, @PathVariable int page, Tag ta, Topic topic, Model model) {
+        return toTopicsByCondition(tname,type,page,ta,topic,model,ENUMS.SEC_QUESTION);
     }
 
     //前往经验列表页面--默认
@@ -232,13 +223,13 @@ public class TopicController {
     }
 
     //显示主贴--按主贴id
-    @RequestMapping(value = {"tutorial/{tid}","discuss/{tid}","article/{tid}","code/{tid}"})
+    @RequestMapping(value = {"tutorial/{tid}","question/{tid}","article/{tid}","code/{tid}"})
     public String toTopicByDefault(@PathVariable Integer tid, Reply reply, Model model)  {
         return toTopics(tid,null,0,reply,model);
     }
 
     //显示主贴--按分页显示回复或者按时间显示回复
-    @RequestMapping({"tutorial/{tid}/{con}","discuss/{tid}/{con}","article/{tid}/{con}","code/{tid}/{con}"})
+    @RequestMapping({"tutorial/{tid}/{con}","question/{tid}/{con}","article/{tid}/{con}","code/{tid}/{con}"})
     public String toTopicByDefaultPage(@PathVariable int tid,@PathVariable String con, Reply reply, Model model) {
         if(con.equals("null") || "time".equals(con))//如果是按时间显示或按默认显示
             return toTopics(tid,con,0,reply,model);
@@ -247,13 +238,13 @@ public class TopicController {
     }
 
     //显示主贴，并按时间和分页显示回复
-    @RequestMapping({"tutorial/{tid}/{sort}/{page}","discuss/{tid}/{sort}/{page}","article/{tid}/{sort}/{page}","code/{tid}/{sort}/{page}"})
+    @RequestMapping({"tutorial/{tid}/{sort}/{page}","question/{tid}/{sort}/{page}","article/{tid}/{sort}/{page}","code/{tid}/{sort}/{page}"})
     public String toTopicSortByTimePage(@PathVariable Integer tid, @PathVariable String sort, @PathVariable Integer page, Reply reply, Model model) {
         return toTopics(tid,sort,page,reply,model);
     }
 
     //前往主贴更新页面
-    @RequestMapping(value = {"tutorial/{id}/update","discuss/{id}/update","article/{id}/update","code/{id}/update"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"tutorial/{id}/update","question/{id}/update","article/{id}/update","code/{id}/update"}, method = RequestMethod.GET)
     public String toUpdateTopic(@PathVariable Integer id, Model model){
         Topic topic = topicService.selectById(id);
         if(topic == null) return "status/emptyQuery";//主贴不存在则跳转空查询页面
@@ -262,32 +253,32 @@ public class TopicController {
     }
 
     //更新主贴验证
-    @RequestMapping(value = {"tutorial/{id}/update","discuss/{id}/update","article/{id}/update","code/{id}/update"}, method = RequestMethod.PUT)
+    @RequestMapping(value = {"tutorial/{id}/update","question/{id}/update","article/{id}/update","code/{id}/update"}, method = RequestMethod.PUT)
     public @ResponseBody Boolean update(@RequestBody Topic record){
          return topicService.update(record);
     }
 
     //关闭主贴
-    @RequestMapping( value = {"tutorial/{id}/block","discuss/{id}/block","article/{id}/block","code/{id}/block"}, method = RequestMethod.POST )
+    @RequestMapping( value = {"tutorial/{id}/block","question/{id}/block","article/{id}/block","code/{id}/block"}, method = RequestMethod.POST )
     public @ResponseBody Boolean block(@RequestBody Topic record){
         return topicService.changeStatus(record.getId());
     }
 
     //删除主贴
-    @RequestMapping(value = {"tutorial/{id}","discuss/{id}","article/{id}","code/{id}"}, method = RequestMethod.DELETE)
+    @RequestMapping(value = {"tutorial/{id}","question/{id}","article/{id}","code/{id}"}, method = RequestMethod.DELETE)
     public @ResponseBody Boolean delete(@RequestBody Topic record) {
         return topicService.deleteById(record.getId());
     }
 
     //收藏主贴
     @RequiresUser
-    @RequestMapping(value = {"tutorial/{id}/favorite","discuss/{id}/favorite","article/{id}/favorite","code/{id}/favorite"},method = RequestMethod.POST)
+    @RequestMapping(value = {"tutorial/{id}/favorite","question/{id}/favorite","article/{id}/favorite","code/{id}/favorite"},method = RequestMethod.POST)
     public @ResponseBody Boolean favorite(@RequestBody Topic record){
         return this.favoriteService.insert(new Favorite(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")),record.getId(),new Date()));
     }
 
     //赞同主贴
-    @RequestMapping(value = {"tutorial/{id}/like","discuss/{id}/like","article/{id}/like","code/{id}/like"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"tutorial/{id}/like","question/{id}/like","article/{id}/like","code/{id}/like"}, method = RequestMethod.POST)
     public @ResponseBody Boolean like(@RequestBody Topic record){
         record = topicService.selectById(record.getId());
         double likeCount = binomialUtil.getLikeCount(record.getLikeCount());
@@ -296,7 +287,7 @@ public class TopicController {
     }
 
     //反对主贴
-    @RequestMapping(value = {"tutorial/{id}/hate","discuss/{id}/hate","article/{id}/hate","code/{id}/hate"}, method = RequestMethod.POST)
+    @RequestMapping(value = {"tutorial/{id}/hate","question/{id}/hate","article/{id}/hate","code/{id}/hate"}, method = RequestMethod.POST)
     public @ResponseBody Boolean hate(@RequestBody Topic record){
         record = topicService.selectById(record.getId());
         double likeCount = record.getLikeCount();

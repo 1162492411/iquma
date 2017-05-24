@@ -4,7 +4,7 @@
 <%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <html>
 <head>
-    <title>教程</title>
+    <title>主贴</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/iquma.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/obsidian.css">
@@ -14,7 +14,7 @@
     <script src="${pageContext.request.contextPath}/static/js/highlight.pack.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            initTopicStatus('${topic.section}');
+            initTopicStatus('${topic.sec}');
             initPag(${currentPage},${totalPage});
             initRateInfo('${topic.id}',0);
             hljs.initHighlightingOnLoad();
@@ -43,7 +43,7 @@
                         <span class="post-topheader__title--icon-symbol" id="topicText"></span>
                         <div class="post-topheader__info">
                             <h1 class="h3 post-topheader__info--title" id="questionTitle">
-                                <a href="${pageContext.request.contextPath}/${topic.section}/${topic.id}">${topic.title}</a>
+                                <a href="${pageContext.request.contextPath}/${topic.sec}/${topic.id}">${topic.title}</a>
                             </h1>
                             <ul class="taglist--inline inline-block question__title--tag mr10">
                                 <li class="tagPopup mb5">
@@ -69,9 +69,9 @@
                     <article class="widget-question__item">
                         <div class="post-col">
                             <div class="widget-vote  ">
-                                <button class="like" id="like-0" onclick="likeTopic('${topic.section}','${topic.id}')"></button>
+                                <button class="like" id="like-0" onclick="likeTopic('${topic.sec}','${topic.id}')"></button>
                                 <span class="count">${topic.rateCount}</span>
-                                <button class="hate" id="hate-0" onclick="hateTopic('${topic.section}','${topic.id}')"></button>
+                                <button class="hate" id="hate-0" onclick="hateTopic('${topic.sec}','${topic.id}')"></button>
                             </div>
                             <!-- end .widget-vote -->
                         </div>
@@ -95,26 +95,26 @@
                                             <fmt:formatDate value="${topic.addTime}"
                                                             pattern="yyyy-MM-dd"/>
                                         </a></li>
-                                        <shiro:hasPermission name="${topic.section}:update:${topic.id}">
-                                            <a href="${pageContext.request.contextPath}/${topic.section}/${topic.id}/update">
+                                        <shiro:hasPermission name="${topic.sec}:update:${topic.id}">
+                                            <a href="${pageContext.request.contextPath}/${topic.sec}/${topic.id}/update">
                                                 <Button class="btn btn-primary">编辑</Button>
                                             </a>
                                             </li>
                                         </shiro:hasPermission>
-                                        <shiro:hasPermission name="${topic.section}:block:${topic.id}">
+                                        <shiro:hasPermission name="${topic.sec}:block:${topic.id}">
                                             <li>
-                                                <Button class="btn btn-primary" id="blockButton" onclick="blockTopic('${topic.section}')" disabled>关闭</Button>
+                                                <Button class="btn btn-primary" id="blockButton" onclick="blockTopic('${topic.sec}')" disabled>关闭</Button>
                                             </li>
                                         </shiro:hasPermission>
-                                        <shiro:hasPermission name="${topic.section}:delete:${topic.id}">
+                                        <shiro:hasPermission name="${topic.sec}:delete:${topic.id}">
                                             <li>
                                                 <Button class="btn btn-danger"
-                                                        onclick="deleteTopic('${topic.section}')">删除</Button>
+                                                        onclick="deleteTopic('${topic.sec}')">删除</Button>
                                             </li>
                                         </shiro:hasPermission>
                                         <shiro:user>
                                             <li>
-                                                <Button class="btn btn-primary" id="favoriteButton" onclick="favoriteTopic('${topic.section}')" disabled>收藏</Button>
+                                                <Button class="btn btn-primary" id="favoriteButton" onclick="favoriteTopic('${topic.sec}')" disabled>收藏</Button>
                                             </li>
                                         </shiro:user>
                                     </ul>
@@ -127,7 +127,7 @@
                     <div class="widget-answers" id="repliesDiv">
                         <!-- 回复排序方式 -->
                         <div class="btn-group pull-right" role="group">
-                            <a class="btn btn-default btn-xs" href="${pageContext.request.contextPath}/${topic.section}/${topic.id}">默认排序</a>
+                            <a class="btn btn-default btn-xs" href="${pageContext.request.contextPath}/${topic.sec}/${topic.id}">默认排序</a>
                             <a class="btn btn-default btn-xs active">时间排序</a>
                         </div>
                         <!-- 回复排序方式结束 -->

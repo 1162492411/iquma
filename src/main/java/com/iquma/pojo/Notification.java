@@ -53,9 +53,15 @@ public class Notification {
         this.isnew = isnew;
     }
 
+    @Override
     public String toString() {
-        return "[记录id : " + id + ",通知用户 : " + uid + ",通知内容 : " + content +
-                ",通知时间 : " + ntftime + ",通知状态 : " + isnew + "]";
+        return "{" +
+                "\"id\":\"" + id + '\"' +
+                ", \"uid\":\"" + uid + '\"' +
+                ", \"content\":\"" + content + '\"' +
+                ", \"ntftime\":\"" + ntftime + '\"' +
+                ", \"isnew\":" + isnew +
+                '}';
     }
 
     public Notification() {

@@ -37,7 +37,7 @@ public class ENUMS {
 
     //版块ID
     public static final String SEC_TUTORIAL = "tutorial";//教程
-    public static final String SEC_DISCUSS = "discuss";//提问
+    public static final String SEC_QUESTION = "question";//提问
     public static final String SEC_ARTICLE = "article";//经验
     public static final String SEC_CODE = "code";//代码
 

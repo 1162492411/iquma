@@ -15,7 +15,7 @@
             <nav role="navigation" class="AppHeader-nav">
                 <a class="AppHeader-navItem" href="${pageContext.request.contextPath}/">首页</a>
                 <a class="AppHeader-navItem" href="${pageContext.request.contextPath}/tutorials">教程</a>
-                <a class="AppHeader-navItem" href="${pageContext.request.contextPath}/discusses">话题</a>
+                <a class="AppHeader-navItem" href="${pageContext.request.contextPath}/questions">话题</a>
                 <a class="AppHeader-navItem" href="${pageContext.request.contextPath}/articles">文章</a>
                 <a class="AppHeader-navItem" href="${pageContext.request.contextPath}/codes">代码</a>
                 <c:if test="${userid!= null}">

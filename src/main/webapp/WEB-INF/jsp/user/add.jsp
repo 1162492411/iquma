@@ -1,8 +1,7 @@
 <%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
-<%@ page language="java" import="java.util.*" pageEncoding="UTF-8" %>
+<%@ page language="java" pageEncoding="UTF-8" %>
 <html>
 <head>
-
     <title>添加用户</title>
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
@@ -40,7 +39,9 @@
             </div>
             <!-- 按钮 -->
             <div class="form-group" id="buttonPanel">
+    <shiro:hasPermission name="suser:create">
                 <input type="button" class="btn btn-primary" onclick="addUser('Student')" value="添加学生"/>
+    </shiro:hasPermission>
                 <shiro:hasPermission name="muser:create">
                     <input type="button" class="btn btn-primary" onclick="addUser('Teacher')" value="添加教师"/>
                 </shiro:hasPermission>

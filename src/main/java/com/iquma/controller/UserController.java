@@ -14,6 +14,7 @@ import org.apache.shiro.authz.annotation.RequiresGuest;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -94,7 +95,6 @@ public class UserController {
      * @param aid 待查看用户的id
      * @param section 待查看的版块--tutorials/discusses/articles/codes
      */
-
     private String toList(String aid,String section,Topic topic,Model model){
         User user = userService.selectById(aid);
         if(null == user) throw new UnknownAccountException();//若用户不存在则抛出异常
@@ -103,7 +103,7 @@ public class UserController {
         System.out.println("topic条件参数是" + topic);
         List topics = topicService.selectsByCondition(topic);
         if(topics.size() == 0) model.addAttribute("emptyResult",Boolean.TRUE);//查询结果为空时绑定信息
-        else model.addAttribute("topics",getSimpleTopics(topics));//查询结果非空时绑定结果
+        else model.addAttribute("topics",CASTS.translateToSB(getSimpleTopics(topics)));//查询结果非空时绑定结果
         model.addAttribute("user",user);
         return "user/lists";
     }
@@ -115,9 +115,9 @@ public class UserController {
     }
 
     //前往用户的提问列表
-    @RequestMapping(value = "{uid}/discusses", method = RequestMethod.GET)
+    @RequestMapping(value = "{uid}/questions", method = RequestMethod.GET)
     public String toAsks(@PathVariable String uid, Model model, Topic topic) {
-        return toList(uid,"discuss",topic,model);
+        return toList(uid,"question",topic,model);
     }
 
     //前往用户的回答列表
@@ -128,7 +128,7 @@ public class UserController {
         model.addAttribute("user",user);
         List results = replyService.selectByCondition(condition);
         if(results.size() == 0) model.addAttribute("emptyResult",Boolean.TRUE);
-        else model.addAttribute("replies",results);
+        else model.addAttribute("replies",CASTS.translateToSB(results));
         return "user/answers";
     }
 
@@ -153,7 +153,7 @@ public class UserController {
             model.addAttribute("user", user);
             List results = favoriteService.selectsByCondition(favorite);
             if(results.size() == 0) model.addAttribute("emptyResult",Boolean.TRUE);
-            else model.addAttribute("collections",results);
+            else model.addAttribute("collections",CASTS.translateToSB(results));
             return "user/collections";
         }
     }
@@ -213,7 +213,7 @@ public class UserController {
     @RequestMapping(value = "{uid}/ntfs", method = RequestMethod.GET)
     public String toNotifications(Notification condition, Model model) {
         condition.setUid(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
-        model.addAttribute("ntfs",notificationService.selectsByCondition(condition));
+        model.addAttribute("ntfs",CASTS.translateToSB(notificationService.selectsByCondition(condition)));
         return "user/notifications";
     }
 
