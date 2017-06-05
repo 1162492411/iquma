@@ -102,8 +102,7 @@ public class UserController {
         topic.setSec(section);
         System.out.println("topic条件参数是" + topic);
         List topics = topicService.selectsByCondition(topic);
-        if(topics.size() == 0) model.addAttribute("emptyResult",Boolean.TRUE);//查询结果为空时绑定信息
-        else model.addAttribute("topics",CASTS.translateToSB(getSimpleTopics(topics)));//查询结果非空时绑定结果
+        model.addAttribute("topics",getSimpleTopics(topics));//查询结果非空时绑定结果
         model.addAttribute("user",user);
         return "user/lists";
     }
@@ -127,8 +126,7 @@ public class UserController {
         if(null == user) throw new UnknownAccountException();//若用户不存在则抛出异常
         model.addAttribute("user",user);
         List results = replyService.selectByCondition(condition);
-        if(results.size() == 0) model.addAttribute("emptyResult",Boolean.TRUE);
-        else model.addAttribute("replies",CASTS.translateToSB(results));
+        model.addAttribute("replies",CASTS.translateToSB(results));
         return "user/answers";
     }
 
@@ -152,8 +150,7 @@ public class UserController {
         else{
             model.addAttribute("user", user);
             List results = favoriteService.selectsByCondition(favorite);
-            if(results.size() == 0) model.addAttribute("emptyResult",Boolean.TRUE);
-            else model.addAttribute("collections",CASTS.translateToSB(results));
+            model.addAttribute("collections",CASTS.translateToSB(results));
             return "user/collections";
         }
     }
@@ -220,6 +217,7 @@ public class UserController {
     //将通知标记为已读
     @RequestMapping(value = "{uid}/ntfs/{id}" , method = RequestMethod.PUT)
     public @ResponseBody Boolean readNotifications(Notification record){
+        record.setUid(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
         Boolean result = this.notificationService.read(record);
         if(result){
             Session session = SecurityUtils.getSubject().getSession();

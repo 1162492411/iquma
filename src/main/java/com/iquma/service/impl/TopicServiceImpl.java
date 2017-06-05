@@ -19,14 +19,9 @@ public class TopicServiceImpl implements TopicService {
     @Resource
     private TopicMapper topicMapper;
 
-
-    @Override
-    public List selectAll() {
-        return this.topicMapper.selectAll();
-    }
-
     @Override
     public Topic selectById(Integer id) {
+        System.out.println("调用了topic的selectById方法，传入参数" + id);
         return this.topicMapper.selectByPrimaryKey(id);
     }
 
@@ -72,6 +67,11 @@ public class TopicServiceImpl implements TopicService {
     @Override
     public boolean reduceReply(Integer id) {
         return this.topicMapper.reduceReply(id) > 0;
+    }
+
+    @Override
+    public void increaseViewCount(Integer id) {
+        this.topicMapper.increaseViewCount(id);
     }
 
     @Override

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.iquma.dao.NotificationMapper">
     <resultMap id="BaseResultMap" type="com.iquma.pojo.Notification">
-        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <id column="id" jdbcType="INTEGER" property="id"/>
         <result column="uid" jdbcType="VARCHAR" property="uid"/>
         <result column="content" jdbcType="VARCHAR" property="content"/>
         <result column="ntftime" jdbcType="TIMESTAMP" property="ntftime"/>
@@ -11,11 +11,11 @@
     <sql id="Base_Column_List">
         id, uid, content, ntftime, isnew
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from user_ntfinfo
-        where id = #{id,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
     </select>
 
     <select id="selectsByCondition" parameterType="com.iquma.pojo.Notification" resultMap="BaseResultMap">
@@ -42,17 +42,14 @@
         ORDER BY ntftime desc
     </select>
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete from user_ntfinfo
-        where id = #{id,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
     </delete>
 
     <insert id="insertSelective" parameterType="com.iquma.pojo.Notification">
         insert into user_ntfinfo
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
             <if test="uid != null">
                 uid,
             </if>
@@ -67,9 +64,6 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=VARCHAR},
-            </if>
             <if test="uid != null">
                 #{uid,jdbcType=VARCHAR},
             </if>
@@ -86,7 +80,7 @@
     </insert>
     <update id="read" parameterType="com.iquma.pojo.Notification" >
         update user_ntfinfo set isnew = FALSE
-        where id = #{id,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
     </update>
     <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Notification">
         update user_ntfinfo
@@ -94,6 +88,6 @@
         content = #{content,jdbcType=VARCHAR},
         ntftime = #{ntftime,jdbcType=TIMESTAMP},
         isnew = #{isnew,jdbcType=BIT}
-        where id = #{id,jdbcType=VARCHAR}
+        where id = #{id,jdbcType=INTEGER}
     </update>
 </mapper>

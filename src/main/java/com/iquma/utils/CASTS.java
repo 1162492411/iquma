@@ -34,8 +34,16 @@ public class CASTS {
                 stringBuffer.append(list.get(i) + ",");
             stringBuffer.append(list.get(list.size() - 1) + "]");
         }
+        else {System.out.println("----即将返回空结果"); return new StringBuffer("\" \"");}
         System.out.println("-------转换后的结果是" + stringBuffer);
         return stringBuffer;
+    }
+
+    //将用户发表时的方法转换为主贴名
+    public static String translateAddTopic(String condition){
+        if ("ask".equals(condition)) return "discuss";
+        else if ("write".equals(condition)) return "article";
+        else return "code";
     }
 
 }

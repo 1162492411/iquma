@@ -42,7 +42,8 @@
         <property name="maxWait" value="${jdbc.maxWait}"></property>
     </bean>
 
-    <!-- 设置数据源，添加MyBatis的分页插件PageHelper -->
+    <!-- 设置数据源 -->
+    <!--，添加MyBatis的分页插件PageHelper-->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="mapperLocations" value="classpath:com/iquma/mapping/*.xml"></property>
@@ -58,7 +59,6 @@
                     </property>
                 </bean>
             </array>
-
         </property>
     </bean>
 

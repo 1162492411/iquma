@@ -30,7 +30,6 @@ function formateTime(time) {
     if(time != null && time != "null" && time != " "){
         var d1 = new Date(time);
         var now = new Date().getTime();
-        console.log("当前" + now + ",格式前" + time + ",格式后" + d1);
         var seconds = (now - d1 + 14*60*60*1000)/1000/60;//取得两次相差的分钟数
         if(seconds < 60) return parseInt(seconds) + "分钟前";
         else var hours = seconds / 60;
@@ -45,8 +44,6 @@ function formateTime(time) {
 }
 
 //------------------- 编辑器页面 ------------------------//
-
-
 
 //初始化类别下拉框
 function initTypeSelection() {
@@ -78,60 +75,28 @@ function updateTagSelection(id) {
     });
 }
 
-// //获取所有标签--测试用
-// function getTags() {
-//     $.ajax({
-//         type: 'get',
-//         url: '/api/getAllTags',
-//         dataType: 'json',
-//         success: function (data) {
-//             $('#tags-input').selectivity({
-//                 items: data,
-//                 multiple: true,
-//                 tokenSeparators: [' ']
-//             });
-//         },
-//         error: function (data) {
-//             alert("请求标签失败~");
-//         }
-//     });
-// }
-
-// //提交标签数据--测试用
-// function tagsSubmit() {
-//     arr = new Array();
-//     $(".selectivity-multiple-selected-item").each(function (i){
-//         // arr[i] = $(this).attr("data-item-id");
-//         arr.push($(this).attr("data-item-id"));
-//     });
-//     $.ajax({
-//         type: 'post',
-//         url: '/api/tagsSubmit',
-//         dataType: 'json',
-//         data: JSON.stringify(arr),
-//         success: function (data) {
-//             if(true == data) alert("提交标签成功~");
-//             else alert("~~~");
-//         },
-//         error: function (data) {
-//             alert("提交标签失败~");
-//         }
-//     });
-//
-// }
-
 //编辑器提交
 function editorSubmit(type) {
     var editor = new wangEditor('contentDiv');
     editor.create();
     $("#subBtn").click(function () {
-        var d = {
-            "title" : $("#title").val(),
-            "tid" : parseInt($("#tidSelection").val()),
-            "aid" : $("#aid").val(),
-            "addTime" : new Date(),
-            "content" : filterXSS(editor.$txt.html())
-        };
+        if(type == 'upload' && $("#attid").val() != " ")
+            var d = {
+                "title" : $("#title").val(),
+                "tid" : parseInt($("#tidSelection").val()),
+                "aid" : $("#aid").val(),
+                "addTime" : new Date(),
+                "content" : filterEnter(filterXSS(editor.$txt.html())),
+                "attid" : parseInt($("#attid").val())
+            };
+        else
+            var d = {
+                "title" : $("#title").val(),
+                "tid" : parseInt($("#tidSelection").val()),
+                "aid" : $("#aid").val(),
+                "addTime" : new Date(),
+                "content" : filterEnter(filterXSS(editor.$txt.html()))
+            };
         if(d.title == "" || d.tid == 0 || d.aid == "" || d.content == "<p><br></p>"){
             alert("存在未填写字段，请填写后再提交！");
             return;
@@ -153,8 +118,29 @@ function editorSubmit(type) {
     });
 }
 
+//过滤回车符
+function filterEnter(content) {
+    var string = content;
+    try{
+        string = string.replace(/\n/g,"<br />");
+    }catch(e) {
+        alert(e.message);
+    }
+    return string;
+}
 
 //------------------------- 主贴页面 ---------------------------//
+
+function getTopicPath() {
+    var path = rootPath;
+    var sec = $("#condition_sec").val();
+    if(sec != " ") path += "/" + sec;
+    var type = $("#condition_type").val();
+    path += "/" + $("#condition_id").val();
+    if(type != " ") path += "/" + type;
+    else path += "/default";
+    return path;
+}
 
 //初始化列表页面相关状态
 function initListStatus() {
@@ -174,53 +160,61 @@ function initListStatus() {
 }
 
 //初始化分页
-function initListPag(currentPage,totalPage,path){
+function initPag(currentPage,totalPage,id,path){
     var c = parseInt(currentPage);
     var t = parseInt(totalPage);
     if(t <=1 ) {//总页数过少时移除分页
-        $("#topicsPagination").remove();
+        $("#" + id).remove();
         return ;
     }
-    if(c > 1)  $("#topicsPagination").append("<li id='pagLast' ><a href='" + path +"/" + (c - 1) + "'> << </a></li>");//处理"上一页"
-    for(var i = 1; i < c; i++) $("#topicsPagination").append("<li><a href='" + path +"/" + i + "'>" + i + "</a></li>");//添加当前页码前的页数
-    $("#topicsPagination").append("<li id='pagCurrent' class='active'><span>" + c + "</span></li>");//添加当前页码
-    for(var j = c + 1; j <= t; j++) $("#topicsPagination").append("<li><a href='" + path +"/" + j + "'>" + j + "</a></li>");//添加当前页码后的页数
-    if(c < t) $("#topicsPagination").append("<li id='pagNext' ><a href='" + path +"/" + (c + 1) + "'> >> </a></li>");//处理"下一页"
+    if(c > 1)  $("#" + id).append("<li id='pagLast' ><a href='" + path +"/" + (c - 1) + "'> << </a></li>");//处理"上一页"
+    for(var i = 1; i < c; i++) $("#" + id).append("<li><a href='" + path +"/" + i + "'>" + i + "</a></li>");//添加当前页码前的页数
+    $("#" + id).append("<li id='pagCurrent' class='active'><span>" + c + "</span></li>");//添加当前页码
+    for(var j = c + 1; j <= t; j++) $("#" + id).append("<li><a href='" + path +"/" + j + "'>" + j + "</a></li>");//添加当前页码后的页数
+    if(c < t) $("#" + id).append("<li id='pagNext' ><a href='" + path +"/" + (c + 1) + "'> >> </a></li>");//处理"下一页"
 
 }
 
-
 //检测主贴相关状态
 function initTopicStatus(topicType) {
-    //处理顶部主贴类型文字
-    if('tutorial' == topicType) $("#topicText").text('教');
-    else if ('question' == topicType) $("#topicText").text('问');
-    else if ('article' == topicType) $("#topicText").text('文');
-    else $("#topicText").text('码');
-    //处理被关闭的主贴
+    handleTopicType(topicType);//处理顶部主贴类型文字
+    handleStatus();//处理被关闭的主贴
+    handleReply();//处理回复
+    var condition = {"obid": Number($("#condition_id").val())};
+    handleFavoriteStatus(condition);//用户登录时查询收藏状态
+    handleAtt();//处理附件大小
+}
+
+//检测主贴相关状态之处理被关闭的主贴
+function handleStatus() {
     if ($('#condition_isBlock').val() == "false" && $('#blockButton').length > 0)
         $('#blockButton').removeAttr('disabled');
     else if ($('#condition_isBlock').val() == "true")
         $('#blockTip').attr('type', 'text');
-    //处理被关闭的回复
+}
+
+//检测主贴相关状态之处理主贴类型
+function handleTopicType(topicType) {
+    if('tutorial' == topicType) $("#topicText").text('教');
+    else if ('question' == topicType) $("#topicText").text('问');
+    else if ('article' == topicType) $("#topicText").text('文');
+    else $("#topicText").text('码');
+}
+
+//检测主贴相关状态之处理回复
+function handleReply() {
+    //处理回复
     $('article[id^=replyArticle-]').each(function () {
         var id = $(this).attr("id").substring(13);
         //对于被关闭的回复，隐藏它的内容
-        if ($('#condition-replyStatus-' + id).val() == "true")
-            $('#replyContent-' + id).html("该回复已被关闭");
-        //对于未被关闭的回复
-        else if ($('#condition-replyStatus-' + id).val() == "false") {
-            //在关闭回复按钮存在的情况下，启用该按钮
-            if ($('#blockReplyButton-' + id).length > 0)
-                $('#blockReplyButton-' + id).removeAttr("disabled");
-        }
+        if ($('#condition-replyStatus-' + id).val() == "true") $('#replyContent-' + id).html("该回复已被关闭");
+        //对于未被关闭的回复,在关闭回复按钮存在的情况下，启用该按钮
+        else if ($('#condition-replyStatus-' + id).val() == "false" && $('#blockReplyButton-' + id).length > 0) $('#blockReplyButton-' + id).removeAttr("disabled");
     });
-    //处理收藏主贴按钮
-    var condition = {
-        "uid": $('#condition_uid').val(),
-        "obid": Number($("#condition_id").val())
-    };
-    //用户登录时查询收藏状态
+}
+
+//检测主贴相关状态之查询收藏状态
+function handleFavoriteStatus(condition) {
     if ($('#condition_uid').val() != "") {
         $.ajax({
             type: 'POST',
@@ -229,16 +223,18 @@ function initTopicStatus(topicType) {
             contentType: 'application/json',
             async: false,
             success: function (data) {
-                if (data == false) {
+                if (data == false)
                     $('#favoriteButton').removeAttr('disabled');
-                }
             },
             error: function () {
                 alert("查看收藏状态失败！");
             }
         });
     }
-    //处理附件大小
+}
+
+//检测主贴相关状态之处理附件大小
+function handleAtt() {
     if($("#attSize").length > 0){
         var bytes = parseInt($("#attSize").val());
         var k = 1024;
@@ -257,35 +253,38 @@ function initTags(tags) {
     }
 }
 
-
 //查询投票信息
-function initRateInfo(id,dom) {
-    var d = {"opid"  :id};
+function initRateInfo(id) {
+    var d = {"opid" : id};
+    if ($('#condition_uid').val() != "")
     $.ajax({
         type: 'POST',
         url: '/api/getRateInfo',
         contentType: 'application/json',
         data: JSON.stringify(d),
         success: function (data) {
+            console.log("查询到用户对该贴的投票信息是" + data);
             if ("like" == data) {
-                $("#like-" + dom).css("background-color","#A4D3EE");
+                $("#like-0").css("background-color","#A4D3EE");
+                $("#like-0").attr("disabled","disabled");
+                $("#hate-0").attr("disabled","disabled");
             }
             else if("hate" == data){
-                $("#hate-" + dom).css("background-color","#A4D3EE");
+                $("#hate-0").css("background-color","#A4D3EE");
+                $("#hate-0").attr("disabled","disabled");
+                $("#hate-0").attr("disabled","disabled");
             }
         },
         error: function () {
             alert('发送请求失败！');
         }
     });
-
 }
 
 //加载主题信息--批量处理信息
 function initTopics(topics) {
-    for(var i=0; i < topics.length; i++){
-        initTopic(topics[i]);
-    }
+    if(topics == " ") $("#topic-list").append("<div style='text-align:center'>查找的内容不存在</div>");
+    else for(var i=0; i < topics.length; i++) initTopic(topics[i]);
 }
 
 //加载主题信息--批量调用
@@ -305,6 +304,8 @@ function initTopic(topic) {
 
     temp += "<span class='split'></span> <span>" + formateTime(topic.reTime) + "被回复</span></li></ul>";
 
+    if(topic.isBlock == "1")
+        temp += "<img src='" + rootPath + "/static/image/blocked.png' />";
     temp += "<h2 class='title'><a href='" + getSecPath() + "/" + topic.id + "'>" + topic.title + "</a></h2>";
 
     temp += "<ul class='taglist--inline ib'><li class='tagPopup'><a class='tag tag-sm'>" + topic.tag.name + "</a></li></ul></div></section>";
@@ -315,90 +316,61 @@ function initTopic(topic) {
 
 //赞同主贴
 function likeTopic(topicType,id) {
-    var da = {"id" : parseInt(id),"aid" : $("#condition_aid").val(), "section": {"name" : topicType}};
-    var d = {"opid"  :id};
-    $.ajax({
-        type: 'POST',
-        url: '/api/getRateInfo',
-        contentType: 'application/json',
-        data: JSON.stringify(d),
-        success: function (data) {
-            if(data == "err" && $('#condition_uid').val() != ""){
-                $.ajax({
-                    type: 'POST',
-                    url: '/' + topicType + '/' + id + '/like',
-                    contentType: 'application/json',
-                    data: JSON.stringify(da),
-                    success: function (data) {
-                        if(data == true){
-                            $("#like-0").css("background-color","#A4D3EE");
-                            $("#hate-0").attr("disabled","disabled");
-                        }
-                        else
-                            alert('投票失败，请稍后重试！');
-                    },
-                    error: function () {
-                        alert('发送请求失败！');
-                    }
-                });
+    if($('#condition_uid').val() != ""){
+        var da = {"id" : parseInt(id),"aid" : $("#condition_aid").val(), "section": {"name" : topicType}};
+        $.ajax({
+            type: 'POST',
+            url: '/' + topicType + '/' + id + '/like',
+            contentType: 'application/json',
+            data: JSON.stringify(da),
+            success: function (data) {
+                if(data == true){
+                    $("#like-0").css("background-color","#A4D3EE");
+                    $("#like-0").attr("disabled","disabled");
+                    $("#hate-0").attr("disabled","disabled");
+                }
+                else
+                    alert('投票失败，请稍后重试！');
+            },
+            error: function () {
+                alert('发送请求失败！');
             }
-            else
-                alert("已投票，请勿重复投票");
-
-        },
-        error: function () {
-            alert('发送请求失败！');
-        }
-    });
-
+        });
+    }
 }
 
 //反对主贴
 function hateTopic(topicType,id) {
-    var da = {"id" : parseInt(id),"aid" : $("#condition_aid").val(),"section": {"name" : topicType}};
-    var d = {"opid"  :id};
-    $.ajax({
-        type: 'POST',
-        url: '/api/getRateInfo',
-        contentType: 'application/json',
-        data: JSON.stringify(d),
-        success: function (data) {
-            if(data == "err" && $('#condition_uid').val() != ""){
-                $.ajax({
-                    type: 'POST',
-                    url: '/' + topicType + '/' + id + '/hate',
-                    data : JSON.stringify(da),
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if(data == true){
-                            $("#hate-0").css("background-color","#A4D3EE");
-                            $("#like-0").attr("disabled","disabled");
-                        }
-                        else
-                            alert('投票失败，请稍后重试！');
-                    },
-                    error: function () {
-                        alert('发送请求失败！');
-                    }
-                });
+    if($('#condition_uid').val() != ""){
+        var da = {"id" : parseInt(id),"aid" : $("#condition_aid").val(),"section": {"name" : topicType}};
+        $.ajax({
+            type: 'POST',
+            url: '/' + topicType + '/' + id + '/hate',
+            data : JSON.stringify(da),
+            contentType: 'application/json',
+            success: function (data) {
+                if(data == true){
+                    $("#hate-0").css("background-color","#A4D3EE");
+                    $("#like-0").attr("disabled","disabled");
+                    $("#hate-0").attr("disabled","disabled");
+                }
+                else
+                    alert('投票失败，请稍后重试！');
+            },
+            error: function () {
+                alert('发送请求失败！');
             }
-            else
-                alert("已投票，请勿重复投票");
-        },
-        error: function () {
-            alert('发送请求失败！');
-        }
-    });
+        });
+    }
 }
-
 
 //删除主贴
 function deleteTopic(topicType) {
     var d = {
         "id": $("#condition_id").val(),
         "aid": $("#condition_aid").val(),
-        "title": $("#topicTitle").val(),
-        "section": {"name": topicType}
+        "title": $("#condition_title").val(),
+        "sec" : topicType
     };
     $.ajax({
         type: 'delete',
@@ -427,7 +399,7 @@ function updateTopic(topicType) {
         "aid": $("#aid").val(),
         "title": $("#title").val(),
         "content": $("#content").val(),
-        "section": {"name": $("#sectionname").val()}
+        "sec": $("#sectionname").val()
     };
     $.ajax({
         type: 'PUT',
@@ -448,14 +420,13 @@ function updateTopic(topicType) {
     });
 }
 
-
 //收藏主贴
 function favoriteTopic(topicType) {
     var d = {
         "id": parseInt($("#condition_id").val()),
         "aid": $("#condition_aid").val(),
-        "title": $("#topicTitle").val(),
-        "section": {"name": topicType}
+        "title": $("#condition_title").val(),
+        "sec": topicType
     };
     $.ajax({
         type: 'POST',
@@ -483,8 +454,8 @@ function blockTopic(resultType) {
     var d = {
         "id": $("#condition_id").val(),
         "aid": $("#condition_aid").val(),
-        "title": $("#topicTitle").val(),
-        "section": {"name": resultType}
+        "title": $("#condition_title").val(),
+        "sec": resultType
     };
     $.ajax({
         type: 'POST',
@@ -511,7 +482,7 @@ function blockTopic(resultType) {
 function addReply() {
     var d = {
         "tid": Number($('#condition_id').val()),
-        "title": $('#topicTitle').val(),
+        "title": $('#condition_title').val(),
         "uid": $('#condition_uid').val(),
         "content": $('#replyContent').val(),
         "addTime": new Date()
@@ -542,7 +513,7 @@ function deleteReply(id, uid) {
     var d = {
         "id": Number(id),
         "tid": Number($('#condition_id').val()),
-        "title": $("#topicTitle").val(),
+        "title": $("#condition_title").val(),
         "uid": uid
     };
     $.ajax({
@@ -565,13 +536,12 @@ function deleteReply(id, uid) {
     });
 }
 
-
 //关闭回复
 function blockReply(id, uid) {
     var d = {
         "id": Number(id),
         "tid": Number($('#condition_id').val()),
-        "title": $("#topicTitle").val(),
+        "title": $("#condition_title").val(),
         "uid": uid
     };
     $.ajax({
@@ -599,7 +569,7 @@ function adoptReply(id, uid) {
     var d = {
         "id": Number(id),
         "tid": Number($('#condition_id').val()),
-        "title": $("#topicTitle").val(),
+        "title": $("#condition_title").val(),
         "uid": uid
     };
     $.ajax({
@@ -696,9 +666,11 @@ function hateReply(id,uid) {
 
 //加载回复信息--用户回答页面--批量加载
 function initAnswers(answers) {
-    for(var i = 0 ;i < answers.length; i ++){
-        initAnswer(answers[i]);
-    }
+    if(answers == " ")
+        $("#Profile-answers").append("<div style='text-align:center'>查找的内容不存在</div>");
+    else
+        for(var i = 0 ;i < answers.length; i ++)
+            initAnswer(answers[i]);
 }
 
 //加载回复信息--用户回答页面--被调用
@@ -709,9 +681,11 @@ function initAnswer(answer) {
 
 //加载收藏信息--用户收藏页面--批量加载
 function initCollections(collections) {
-    for(var i = 0 ;i < collections.length; i ++){
+    if(collections == " ")
+        $("#Profile-collections").append("<div style='text-align:center'>查找的内容不存在</div>");
+    else
+    for(var i = 0 ;i < collections.length; i ++)
         initCollection(collections[i]);
-    }
 }
 
 //加载收藏信息--用户收藏页面--被调用
@@ -721,17 +695,21 @@ function initCollection(collection) {
 }
 
 //加载话题列表信息--用户列表页面--批量加载
-function initLists(lists,cid) {
-    for(var i = 0 ;i < lists.length; i ++){
-        initList(lists[i],cid);
+function initLists(lists) {
+    if(lists == " "){
+        $("#Profile-" + $("#condition-topicType").val() + "s").append("<div style='text-align:center'>查找的内容不存在</div>");
+    }
+    else{
+        for(var i = 0 ;i < lists.length; i ++){
+            initList(lists[i]);
+        }
     }
 }
 
 //加载话题列表信息--用户列表页面--被调用
-//TODO:由于content中可能存在换行，而js在解析换行内容时会失败，因此需要考虑对换行进行过滤--此问题广泛存在于解析content的函数中
-function initList(list,cid) {
+function initList(list) {
     var temp = "<div class='List-item'><div class='ContentItem'><h2 class='ContentItem-title'><a href='" + rootPath + "/" + list.sec + "/" + list.id + "'>" + list.title + "</a></h2><div class='ContentItem-content is-collapsed'><span class='RichText CopyrightRichText-richText'>" + list.content + "</span><a class='Button ContentItem-more Button--plain' type='button' href='" + rootPath + "/" + list.sec + "/" + list.id + "'>查看</a></div></div></div>";
-    $("#Profile-" + cid + "s").append(temp);
+    $("#Profile-" + $("#condition-topicType").val() + "s").append(temp);
 }
 
 //加载用户主页中的主贴分类框
@@ -893,7 +871,7 @@ function uploadFile() {
             else {
                 $("#uploadBtn").attr("class","btn btn-success");
                 $("#uploadBtn").attr("value","上传成功");
-                $("#attachmentDiv").append("<input type='hidden' name='attid' value=' " + data + " '>");
+                $("#attachmentDiv").append("<input type='hidden' name='attid' id='attid' value='" + data + "'>");
 
             }
         },

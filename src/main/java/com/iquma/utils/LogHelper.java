@@ -32,18 +32,8 @@ public class LogHelper {
     @Autowired
     private NotificationService notificationService;
     @Autowired
-    private UserService userService;
-
-    //获取目前登录用户的id
-    private String initUserId(){
-        return String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid"));
-    }
-
-    //获取目前登录用户的昵称
-    private String initUserName(){
-        return String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("username"));
-    }
-
+    private UserHelper userHelper;
+    
     //用户登录后记录日志
     @AfterReturning(value = "execution(* com.iquma.controller.UserController.loginValidator(..))")
     public void afterLogin(JoinPoint joinPoint){
@@ -68,35 +58,21 @@ public class LogHelper {
         return "0:0:0:0:0:0:0:1".equals(ip)? "127.0.0.1" : ip ;
     }
 
-    //将用户发表时的方法转换为主贴名
-    private String translateAddTopic(String condition){
-        if ("ask".equals(condition)) return "discuss";
-        else if ("write".equals(condition)) return "article";
-        else return "code";
-    }
-
     //用户提问、发表经验、上传代码后记录日志
     @AfterReturning(value = "execution(* com.iquma.controller.UserController.ask(..)) || execution(* com.iquma.controller.UserController.write(..)) || execution(* com.iquma.controller.UserController.upload(..)) ", returning = "result")
     public  void afterAddTopic(JoinPoint joinPoint, Object result){
         if(Boolean.valueOf(String.valueOf(result))){//当方法返回结果是TRUE时
             //获取用户操作信息
             Topic record = (Topic)joinPoint.getArgs()[0];
-            String topicType =  translateAddTopic(joinPoint.getSignature().getName());
-            String uid = initUserId();
+            String topicType =  CASTS.translateAddTopic(joinPoint.getSignature().getName());
+            String uid = UserHelper.getCurrentUserId();
             String opid = String.valueOf(record.getId());
             Byte pid = permissionService.selectByPermission(topicType + ":create").getId();
             Date time = record.getaddTime();
             //将用户操作信息存入记录
             operationService.insert(new Operation(uid,opid,pid,time));
-            //更新用户威望
-            if("discuss".equals(topicType))
-                userService.updatePrestige(initUserId(), ENUMS.PRESTIGE_INSERT_DISUCSS);
-            else if("article".equals(topicType))
-                userService.updatePrestige(initUserId(),ENUMS.PRESTIGE_INSERT_ARTICLE);
-            else if("code".equals(topicType))
-                userService.updatePrestige(initUserId(),ENUMS.PRESTIGE_INSERT_CODE);
-            //更新用户角色等级
-            updateUserRid();
+            userHelper.updateUserPrestige(topicType,UserHelper.getCurrentUserId()); //更新用户威望
+            userHelper.updateUserRid();//更新用户角色等级
         }
     }
 
@@ -107,9 +83,10 @@ public class LogHelper {
             //获取用户操作信息
             Topic record = (Topic)joinPoint.getArgs()[0];
             String topicType = record.getSec();
-            String uid = initUserId();
+            String uid = UserHelper.getCurrentUserId();
             String opid = String.valueOf(record.getId());
             String methodName = joinPoint.getSignature().getName();
+            System.out.println("记录日志时收到的有效信息是-------topicType:" + topicType + "---uid:" + uid + "-----opid:" + opid + "---methodName:" + methodName);
             Byte pid = permissionService.selectByPermission(topicType + ":" + methodName).getId();
             Date time = new Date();
             //将用户操作信息存入记录
@@ -117,22 +94,11 @@ public class LogHelper {
             //通知相关用户，主贴被收藏/赞同/反对除外，用户操作自己的主贴除外
             String ntfuid = record.getAid();
             if(!uid.equals(ntfuid) && ! "favorite".equals(methodName) && ! "like".equals(methodName) && ! "hate".equals(methodName)){
-                String ntfcontent = "你的帖子<a>" + record.getTitle() + "</a>被" + initUserName() + CASTS.castTopic(methodName);
-                notificationService.insert(new Notification(ntfuid,ntfcontent,time,Boolean.TRUE));
+                notificationService.insert(new Notification(ntfuid,"你的帖子<a>" + record.getTitle() + "</a>被" + UserHelper.getCurrentUserName() + CASTS.castTopic(methodName),time,Boolean.TRUE));
             }
-            //更新用户威望
-            switch (methodName){
-                case "delete" :
-                    userService.updatePrestige(ntfuid,ENUMS.PRESTIGE_BE_DELETED);break;
-                case "block" :
-                    userService.updatePrestige(ntfuid,ENUMS.PRESTIGE_BE_BLOCKED);break;
-                case "like" :
-                    userService.updatePrestige(ntfuid,ENUMS.PRESTIGE_BE_LIKED);break;
-                case "hate" :
-                    userService.updatePrestige(ntfuid,ENUMS.PRESTIGE_BE_HATED);break;
-            }
+            userHelper.updateUserPrestige(methodName,ntfuid); //更新用户威望
             //更新用户角色等级
-            updateUserRid();
+            userHelper.updateUserRid();
         }
     }
 
@@ -140,7 +106,7 @@ public class LogHelper {
     @AfterReturning(value = "execution(* com.iquma.controller.ReplyController.insert(..))")
     public void afterInsertReply(JoinPoint joinPoint){
         Reply reply = (Reply)joinPoint.getArgs()[0];//获取用户操作信息
-        String uid = initUserId();
+        String uid = UserHelper.getCurrentUserId();
         String opid = String.valueOf(reply.getTid());
         Byte pid = permissionService.selectByPermission("reply:create").getId();
         Date time = reply.getAddTime();
@@ -152,14 +118,9 @@ public class LogHelper {
         String ntfuid = topicService.selectById(reply.getTid()).getAid();
         String ntfcontent = "你的帖子" + reply.getTid() + "有新回复";
         notificationService.insert(new Notification(ntfuid,ntfcontent,time,Boolean.TRUE));
-        //更新用户威望
-        userService.updatePrestige(initUserId(),ENUMS.PRESTIGE_INSERT_REPLY);
-        //更新用户角色等级
-        updateUserRid();
+        userHelper.updateUserPrestige("reply",UserHelper.getCurrentUserId()); //更新用户威望
+        userHelper.updateUserRid();//更新用户角色等级
     }
-
-
-
 
     //有权限的用户删除/关闭/采纳/赞同/反对评论后记录日志
     @AfterReturning(value = "execution(* com.iquma.controller.ReplyController.delete(..)) || execution(* com.iquma.controller.ReplyController.block(..)) || execution(* com.iquma.controller.ReplyController.adopt(..)) || execution(* com.iquma.controller.ReplyController.like(..)) || execution(* com.iquma.controller.ReplyController.hate(..)) ", returning = "result")
@@ -167,7 +128,7 @@ public class LogHelper {
         if(Boolean.valueOf(String.valueOf(result))){//当方法返回结果是TRUE时
             //获取用户操作信息
             Reply record = (Reply)joinPoint.getArgs()[0];
-            String uid = initUserId();
+            String uid = UserHelper.getCurrentUserId();
             String opid = String.valueOf(record.getId());
             String methodName = joinPoint.getSignature().getName();
             Byte pid = permissionService.selectByPermission("reply:" + methodName).getId();
@@ -181,44 +142,15 @@ public class LogHelper {
             //通知相关用户,用户评论自己的主贴除外，评论被赞同/反对除外
             String ntfuid = record.getUid();
             if(!uid.equals(ntfuid) && ! "like".equals(methodName) && ! "hate".equals(methodName)){
-                String ntfcontent = "你对<a>" + record.getTitle() + "</a>的回复被" + initUserName() + CASTS.castReply(methodName);
+                String ntfcontent = "你对<a>" + record.getTitle() + "</a>的回复被" + UserHelper.getCurrentUserName() + CASTS.castReply(methodName);
                 notificationService.insert(new Notification(ntfuid,ntfcontent,time,Boolean.TRUE));
             }
-            //更新用户威望
-            switch (methodName){
-                case "delete" :
-                    userService.updatePrestige(ntfuid,ENUMS.PRESTIGE_BE_DELETED);break;
-                case "block" :
-                    userService.updatePrestige(ntfuid,ENUMS.PRESTIGE_BE_BLOCKED);break;
-                case "adopt" :
-                    userService.updatePrestige(ntfuid,ENUMS.PRESTIGE_BE_ADOPTED);break;
-                case "like" :
-                    userService.updatePrestige(ntfuid,ENUMS.PRESTIGE_BE_LIKED);break;
-                case "hate" :
-                    userService.updatePrestige(ntfuid,ENUMS.PRESTIGE_BE_HATED);break;
-            }
+            userHelper.updateUserPrestige(methodName,ntfuid); //更新用户威望
             //更新用户角色等级
-            updateUserRid();
+            userHelper.updateUserRid();
         }
     }
 
 
-    //更新用户角色等级
-    private void updateUserRid(){
-        String uid = initUserId();
-        User user = userService.selectById(uid);
-        int prestige = user.getPrestige();
-        if(user.getRid() >= 4){//当账户是学生账户时，根据威望更新用户角色等级
-            if(ENUMS.PRESTIGE_RID_4 <= prestige)
-                userService.updateRid(uid,Byte.parseByte("4"));
-            else if(ENUMS.PRESTIGE_RID_5 <= prestige)
-                userService.updateRid(uid,Byte.parseByte("5"));
-            else if(ENUMS.PRESTIGE_RID_6 <= prestige)
-                userService.updateRid(uid,Byte.parseByte("6"));
-            else if(ENUMS.PRESTIGE_RID_7 <= prestige)
-                userService.updateRid(uid,Byte.parseByte("7"));
-            else
-                userService.updateRid(uid,Byte.parseByte("8"));
-        }
-    }
+
 }

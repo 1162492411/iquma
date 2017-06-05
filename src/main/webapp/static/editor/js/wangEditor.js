@@ -3358,7 +3358,7 @@ _e(function (E, $) {
 
     // 上传图片的配置
     // server地址
-    E.config.uploadImgUrl = '/file/upload/image';
+    E.config.uploadImgUrl = '/file/upload/img';
     // 超时时间
     E.config.uploadTimeout = 20 * 1000;
     // 用于存储上传回调事件

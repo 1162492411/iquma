@@ -7,6 +7,6 @@ import java.util.List;
  */
 public interface RolePerService {
 
-    List selectPersById(Byte rid);//获取角色拥有的权限
+    List selectPersByRid(Byte rid);//获取角色拥有的权限
 
 }

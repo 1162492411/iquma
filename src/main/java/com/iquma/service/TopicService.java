@@ -23,6 +23,8 @@ public interface TopicService {
 
     boolean reduceReply(Integer id);//将主题回复数减1
 
+    void increaseViewCount(Integer id);//将主题浏览量加1
+
     boolean adopt(Integer id);//主题采纳回复
 
     Topic selectById(Integer id);//根据id获取主题
@@ -37,5 +39,4 @@ public interface TopicService {
 
     List<Topic> selectsSimpleByConditionAndPage(int page, Topic condition);//根据条件和页码获取简略的主题集合--按页数
 
-    List selectAll();//获取所有主题
 }

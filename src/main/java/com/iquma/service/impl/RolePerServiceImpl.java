@@ -16,7 +16,7 @@ public class RolePerServiceImpl implements RolePerService{
     private RolePerMapper rolePerMapper;
 
     @Override
-    public List selectPersById(Byte rid) {
-        return this.rolePerMapper.selectPersById(rid);
+    public List selectPersByRid(Byte rid) {
+        return this.rolePerMapper.selectPersByRid(rid);
     }
 }

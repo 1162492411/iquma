@@ -63,7 +63,7 @@ public class FileController {
                         String fileName = type + "-" + initUserId() + "-" + System.currentTimeMillis() + "." + myFileName.substring(myFileName.lastIndexOf('.') + 1);
                         //定义上传路径
                         String path = request.getServletContext().getRealPath("/static/" + type + "/" + fileName);
-                        System.out.println("上传路径是" + path);
+                        System.out.println("上传的真实路径是" + path);
                         File localFile = new File(path);
                         try {
                             file.transferTo(localFile);
@@ -73,10 +73,8 @@ public class FileController {
                         }
                         if ("img".equals(type) || "avatar".equals(type))//如果是图片需要传回预览地址
                             return DOMAIN + "/static/" + type + "/" + fileName;
-//                        else if ("avatar".equals(type))//如果是头像需要传回相对服务器的地址
-//                            return "/static/" + type + "/" + fileName;
                         else {//如果是上传附件，保存信息到数据库并返回插入的记录的id
-                            Attachment attachment = new Attachment(initUserId(), new Date(), fileName, file.getSize(), path);
+                            Attachment attachment = new Attachment(initUserId(), new Date(), fileName, file.getSize(), "/static/file/" + fileName);
                             if (attachmentService.insert(attachment)) {
                                 return String.valueOf(attachment.getId());
                             }
@@ -111,14 +109,17 @@ public class FileController {
     //下载文件
     @RequestMapping(value = "download/{id}")
     public ResponseEntity<byte[]> testResponseEntity(@PathVariable Integer id, HttpSession session, Attachment attachment) throws IOException {
+        System.out.println("即将查询文件" + id);
         attachment = attachmentService.selectById(id);
         byte[] body = null;
         ServletContext servletContext = session.getServletContext();
 
         InputStream in = servletContext.getResourceAsStream(attachment.getPath());
-        System.out.println("成功查询文件");
-        body = new byte[in.available()];
-        in.read(body);
+        System.out.println("成功查询文件" + attachment.getPath());
+        if(in.available() > 0){
+            body = new byte[in.available()];
+            in.read(body);
+        }
 
         HttpHeaders headers = new HttpHeaders();
         //响应头的名字和响应头的值

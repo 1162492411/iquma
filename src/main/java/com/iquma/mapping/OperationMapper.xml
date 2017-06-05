@@ -41,6 +41,20 @@
         </trim>
     </select>
 
+    <select id="selectsRateInfo" parameterType="com.iquma.pojo.Operation" resultType="java.lang.String">
+        select p.permission as perpermission
+        from user_opinfo o
+        left join user_perinfo p on o.pid = p.id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="uid != null">
+                uid = #{uid,jdbcType=VARCHAR}
+            </if>
+            <if test="opid != null">
+                and opid = #{opid,jdbcType=VARCHAR}
+            </if>
+            and pid in (select p.id from user_perinfo WHERE (p.permission like '%like' or p.permission like '%hate') and p.permission not like 'reply%')
+        </trim>
+    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
         delete from user_opinfo

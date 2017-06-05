@@ -10,4 +10,6 @@ public interface OperationMapper {
 
     List selectsByCondition(Operation condition);
 
+    String selectsRateInfo(Operation condition);//选取用户的投票行为
+
 }

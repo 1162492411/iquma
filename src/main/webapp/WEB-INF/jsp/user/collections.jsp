@@ -14,10 +14,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             initProHeaders(${user.id},'collection');
-            if($("#searchStatus").val() == 'true')
-                $("#Profile-collections").append("不存在相关内容~");
-            else
-                initCollections(${collections});
+            initCollections(${collections});
             hljs.initHighlightingOnLoad();
         });
     </script>
@@ -34,7 +31,6 @@
                 <div class="Card ProfileMain" id="ProfileMain">
                     <!-- 用户动态详细数据区 -->
                     <div class="List" id="Profile-collections">
-                        <input type="hidden" id="searchStatus" value="${emptyResult}"/>
                     </div><!-- 用户动态详细数据区结束 -->
                 </div><!-- 用户动态数据区左侧结束 -->
             </div><!-- 用户动态数据区结束 -->

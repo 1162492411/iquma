@@ -165,7 +165,7 @@
 
     <update id="changeStatusByPrimaryKey" parameterType="java.lang.Integer">
         update topic_repinfo
-        set isBlock = ! isBlock where id = #{id,jdbcType=INTEGER}
+        set isBlock = true where id = #{id,jdbcType=INTEGER}
     </update>
 
     <update id="adopt" parameterType="java.lang.Integer">

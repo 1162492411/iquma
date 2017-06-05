@@ -13,7 +13,8 @@
     <script type="text/javascript">
         $(document).ready(function () {
             initListStatus();
-            initListPag(${currentPage},${totalPage},getTypesPath());
+            initTopics(${topics});
+            initPag(${currentPage},${totalPage},"topicsPagination",getTypesPath());
             initTags(${tags});
         });
     </script>
@@ -41,13 +42,6 @@
                     <!-- 筛选方式结束 -->
                     <!-- 主贴列表 -->
                     <div class="stream-list question-stream" id="topic-list">
-                        <input type="hidden" id="searchEmpty" value="${searchEmpty}" />
-                            <script type="text/javascript">
-                                $(document).ready(function () {
-                                    if($("#searchEmpty").val() == 'true') $("#topic-list").append("查询的数据不存在~");
-                                    else initTopics(${topics});
-                                });
-                            </script>
                     </div>
                     <%-- 分页按钮 --%>
                     <nav><ul class="pagination" id="topicsPagination"></ul></nav>

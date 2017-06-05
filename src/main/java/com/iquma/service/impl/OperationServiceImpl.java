@@ -27,6 +27,11 @@ public class OperationServiceImpl implements OperationService {
         return this.operationMapper.selectsByCondition(condition);
     }
 
+    @Override
+    public String selectsRateInfo(Operation condition) {
+        return this.operationMapper.selectsRateInfo(condition);
+    }
+
 //    @Override
 //    public Operation selectByCondition(Operation condition) {
 //        return this.operationMapper.selectByCondition(condition);

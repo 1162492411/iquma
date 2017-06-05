@@ -11,7 +11,7 @@
     <script src="${pageContext.request.contextPath}/static/js/highlight.pack.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            initNtfs(${ntfs},${userid});
+            initNtfs('${ntfs}',${userid});
             hljs.initHighlightingOnLoad();
         });
     </script>

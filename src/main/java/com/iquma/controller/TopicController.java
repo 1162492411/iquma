@@ -1,12 +1,16 @@
 package com.iquma.controller;
 
 
+import com.iquma.exception.NoSuchTopicException;
 import com.iquma.pojo.*;
 import com.iquma.service.*;
 import com.iquma.utils.BinomialUtil;
 import com.iquma.utils.CASTS;
 import com.iquma.utils.ENUMS;
+import com.iquma.utils.UserHelper;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,6 +35,13 @@ public class TopicController {
     private BinomialUtil binomialUtil;
     @Autowired
     private TagService tagService;
+    private static int oldTopicCount = -2;//存储旧主贴总数
+    private static String oldTname = "-2";//存储旧标签名
+    private static Byte oldTagId = -2;//存储旧标签id
+    private static String oldType = "-2";//存储旧分类方式
+    private static int oldTopicId = -3;//存储旧主题id
+    private static int oldReplyCount = -3;//存储旧回复总数
+    private static Topic oldTopic = null;//存储旧主贴
 
 
     /**
@@ -50,13 +61,14 @@ public class TopicController {
         model.addAttribute("tag",tname == null? "null" : tname);
         model.addAttribute("tags",tags);
         model.addAttribute("type", type);
-        if(0 == results.size()) model.addAttribute("searchEmpty",Boolean.TRUE);
-        else model.addAttribute("topics", CASTS.translateToSB(results));
-        int totalPage = getTotalPage(topic);
+        model.addAttribute("topics", CASTS.translateToSB(results));
+        int totalPage = getTotalPage(topic,tname,type);
         model.addAttribute("totalPage",totalPage);
         model.addAttribute("currentPage",page >= totalPage?totalPage : page <= 0? 1 : page);
+        oldTname = (tname == null ? "-2" : tname); oldType = (type == null? "-2" : type);
         return "topics/topics";
     }
+
 
     //处理查询条件中的标签
     private List handleTname(String tname, Tag tag, Topic topic){
@@ -64,7 +76,7 @@ public class TopicController {
             return tagService.selectAll();//若没有选择标签则取出所有标签
         else {
             tag.setName(tname);//设置主贴类别
-            Byte tid = tagService.selectByCondition(tag).getId();
+            Byte tid = oldTname.equals(tname) ? oldTagId : (oldTagId = tagService.selectByCondition(tag).getId() );
             topic.setTid(tid);//设定查询条件
             return tagService.selectsRelevant(tid);//若已选择标签则返回该标签所属的标签体系中的所有标签
         }
@@ -77,9 +89,9 @@ public class TopicController {
     }
 
     //获取符合条件的主贴的总页数
-    private int getTotalPage(Topic condition){
-        int total = topicService.selectsSimpleByCondition(condition).size();
-        return total % 10 == 0 ? total / 10 : total / 10 + 1;
+    private int getTotalPage(Topic condition,String tname,String type){
+        if(!oldTname.equals(tname) || !oldType.equals(type))  oldTopicCount = topicService.selectsSimpleByCondition(condition).size();//若除页数外的搜索条件没有变化，则使用旧的总主贴数;否则重新查询
+        return oldTopicCount % 10 == 0 ? oldTopicCount / 10 : oldTopicCount / 10 + 1;
     }
 
     //前往教程列表页面--默认
@@ -101,7 +113,7 @@ public class TopicController {
         if("hottest".equals(type) || "unanswered".equals(type) || "new".equals(type))
             return toTopicsByCondition(null,type,page,tag,topic,model,ENUMS.SEC_TUTORIAL);
         else//如果是按标签获取主贴
-            return toTopicsByCondition(type,null,page,tag,topic,model,ENUMS.SEC_TUTORIAL);
+            return toTopicsByCondition(type,"new",page,tag,topic,model,ENUMS.SEC_TUTORIAL);
     }
 
     //前往教程列表页面--按页数和类型和分类
@@ -122,14 +134,14 @@ public class TopicController {
         return toTopicsByCondition(null,"new",page,tag,topic,model,ENUMS.SEC_QUESTION);
     }
 
-    //前往提问列表页面--按页数和类型
+    //前往提问列表页面--按页数或类型
     @RequestMapping("questions/{type}/{page}")
     public String toQuestionsByType(@PathVariable String type, @PathVariable int page,Tag tag, Topic topic, Model model) {
         //如果是按类型获取主贴
         if("hottest".equals(type) || "unanswered".equals(type) || "new".equals(type))
             return toTopicsByCondition(null,type,page,tag,topic,model,ENUMS.SEC_QUESTION);
         else//如果是按标签获取主贴
-            return toTopicsByCondition(type,null,page,tag,topic,model,ENUMS.SEC_QUESTION);
+            return toTopicsByCondition(type,"new",page,tag,topic,model,ENUMS.SEC_QUESTION);
     }
 
     //前往提问列表页面--按页数和类型和分类
@@ -150,14 +162,14 @@ public class TopicController {
         return toTopicsByCondition(null,"new",page,tag,topic,model,ENUMS.SEC_ARTICLE);
     }
 
-    //前往经验列表页面--按页数和类型
+    //前往经验列表页面--按页数或类型
     @RequestMapping("articles/{type}/{page}")
     public String toArticlesByType(@PathVariable String type, @PathVariable int page,Tag tag, Topic topic, Model model) {
         //如果是按类型获取主贴
         if("hottest".equals(type) || "unanswered".equals(type) || "new".equals(type))
             return toTopicsByCondition(null,type,page,tag,topic,model,ENUMS.SEC_ARTICLE);
         else//如果是按标签获取主贴
-            return toTopicsByCondition(type,null,page,tag,topic,model,ENUMS.SEC_ARTICLE);
+            return toTopicsByCondition(type,"new",page,tag,topic,model,ENUMS.SEC_ARTICLE);
     }
 
     //前往经验列表页面--按页数和类型和分类
@@ -178,14 +190,14 @@ public class TopicController {
         return toTopicsByCondition(null,"new",page,tag,topic,model,ENUMS.SEC_CODE);
     }
 
-    //前往代码列表页面--按页数和类型
+    //前往代码列表页面--按页数或类型
     @RequestMapping("codes/{type}/{page}")
     public String toCodesByType(@PathVariable String type, @PathVariable int page,Tag tag, Topic topic, Model model)  {
         //如果是按类型获取主贴
         if("hottest".equals(type) || "unanswered".equals(type) || "new".equals(type))
             return toTopicsByCondition(null,type,page,tag,topic,model,ENUMS.SEC_CODE);
         else//如果是按标签获取主贴
-            return toTopicsByCondition(type,null,page,tag,topic,model,ENUMS.SEC_CODE);
+            return toTopicsByCondition(type,"new",page,tag,topic,model,ENUMS.SEC_CODE);
     }
 
     //前往代码列表页面--按页数和类型和分类
@@ -201,53 +213,74 @@ public class TopicController {
      * @param page 页数
      */
 
-    private String toTopics(Integer tid, String sort,Integer page, Reply reply, Model model){
-        reply.setTid(tid);//查询主贴是否存在
-        Topic topic = topicService.selectById(tid);
-        if(topic == null) return "status/emptyQuery";//主贴不存在则跳转空查询页面
+    private String toTopics(Integer tid, String sort,Integer page, Reply reply, Model model) throws NoSuchTopicException {
+        Topic topic = oldTopicId == tid ? oldTopic : (oldTopic = topicService.selectById(tid));//查询主贴是否存在
+        if(topic == null) throw new NoSuchTopicException();//主贴不存在则跳转空查询页面
         else{
+            if(oldTopicId != tid)
+                topicService.increaseViewCount(topic.getId());//选择新主贴时更新浏览量(防止重复计算)
             model.addAttribute("topic", topic);
-            int total = this.replyService.selectByCondition(reply).size();
-            model.addAttribute("total",total);
-            model.addAttribute("currentPage",page);
-            model.addAttribute("totalPage",total % 10 == 0 ? total / 10 : total / 10 + 1);
-            if("time".equals(sort)){//如果回复按时间排序
-                model.addAttribute("replies",replyService.selectByConditionSortByTime(page == 0 ? 1 : page, reply));
-                return "topics/topic_time";
-            }
-            else{//如果主贴回复按默认排序
-                model.addAttribute("replies",replyService.selectByConditionAndPage(page == 0? 1 : page ,reply));
-                return "topics/topic_default";
-            }
+            int replyPage = getReplyPage(tid,reply);
+            model.addAttribute("type",sort == null ? (sort = "default") : sort);
+            model.addAttribute("total",oldReplyCount);
+            model.addAttribute("currentPage",page >= replyPage?replyPage : page <= 0? 1 : page);
+            model.addAttribute("totalPage",replyPage);
+            oldTopicId = tid;
+            return handleReply(sort,page,reply,model);
+        }
+    }
+    
+    //获取主题的回复总页数
+    private int getReplyPage(Integer tid,Reply reply){
+        reply.setTid(tid);
+        oldReplyCount = (oldTopicId == tid ? oldReplyCount : replyService.selectByCondition(reply).size());
+        return oldReplyCount % 3 == 0 ? oldReplyCount / 3: oldReplyCount /3 + 1;
+    }
+
+    //处理主题的回复排序方式
+    private String handleReply(String sort, Integer page, Reply reply, Model model){
+        if("time".equals(sort)){//如果回复按时间排序
+            model.addAttribute("replies",replyService.selectByConditionSortByTime(page == 0 ? 1 : page, reply));
+            return "topics/topic_time";
+        }
+        else{//如果主贴回复按默认排序
+            model.addAttribute("replies",replyService.selectByConditionAndPage(page == 0? 1 : page ,reply));
+            return "topics/topic_default";
         }
     }
 
     //显示主贴--按主贴id
     @RequestMapping(value = {"tutorial/{tid}","question/{tid}","article/{tid}","code/{tid}"})
-    public String toTopicByDefault(@PathVariable Integer tid, Reply reply, Model model)  {
-        return toTopics(tid,null,0,reply,model);
+    public String toTopicByDefault(@PathVariable Integer tid, Reply reply, Model model)  throws NoSuchTopicException{
+        return toTopics(tid,"default",0,reply,model);
     }
 
     //显示主贴--按分页显示回复或者按时间显示回复
     @RequestMapping({"tutorial/{tid}/{con}","question/{tid}/{con}","article/{tid}/{con}","code/{tid}/{con}"})
-    public String toTopicByDefaultPage(@PathVariable int tid,@PathVariable String con, Reply reply, Model model) {
-        if(con.equals("null") || "time".equals(con))//如果是按时间显示或按默认显示
+    public String toTopicByDefaultPage(@PathVariable int tid,@PathVariable String con, Reply reply, Model model) throws NoSuchTopicException{
+        if(con.equals("null") || "time".equals(con) || "default".equals(con))//如果是按时间显示或按默认显示
             return toTopics(tid,con,0,reply,model);
         else//如果按分页显示
-            return toTopics(tid,null,Integer.parseInt(con),reply,model);
+            return toTopics(tid,"default",Integer.parseInt(con),reply,model);
     }
 
     //显示主贴，并按时间和分页显示回复
     @RequestMapping({"tutorial/{tid}/{sort}/{page}","question/{tid}/{sort}/{page}","article/{tid}/{sort}/{page}","code/{tid}/{sort}/{page}"})
-    public String toTopicSortByTimePage(@PathVariable Integer tid, @PathVariable String sort, @PathVariable Integer page, Reply reply, Model model) {
+    public String toTopicSortByTimePage(@PathVariable Integer tid, @PathVariable String sort, @PathVariable Integer page, Reply reply, Model model) throws NoSuchTopicException {
         return toTopics(tid,sort,page,reply,model);
+    }
+
+    //更新主贴浏览量
+    @RequestMapping(value = {"tutorial/{id}/view","question/{id}/view","article/{id}/view","code/{id}/view"}, method = RequestMethod.POST)
+    public void view(@PathVariable Integer id){
+        topicService.increaseViewCount(id);
     }
 
     //前往主贴更新页面
     @RequestMapping(value = {"tutorial/{id}/update","question/{id}/update","article/{id}/update","code/{id}/update"}, method = RequestMethod.GET)
-    public String toUpdateTopic(@PathVariable Integer id, Model model){
+    public String toUpdateTopic(@PathVariable Integer id, Model model) throws NoSuchTopicException {
         Topic topic = topicService.selectById(id);
-        if(topic == null) return "status/emptyQuery";//主贴不存在则跳转空查询页面
+        if(topic == null) throw new NoSuchTopicException();//主贴不存在则跳转空查询页面
         model.addAttribute("topic",topic);
         return "topics/update";
     }
@@ -259,6 +292,7 @@ public class TopicController {
     }
 
     //关闭主贴
+    @RequiresPermissions(value = {"tutorial:block","question:block","article:block","code:block"},logical = Logical.OR)
     @RequestMapping( value = {"tutorial/{id}/block","question/{id}/block","article/{id}/block","code/{id}/block"}, method = RequestMethod.POST )
     public @ResponseBody Boolean block(@RequestBody Topic record){
         return topicService.changeStatus(record.getId());

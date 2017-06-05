@@ -65,6 +65,7 @@ public class APIController {
     //检测主贴是否被用户收藏
     @RequestMapping(value = "getIsFavorite" , method = RequestMethod.POST)
     public @ResponseBody Boolean checkIsFavorite(@RequestBody Favorite con){
+        con.setUid(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
         System.out.println("检测主贴是否被用户收藏时收到参数:" + con);
         return null != this.favoriteService.selectByCondition(con);
     }
@@ -72,21 +73,10 @@ public class APIController {
     //查询投票信息
     @RequestMapping(value = "getRateInfo", method = RequestMethod.POST)
     public @ResponseBody String getRateInfo(@RequestBody Operation condition){
-        String uid = String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid"));//首先获取条件参数
-        condition.setUid(uid);
-        return filterOperations(operationService.selectsByCondition(condition));//查询登录用户与该主贴/回复的全部操作记录并进行过滤
+        condition.setUid(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
+        String action = operationService.selectsRateInfo(condition);
+        return action == null? "null" : action.substring(action.length()-4);
     }
-
-    //过滤用户操作信息,仅取出用户对该主贴/回复的投票信息
-    private String filterOperations(List list){
-        for (int i = 0; i < list.size(); i++) {//遍历查询到的用户对该主贴/回复的操作信息
-            String temp = ((Operation)list.get(i)).getPermission().getPermission();
-            String action = temp.substring(temp.length() -4);//截取操作类型
-            if("like".equals(action) || "hate".equals(action)) return action;//若发现是投票信息则返回投票信息
-        }
-        return "err";
-    }
-
 
 }
 

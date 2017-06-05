@@ -240,6 +240,13 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
+  <update id="increaseViewCount" parameterType="java.lang.Integer">
+    update topic_topinfo
+    set
+    viewCount = viewCount + 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
   <update id="adopt" parameterType="java.lang.Integer">
     update topic_topinfo
     set
@@ -365,7 +372,7 @@
 
   <update id="changeStatusByPrimaryKey" parameterType="java.lang.Integer">
     update topic_topinfo
-    set isBlock = ! isBlock where id = #{id,jdbcType=INTEGER}
+    set isBlock = true where id = #{id,jdbcType=INTEGER}
   </update>
 
   <select id="selectAll" resultMap="BaseResultMap">
@@ -378,7 +385,7 @@
 
   <select id="selectsSimpleByCondition" parameterType="com.iquma.pojo.Topic" resultMap="BaseResultMap">
     select
-    t.id as id, t.title, t.sec, t.aid, u.name as username, q.name as tagname, t.reTime, t.viewCount,t.rateCount, t.replyCount
+    t.id as id, t.title, t.sec, t.aid, u.name as username, q.name as tagname, t.reTime, t.viewCount,t.rateCount, t.replyCount, t.isBlock
     from topic_topinfo t
     left join user_basinfo u on t.aid = u.id
     left join common_tag q on t.tid = q.id

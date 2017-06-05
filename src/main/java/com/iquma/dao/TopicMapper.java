@@ -2,6 +2,8 @@ package com.iquma.dao;
 
 
 import com.iquma.pojo.Topic;
+import org.apache.ibatis.annotations.Param;
+
 import java.util.List;
 
 public interface TopicMapper {
@@ -20,6 +22,8 @@ public interface TopicMapper {
 
     int reduceReply(Integer id);//减少主贴回复数
 
+    void increaseViewCount(Integer id);//增加主贴浏览量
+
     int adopt(Integer id);//主贴采纳回复
 
     Topic selectByPrimaryKey(Integer id);//根据id选择主贴
@@ -28,8 +32,5 @@ public interface TopicMapper {
 
     List selectsByCondition(Topic record);//获取符合条件的主贴列表
 
-    List<Topic> selectsSimpleByCondition(Topic record);//获取符合条件的主贴简略信息列表
-
-    List selectAll();//获取所有主贴
-
+    List<Topic> selectsSimpleByCondition(Topic record);//获取符合条件的主贴简略信息列表--用于主贴列表
 }

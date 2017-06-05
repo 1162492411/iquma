@@ -22,13 +22,13 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Override
     public List selectByConditionSortByTime(int page, Reply condition) {
-        PageHelper.startPage(page,10);
+        PageHelper.startPage(page,3);
         return this.replyMapper.selectByConditionSortByTime(condition);
     }
 
     @Override
     public List selectByConditionAndPage(int page, Reply condition) {
-        PageHelper.startPage(page,10);
+        PageHelper.startPage(page,3);
         return this.replyMapper.selectByCondition(condition);
     }
 

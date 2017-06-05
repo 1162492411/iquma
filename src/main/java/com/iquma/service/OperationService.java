@@ -15,4 +15,6 @@ public interface OperationService {
 
    // Operation selectByCondition(Operation condition);//获取符合条件的操作记录
 
+    String selectsRateInfo(Operation condition);
+
 }
