@@ -33,9 +33,9 @@ public interface TopicService {
 
     List selectsByCondition(Topic condition);//根据条件获取主题集合
 
-    List selectsByConditionAndPage(int page, Topic condition);//根据条件和页码获取主题集合
+    List selectsRevelant(String id);//获取指定用户的所有主贴
 
-    List<Topic> selectsSimpleByCondition(Topic condition);//根据条件和页码获取简略的主题集合
+    Integer selectsSimpleByCondition(Topic condition);//根据条件和页码获取简略的主题集合
 
     List<Topic> selectsSimpleByConditionAndPage(int page, Topic condition);//根据条件和页码获取简略的主题集合--按页数
 

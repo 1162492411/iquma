@@ -32,5 +32,9 @@ public interface TopicMapper {
 
     List selectsByCondition(Topic record);//获取符合条件的主贴列表
 
-    List<Topic> selectsSimpleByCondition(Topic record);//获取符合条件的主贴简略信息列表--用于主贴列表
+    List selectsRevelant(String id);//获取指定用户的所有主贴
+
+    Integer selectsSimpleByCondition(Topic record);//获取符合条件的主贴简略信息的数量--用于主贴列表
+
+    List<Topic> selectsSimpleByConditionAndPage(@Param("start")int start, @Param("top")Topic record);//获取符合条件的主贴简略信息列表--用于主贴列表
 }

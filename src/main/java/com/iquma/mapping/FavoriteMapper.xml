@@ -74,25 +74,44 @@
         </trim>
     </insert>
 
-    <select id="selectsByCondition" parameterType="com.iquma.pojo.Favorite" resultMap="BaseResultMap">
+    <select id="selectsByConditionAndPage" resultMap="BaseResultMap">
         select
         f.id, f.uid, f.obid, f.favTime, t.id as topicId, t.title as topicTitle, t.content as topicContent
         from user_favinfo f
         left join topic_topinfo t on f.obid = t.id
         <trim prefix="where" prefixOverrides="and">
-            <if test="id != null">
-                id = #{id,jdbcType=INTEGER}
+            <if test="fav.id != null">
+                id = #{fav.id}
             </if>
-            <if test="uid != null">
-                and uid = #{uid,jdbcType=VARCHAR}
+            <if test="fav.uid != null">
+                and uid = #{fav.uid}
             </if>
-            <if test="obid != null">
-                and obid = #{obid,jdbcType=INTEGER}
+            <if test="fav.obid != null">
+                and obid = #{fav.obid}
             </if>
-            <if test="favTime != null">
-                and favTime = #{favTime,jdbcType=TIMESTAMP}
+            <if test="fav.favTime != null">
+                and favTime = #{fav.favTime}
             </if>   
         </trim>
+        limit ${start},${end}
     </select>
-    
+
+    <select id="selectCountByCondition" parameterType="com.iquma.pojo.Favorite" resultType="java.lang.Integer">
+      select count(*) from user_favinfo
+        <trim prefix="where" prefixOverrides="and">
+            <if test="id != null">
+               id = #{id,jdbcType=INTEGER}
+            </if>
+            <if test="uid != null">
+              and uid = #{uid,jdbcType=VARCHAR}
+            </if>
+            <if test="obid != null">
+               and obid = #{obid,jdbcType=INTEGER}
+            </if>
+            <if test="favTime != null">
+               and favTime = #{favTime,jdbcType=TIMESTAMP}
+            </if>
+        </trim>
+    </select>
+
 </mapper>

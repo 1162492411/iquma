@@ -36,11 +36,10 @@
 
     <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
         select
-        <include refid="Base_Column_List"/>
-        ,
-        <include refid="Blob_Column_List"/>
-        from topic_repinfo
-        where id = #{id,jdbcType=INTEGER}
+        r.id, r.tid, r.title, r.uid, u.name as usname, u.avatar as usavatar, r.addTime, r.addTime, r.likeCount, r.hateCount, r.rateCount, r.isBest,r.isBlock, r.rateCount, r.content, u.prestige as usprestige
+        from topic_repinfo r
+        left join user_basinfo u on r.uid = u.id
+        where r.id = #{id,jdbcType=INTEGER}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
@@ -217,6 +216,53 @@
             </if>
         </trim>
         ORDER BY r.rateCount desc
+    </select>
+
+    <select id="selectByConditionAndPage" resultMap="ResultMapWithBLOBs">
+        select
+        r.id, r.tid, r.title, r.uid, u.name as usname, u.avatar as usavatar, r.addTime, r.likeCount, r.hateCount, r.rateCount, r.isBest,r.isBlock, r.rateCount, r.content, u.prestige as usprestige
+        from topic_repinfo r
+        left join user_basinfo u on r.uid = u.id
+        <trim prefix="where" prefixOverrides="and">
+            <if test="rep.id != null">
+                id = #{rep.id}
+            </if>
+            <if test="rep.tid != null">
+                and tid = #{rep.tid}
+            </if>
+            <if test="rep.title != null">
+                and title = #{rep.title}
+            </if>
+            <if test="rep.uid != null">
+                and uid = #{rep.uid}
+            </if>
+            <if test="rep.addTime != null">
+                and addTime = #{rep.addTime}
+            </if>
+            <if test="rep.likeCount != null">
+                and likeCount >= #{rep.likeCount}
+            </if>
+            <if test="rep.hateCount != null">
+                and hateCount >= #{rep.hateCount}
+            </if>
+            <if test="rep.rateCount != null">
+                and rateCount >= #{rep.rateCount}
+            </if>
+            <if test="rep.isBest != null">
+                and isBest = #{rep.isBest}
+            </if>
+            <if test="rep.isBlock != null">
+                and isBlock = #{rep.isBlock}
+            </if>
+            <if test="rep.rateCount != null">
+                and rateCount = #{rep.rateCount}
+            </if>
+            <if test="rep.content != null">
+                and content = #{rep.content}
+            </if>
+        </trim>
+        ORDER BY r.isBest desc,r.rateCount desc
+        limit ${start},${end}
     </select>
 
     <select id="selectByConditionSortByTime" parameterType="com.iquma.pojo.Reply" resultMap="ResultMapWithBLOBs">

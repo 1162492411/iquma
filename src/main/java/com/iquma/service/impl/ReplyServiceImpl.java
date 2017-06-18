@@ -27,9 +27,10 @@ public class ReplyServiceImpl implements ReplyService {
     }
 
     @Override
-    public List selectByConditionAndPage(int page, Reply condition) {
-        PageHelper.startPage(page,3);
-        return this.replyMapper.selectByCondition(condition);
+    public List selectByConditionAndPage(int start, Reply condition) {
+//        PageHelper.startPage(page,3);
+//        return this.replyMapper.selectByCondition(condition);
+        return this.replyMapper.selectByConditionAndPage(start * 3,start *3 + 3,condition);
     }
 
     @Override

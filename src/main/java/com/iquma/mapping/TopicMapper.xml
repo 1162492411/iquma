@@ -16,8 +16,10 @@
     <result column="hateCount" jdbcType="DOUBLE" property="hateCount" />
     <result column="rateCount" jdbcType="TINYINT" property="rateCount" />
     <result column="replyCount" jdbcType="INTEGER" property="replyCount" />
-    <result column="hasBest" jdbcType="BIT" property="hasBest" />
+    <result column="hasBest" jdbcType="INTEGER" property="hasBest" />
     <result column="isBlock" jdbcType="BIT" property="isBlock" />
+    <result column="noReply" jdbcType="BIT" property="noReply" />
+    <result column="isHigh" jdbcType="BIT" property="isHigh" />
     <association property="user" resultMap="UserResultMap" />
     <association property="tag" resultMap="TagResultMap" />
     <association property="attachment" resultMap="AttachmentResultMap" />
@@ -46,7 +48,7 @@
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, title, sec, tid, aid, addTime, reTime, viewCount, likeCount, hateCount, rateCount, replyCount, hasBest, isBlock
+    id, title, sec, tid, aid, addTime, reTime, viewCount, likeCount, hateCount, rateCount, replyCount, hasBest, isBlock, noReply, isHigh
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -71,7 +73,7 @@
       aid, attid,addTime, reTime,
       viewCount, likeCount, hateCount, rateCount, replyCount, hasBest, isBlock,
       content)
-    values (#{title,jdbcType=VARCHAR}, #{sec,jdbcType=VARCHAR}, #{tid,jdbcType=TINYINT},#{aid,jdbcType=VARCHAR}, #{attid,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{reTime,jdbcType=TIMESTAMP},#{viewCount,jdbcType=INTEGER}, #{likeCount,jdbcType=DOUBLE}, #{hateCount,jdbcType=DOUBLE},#{rateCount,jdbcType=TINYINT}, #{replyCount,jdbcType=INTEGER}, #{hasBest,jdbcType=BIT}, #{isBlock,jdbcType=BIT},
+    values (#{title,jdbcType=VARCHAR}, #{sec,jdbcType=VARCHAR}, #{tid,jdbcType=TINYINT},#{aid,jdbcType=VARCHAR}, #{attid,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{reTime,jdbcType=TIMESTAMP},#{viewCount,jdbcType=INTEGER}, #{likeCount,jdbcType=DOUBLE}, #{hateCount,jdbcType=DOUBLE},#{rateCount,jdbcType=TINYINT}, #{replyCount,jdbcType=INTEGER}, #{hasBest,jdbcType=INTEGER}, #{isBlock,jdbcType=BIT},
       #{content,jdbcType=LONGVARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.iquma.pojo.Topic">
@@ -164,7 +166,7 @@
         #{replyCount,jdbcType=INTEGER},
       </if>
       <if test="hasBest != null">
-        #{hasBest,jdbcType=BIT},
+        #{hasBest,jdbcType=INTEGER},
       </if>
       <if test="isBlock != null">
         #{isBlock,jdbcType=BIT},
@@ -214,7 +216,7 @@
         replyCount = #{replyCount,jdbcType=INTEGER},
       </if>
       <if test="hasBest != null">
-        hasBest = #{hasBest,jdbcType=BIT},
+        hasBest = #{hasBest,jdbcType=INTEGER},
       </if>
       <if test="isBlock != null">
         isBlock = #{isBlock,jdbcType=BIT},
@@ -299,7 +301,7 @@
         and replyCount = #{replyCount,jdbcType=INTEGER}
       </if>
       <if test="hasBest != null">
-        and hasBest = #{hasBest,jdbcType=BIT}
+        and hasBest = #{hasBest,jdbcType=INTEGER}
       </if>
       <if test="isBlock != null">
         and isBlock = #{isBlock,jdbcType=BIT}
@@ -359,7 +361,7 @@
         and t.replyCount = #{replyCount,jdbcType=INTEGER}
       </if>
       <if test="hasBest != null">
-        and t.hasBest = #{hasBest,jdbcType=BIT}
+        and t.hasBest = #{hasBest,jdbcType=INTEGER}
       </if>
       <if test="isBlock != null">
         and t.isBlock = #{isBlock,jdbcType=BIT}
@@ -383,39 +385,61 @@
     from topic_topinfo
   </select>
 
-  <select id="selectsSimpleByCondition" parameterType="com.iquma.pojo.Topic" resultMap="BaseResultMap">
+  <select id="selectsSimpleByCondition" resultType="java.lang.Integer">
+    select count(id)
+    from topic_topinfo
+    <where>
+      <if test="sec != null">
+        sec = #{sec,jdbcType=VARCHAR}
+      </if>
+      <if test="tid != null">
+        and tid in (select id from common_tag  where find_in_set(#{tid,jdbcType=TINYINT},path))
+      </if>
+      <if test="aid != null">
+        and aid = #{aid,jdbcType=VARCHAR}
+      </if>
+      <if test="noReply != null">
+        and noReply = #{noReply,jdbcType=BIT}
+      </if>
+      <if test="isHigh != null">
+        and isHigh = #{isHigh,jdbcType=BIT}
+      </if>
+    </where>
+  </select>
+
+  <select id="selectsSimpleByConditionAndPage" resultMap="BaseResultMap">
     select
     t.id as id, t.title, t.sec, t.aid, u.name as username, q.name as tagname, t.reTime, t.viewCount,t.rateCount, t.replyCount, t.isBlock
     from topic_topinfo t
     left join user_basinfo u on t.aid = u.id
     left join common_tag q on t.tid = q.id
+    where t.id in (select  temp.id from ( select id from topic_topinfo
     <where>
-      <if test="title != null">
-        title = #{title,jdbcType=VARCHAR}
+      <if test="top.sec != null">
+        and sec = #{top.sec}
       </if>
-      <if test="sec != null">
-        and sec = #{sec,jdbcType=VARCHAR}
+      <if test="top.tid != null">
+        and tid in (select id from common_tag  where find_in_set(#{top.tid},path))
       </if>
-      <if test="tid != null">
-        and tid in (select q.id from common_tag where find_in_set(#{tid,jdbcType=TINYINT},q.path))
+      <if test="top.aid != null">
+        and aid = #{top.aid}
       </if>
-      <if test="aid != null">
-        and aid = #{aid,jdbcType=VARCHAR}
+      <if test="top.noReply != null">
+        and noReply = #{top.noReply}
       </if>
-      <if test="reTime != null">
-        and reTime = #{reTime,jdbcType=TIMESTAMP}
-      </if>
-      <if test="viewCount != null">
-        and viewCount >= #{viewCount,jdbcType=INTEGER}
-      </if>
-      <if test="rateCount != null">
-        and rateCount >= #{rateCount,jdbcType=TINYINT}
-      </if>
-      <if test="replyCount != null">
-        and replyCount = #{replyCount,jdbcType=INTEGER}
+      <if test="top.isHigh != null">
+        and isHigh = #{top.isHigh}
       </if>
     </where>
-    order by t.reTime desc, t.rateCount desc
+    order by reTime desc
+    limit ${start},10
+    ) as temp ) order by t.reTime desc
+  </select>
+
+  <select id="selectsRevelant" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select id,sec
+    from topic_topinfo
+    where aid = #{aid,jdbcType=VARCHAR}
   </select>
 
 </mapper>

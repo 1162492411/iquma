@@ -5,6 +5,7 @@ import com.iquma.service.*;
 import com.iquma.utils.CASTS;
 import com.iquma.utils.ENUMS;
 import com.iquma.utils.PasswordHelper;
+import com.iquma.utils.UserHelper;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.ShiroException;
 import org.apache.shiro.authc.AuthenticationException;
@@ -12,6 +13,7 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresGuest;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authz.annotation.RequiresUser;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.json.simple.JSONObject;
@@ -40,7 +42,11 @@ public class UserController {
     private FavoriteService favoriteService;
     @Autowired
     private PasswordHelper passwordHelper;
+    @Autowired
+    private UserHelper userHelper;
     public String result;
+    private static int oldCollectionCount = -1;//存储旧收藏总数
+    private static String oldCollectionUid = "-1";//存储收藏条件的uid
 
     //前往登录页面
     @RequiresGuest
@@ -142,30 +148,54 @@ public class UserController {
         return toList(uid,"code",topic,model);
     }
 
-    //前往用户的收藏列表
-    @RequestMapping(value = "{uid}/collections", method = RequestMethod.GET)
-    public String toCollections(@PathVariable String uid, Favorite favorite, Model model) {
+    //前往用户收藏列表--通用
+    private String toCommonCollections(String uid,int page,Favorite favorite,Model model){
+        System.out.println("前往用户收藏列表时传参数" + page);
         User user = this.userService.selectById(uid);
         if(user == null) throw new UnknownAccountException();
         else{
             model.addAttribute("user", user);
-            List results = favoriteService.selectsByCondition(favorite);
-            model.addAttribute("collections",CASTS.translateToSB(results));
+            int totalPage = getOldCollectionCount(favorite);
+            List results = favoriteService.selectsByConditionAndPage(page < 0 ? 0 :  page > totalPage ? totalPage - 1 : page-1,favorite);
+            model.addAttribute("totalPage",totalPage);
+            model.addAttribute("currentPage",page >= totalPage?totalPage : page <= 0? 1 : page);
+            model.addAttribute("uid",uid);
+            model.addAttribute("collections",results);
+            oldCollectionUid = uid;
             return "user/collections";
         }
     }
 
+    //前往用户的收藏列表--按分页
+    @RequestMapping(value = "{uid}/collections/{page}", method = RequestMethod.GET)
+    public String toCollectionsByPage(@PathVariable String uid,@PathVariable int page,Favorite favorite, Model model) {
+        return toCommonCollections(uid,page,favorite,model);
+    }
+
+    //前往用户的收藏列表--默认
+    @RequestMapping(value = "{uid}/collections", method = RequestMethod.GET)
+    public String toCollections(@PathVariable String uid, Integer page,Favorite favorite, Model model) {
+        return toCommonCollections(uid,1,favorite,model);
+    }
+
+    //获取用户的收藏总数
+    private int getOldCollectionCount(Favorite condition){
+        if(oldCollectionUid.equals(condition.getUid())) oldCollectionCount = favoriteService.selectCountByCondition(condition);
+        return oldCollectionCount % 10 == 0 ? oldCollectionCount / 10 : oldCollectionCount / 10 + 1;
+    }
 
     //前往个人资料页面
+    @RequiresUser
     @RequestMapping(value = "{uid}/profile", method = RequestMethod.GET)
     public String toProfile(Model model) {
-        User user = this.userService.selectById(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));//为保证安全从session中取值
+        User user = this.userService.selectById(UserHelper.getCurrentUserId());//为保证安全从session中取值
         if(user == null) throw new UnknownAccountException();
         model.addAttribute("user", user);
         return "user/profile";
     }
 
     //个人资料验证
+    @RequiresUser
     @RequestMapping(value = "{uid}/profile", method = RequestMethod.PUT)
     public @ResponseBody Boolean profileValidator(@RequestBody User record) {
         System.out.println("修改用户资料时传入参数" + record);
@@ -177,17 +207,19 @@ public class UserController {
     }
 
     //前往修改密码页面
+    @RequiresUser
     @RequestMapping(value = "{uid}/account", method = RequestMethod.GET)
     public String toAccount( Model model) {
-        User user = this.userService.selectById(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
+        User user = this.userService.selectById(UserHelper.getCurrentUserId());
         model.addAttribute("user", user);
         return "user/account";
     }
 
     //修改密码验证
+    @RequiresUser
     @RequestMapping(value = "{uid}/account", method = RequestMethod.PUT)
     public @ResponseBody Boolean accountValidator(@RequestBody String pass,User record) {
-        record.setId(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
+        record.setId(UserHelper.getCurrentUserId());
         record.setPass(pass);
         passwordHelper.encryptPassword(record);
         if (this.userService.update(record))
@@ -196,6 +228,7 @@ public class UserController {
     }
 
     //退出登录
+    @RequiresUser
     @RequestMapping(value = "{uid}/logout")
     public String logout(){
         SecurityUtils.getSubject().logout();
@@ -207,18 +240,20 @@ public class UserController {
     }
 
     //前往用户通知页面
+    @RequiresUser
     @RequestMapping(value = "{uid}/ntfs", method = RequestMethod.GET)
     public String toNotifications(Notification condition, Model model) {
-        condition.setUid(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
+        condition.setUid(UserHelper.getCurrentUserId());
         model.addAttribute("ntfs",CASTS.translateToSB(notificationService.selectsByCondition(condition)));
         return "user/notifications";
     }
 
     //将通知标记为已读
+    @RequiresUser
     @RequestMapping(value = "{uid}/ntfs/{id}" , method = RequestMethod.PUT)
     public @ResponseBody Boolean readNotifications(Notification record){
-        record.setUid(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
-        Boolean result = this.notificationService.read(record);
+        record.setUid(UserHelper.getCurrentUserId());
+        Boolean result = notificationService.read(record);
         if(result){
             Session session = SecurityUtils.getSubject().getSession();
             int ntfCount = Integer.parseInt(session.getAttribute("ntfCount").toString());
@@ -229,13 +264,14 @@ public class UserController {
     }
 
     //前往提问页面
-    //TODO: 待更新前台路径(提问、分享经验、上传代码)
+    @RequiresPermissions("ask:create")
     @RequestMapping(value = "ask", method = RequestMethod.GET)
     public String toAsk() {
         return "editor/ask";
     }
 
     //提问验证页面
+    @RequiresPermissions("ask:create")
     @RequestMapping(value = "ask", method = RequestMethod.PUT)
     public @ResponseBody Boolean ask(@RequestBody Topic record) {
         record.parseDefaultDiscuss();
@@ -244,12 +280,14 @@ public class UserController {
 
 
     //前往分享经验页面
+    @RequiresPermissions("article:create")
     @RequestMapping(value = "write", method = RequestMethod.GET)
     public String toWrite() {
         return "editor/write";
     }
 
     //分享经验验证页面
+    @RequiresPermissions("article:create")
     @RequestMapping(value = "write", method = RequestMethod.PUT)
     public @ResponseBody Boolean write(@RequestBody  Topic record) {
         record.parseDefaultArticle();
@@ -258,15 +296,32 @@ public class UserController {
 
 
     //前往分享代码页面
+    @RequiresPermissions("code:create")
     @RequestMapping(value = "upload", method = RequestMethod.GET)
     public String toUpload() {
         return "editor/upload";
     }
 
     //分享代码验证
+    @RequiresPermissions("code:create")
     @RequestMapping(value = "upload", method = RequestMethod.PUT)
     public @ResponseBody Boolean upload(@RequestBody Topic record) {
         record.parseDefaultCode();
+        return topicService.insert(record);
+    }
+
+    //前往写教程页面
+    @RequiresPermissions("tutorial:create")
+    @RequestMapping(value = "teach", method = RequestMethod.GET)
+    public String toTeach() {
+        return "editor/teach";
+    }
+
+    //写教程验证
+    @RequiresPermissions("tutorial:create")
+    @RequestMapping(value = "teach", method = RequestMethod.PUT)
+    public @ResponseBody Boolean teach(@RequestBody Topic record) {
+        record.parseDefaultTutorial();
         return topicService.insert(record);
     }
 
@@ -274,7 +329,7 @@ public class UserController {
     @RequiresPermissions("suser:block")
     @RequestMapping(value = "{uid}/block", method = RequestMethod.POST)
     public @ResponseBody boolean blockUser(@PathVariable String uid){
-        if(hasEnoughRole(uid)) return userService.changeStatus(uid);//仅当角色符合条件时进行操作
+        if(userHelper.hasEnoughRole(uid)) return userService.changeStatus(uid);//仅当角色符合条件时进行操作
         else return false;
     }
 
@@ -282,11 +337,12 @@ public class UserController {
     @RequiresPermissions("suser:delete")
     @RequestMapping(value = "{uid}/delete", method = RequestMethod.POST)
     public @ResponseBody boolean deleteUser(@PathVariable String uid){
-        if(hasEnoughRole(uid)) return userService.delete(uid);//仅当角色符合条件时进行操作
+        if(userHelper.hasEnoughRole(uid)) return userService.delete(uid);//仅当角色符合条件时进行操作
         else return false;
     }
 
     //前往添加用户页面
+    @RequiresPermissions("suser:create")
     @RequestMapping(value = {"addStudent","addTeacher"}, method = RequestMethod.GET)
     public String toAddUser(){
         return "user/add";
@@ -309,13 +365,5 @@ public class UserController {
         user.parseDefaultAddUser();
         return userService.insert(user);
     }
-
-
-    //当前登录用户是否角色等级高于待操作用户
-    private boolean hasEnoughRole(String uid){
-        User currentUser = userService.selectById(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));//取出当前登录账户
-        User user = userService.selectById(uid); //查询待操作的账户
-        //判断二者角色等级:仅当当前登录账户是教师级以上账户且当前账户角色高于待操作账户时允许对账户进行操作
-        return currentUser.getRid() <= ENUMS.ROLE_TEACHER && currentUser.getRid() < user.getRid();
-    }
+    
 }

@@ -3,11 +3,18 @@ package com.iquma.controller;
 import com.iquma.pojo.Reply;
 import com.iquma.service.ReplyService;
 import com.iquma.utils.BinomialUtil;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.ShiroException;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresUser;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -26,6 +33,7 @@ public class ReplyController {
     @RequiresUser
     @RequestMapping(method = RequestMethod.POST)
     public @ResponseBody Boolean insert(@RequestBody Reply record){
+        System.out.println("回复控制器接收到参数:" + record);
         return replyService.insert(record);
     }
 
@@ -48,6 +56,7 @@ public class ReplyController {
     }
 
     //赞同回复
+    @RequiresPermissions("reply:like")
     @RequestMapping( value = "like" , method = RequestMethod.POST)
     public @ResponseBody Boolean like(@RequestBody Reply record){
         record = replyService.selectById(record.getId());
@@ -59,9 +68,12 @@ public class ReplyController {
     //反对回复
     @RequestMapping( value = "hate" , method = RequestMethod.POST)
     public @ResponseBody Boolean hate(@RequestBody Reply record){
-        record = replyService.selectById(record.getId());
-        double likeCount = record.getLikeCount();
-        double hateCount = binomialUtil.getHateCount(record.getHateCount());
-        return replyService.rate(new Reply(record.getId(),likeCount,hateCount,binomialUtil.getRateCount(likeCount,hateCount)));
+        if(SecurityUtils.getSubject().isPermitted("reply:hate:" + record.getTid())){
+            record = replyService.selectById(record.getId());
+            double likeCount = record.getLikeCount();
+            double hateCount = binomialUtil.getHateCount(record.getHateCount());
+            return replyService.rate(new Reply(record.getId(),likeCount,hateCount,binomialUtil.getRateCount(likeCount,hateCount)));
+        }
+        else throw new ShiroException();
     }
 }

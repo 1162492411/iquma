@@ -27,17 +27,15 @@ public class LoginRealm extends AuthorizingRealm {
     @Autowired
     private UserService userService;
     @Autowired
-    private RoleService roleService;
-    @Autowired
     private RolePerService rolePerService;
     @Autowired
     private PermissionService permissionService;
-
+    @Autowired
+    private UserHelper userHelper;
 
     public LoginRealm(){
         super();
     }
-
 
     //验证登录
     @Override
@@ -51,15 +49,17 @@ public class LoginRealm extends AuthorizingRealm {
         return new SimpleAuthenticationInfo(user.getId(), user.getPass(), ByteSource.Util.bytes(user.getSalt()),getName());
     }
 
-
     //登录成功后进行角色和权限验证
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         String username = (String) principalCollection.getPrimaryPrincipal();//获取已验证的用户标识
         Byte role = userService.selectById(username).getRid();//获取用户所属的角色
-        List permissions =  permissionService.selectByPids(rolePerService.selectPersById(role));//获取用户的角色所拥有的权限集合
+        List permissions =  permissionService.selectByPids(rolePerService.selectPersByRid(role));//获取用户的角色所拥有的权限集合
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();//将授权信息封装
+
+        authorizationInfo.addRole("1");//TODO:临时测试用添加角色
         authorizationInfo.addRole(String.valueOf(role));//设置用户角色
+        authorizationInfo.addStringPermissions(userHelper.getUserStringPermissions(username));
         authorizationInfo.addStringPermissions(permissions);//设置用户权限
         return authorizationInfo;
     }

@@ -40,10 +40,13 @@ public class Topic {
 
     private Boolean isBlock;
 
-    private Boolean hasBest;
+    private Integer hasBest;
+
+    private Boolean noReply;
+
+    private Boolean isHigh;
 
     private String content;
-
 
     public Integer getId() {
         return id;
@@ -158,13 +161,9 @@ public class Topic {
         this.isBlock = isBlock;
     }
 
-    public Boolean getHasBest() {
-        return hasBest;
-    }
+    public Integer getHasBest() { return hasBest; }
 
-    public void setHasBest(Boolean hasBest) {
-        this.hasBest = hasBest;
-    }
+    public void setHasBest(Integer hasBest) { this.hasBest = hasBest; }
 
     public String getContent() {
         return content;
@@ -198,6 +197,30 @@ public class Topic {
         this.attachment = attachment;
     }
 
+    public Boolean getBlock() {
+        return isBlock;
+    }
+
+    public void setBlock(Boolean block) {
+        isBlock = block;
+    }
+
+    public Boolean getNoReply() {
+        return noReply;
+    }
+
+    public void setNoReply(Boolean noReply) {
+        this.noReply = noReply;
+    }
+
+    public Boolean getIsHigh() {
+        return isHigh;
+    }
+
+    public void setIsHigh(Boolean high) {
+        isHigh = high;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -224,8 +247,6 @@ public class Topic {
                 "}";
     }
 
-
-
     public Topic() {
     }
 
@@ -240,11 +261,27 @@ public class Topic {
         this.rateCount = rateCount;
     }
 
+    public Topic(String title, String sec, Byte tid, String aid, Integer attid, Date addTime, Date reTime, Integer viewCount, Double likeCount, Double hateCount, Byte rateCount, Integer replyCount, Boolean isBlock, Integer hasBest, String content) {
+        this.title = title;
+        this.sec = sec;
+        this.tid = tid;
+        this.aid = aid;
+        this.attid = attid;
+        this.addTime = addTime;
+        this.reTime = reTime;
+        this.viewCount = viewCount;
+        this.likeCount = likeCount;
+        this.hateCount = hateCount;
+        this.rateCount = rateCount;
+        this.replyCount = replyCount;
+        this.isBlock = isBlock;
+        this.hasBest = hasBest;
+        this.content = content;
+    }
+
     //初始化默认教程主贴
     public void parseDefaultTutorial(){
         sec = ENUMS.SEC_TUTORIAL;
-        addTime = new Date();
-        reTime = new Date();
     }
 
     //初始化默认提问主贴
@@ -259,11 +296,10 @@ public class Topic {
         addTime = new Date();
     }
 
-
     //初始化默认代码主贴
     public void parseDefaultCode(){
         sec = ENUMS.SEC_CODE;
-        addTime = new Date();
+//        addTime = new Date();
     }
 
 

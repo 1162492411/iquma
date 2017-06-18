@@ -35,7 +35,8 @@
     <input type="hidden" id="condition_sec" value="${topic.sec}"/>
     <input type="hidden" id="condition_uid" value="${userid}"/>
     <input type="hidden" id="condition_aid" value="${topic.aid}"/>
-</div><!-- 隐藏数据区结束 -->
+</div>
+<!-- 隐藏数据区结束 -->
 <%--<!-- 主数据区 -->--%>
 <main role="main">
     <div class="wrap">
@@ -62,11 +63,11 @@
                                 <span class="hidden-xs"></span>
                             </div>
                         </div>
-                    </div><!-- 数据区顶部-主贴顶部结束 -->
+                    </div>
+                    <!-- 数据区顶部-主贴顶部结束 -->
                 </div>
             </div>
         </div><!-- 数据区顶部结束 -->
-
         <!-- 数据区 主贴信息 -->
         <div class="container mt30">
             <div class="row">
@@ -74,11 +75,15 @@
                     <article class="widget-question__item">
                         <div class="post-col">
                             <div class="widget-vote  ">
-                                <button class="like" id="like-0"
+                                <shiro:hasPermission name="${topic.sec}:like">
+                                    <button class="like" id="like-0"
                                         onclick="likeTopic('${topic.sec}','${topic.id}')"></button>
+                                </shiro:hasPermission>
                                 <span class="count">${topic.rateCount}</span>
-                                <button class="hate" id="hate-0"
+                                <shiro:hasPermission name="${topic.sec}:hate:${topic.id}">
+                                    <button class="hate" id="hate-0"
                                         onclick="hateTopic('${topic.sec}','${topic.id}')"></button>
+                                </shiro:hasPermission>
                             </div><!-- end .widget-vote -->
                         </div>
                         <!-- 数据区-主贴-底部信息 -->
@@ -101,34 +106,35 @@
                                         <li><strong class="no-stress">${topic.viewCount}</strong> 浏览</li>
                                         <li><a id="topicAddTime">
                                             <script type="text/javascript">$("#topicAddTime").append(formateTime('${topic.addTime}'));</script>
-                                        </a></li>
-                                        <shiro:hasPermission name="${topic.sec}:update:${topic.id}">
-                                            <a href="${pageContext.request.contextPath}/${topic.sec}/${topic.id}/update">
-                                                <Button class="btn btn-primary">编辑</Button>
-                                            </a>
-                                            </li>
-                                        </shiro:hasPermission>
-                                        <shiro:hasPermission name="${topic.sec}:block:${topic.id}">
-                                            <li>
-                                                <Button class="btn btn-primary" id="blockButton"
-                                                        onclick="blockTopic('${topic.sec}')" disabled>关闭
-                                                </Button>
-                                            </li>
-                                        </shiro:hasPermission>
-                                        <shiro:hasPermission name="${topic.sec}:delete:${topic.id}">
-                                            <li>
-                                                <Button class="btn btn-danger"
-                                                        onclick="deleteTopic('${topic.sec}')">删除
-                                                </Button>
-                                            </li>
-                                        </shiro:hasPermission>
-                                        <shiro:user>
-                                            <li>
-                                                <Button class="btn btn-primary" id="favoriteButton"
-                                                        onclick="favoriteTopic('${topic.sec}')" disabled>收藏
-                                                </Button>
-                                            </li>
-                                        </shiro:user>
+                                        </a>
+                                            <shiro:hasPermission name="${topic.sec}:update:${topic.id}">
+                                                </li>
+                                                <a href="${pageContext.request.contextPath}/${topic.sec}/${topic.id}/update">
+                                                    <Button class="btn btn-primary">编辑</Button>
+                                                </a>
+                                                </li>
+                                            </shiro:hasPermission>
+                                            <shiro:hasPermission name="${topic.sec}:block:${topic.id}">
+                                                <li>
+                                                    <Button class="btn btn-primary" id="blockButton"
+                                                            onclick="blockTopic('${topic.sec}')" disabled>关闭
+                                                    </Button>
+                                                </li>
+                                            </shiro:hasPermission>
+                                            <shiro:hasPermission name="${topic.sec}:delete:${topic.id}">
+                                                <li>
+                                                    <Button class="btn btn-danger"
+                                                            onclick="deleteTopic('${topic.sec}')">删除
+                                                    </Button>
+                                                </li>
+                                            </shiro:hasPermission>
+                                            <shiro:user>
+                                                <li>
+                                                    <Button class="btn btn-primary" id="favoriteButton"
+                                                            onclick="favoriteTopic('${topic.sec}')" disabled>收藏
+                                                    </Button>
+                                                </li>
+                                            </shiro:user>
                                     </ul>
                                 </div>
                             </div>
@@ -138,107 +144,38 @@
                     <!-- TODO:若存在最佳回复，则应将其置于回复列表顶部，目前未实现 -->
                     <div class="widget-answers" id="repliesDiv">
                         <!-- 回复排序方式 -->
-                        <div class="btn-group pull-right" role="group">
+                        <div class="btn-group pull-right" role="group" id="testDiv">
                             <a class="btn btn-default btn-xs active">默认排序</a>
                             <a href="${pageContext.request.contextPath}/${topic.sec}/${topic.id}/time"
                                class="btn btn-default btn-xs">时间排序</a>
                         </div>
                         <!-- 回复排序方式结束 -->
                         <h2 class="title h4 mt30 mb20 post-title" id="answers-title">${total}个回答</h2>
-                        <c:forEach var="reply" items="${replies}">
-                            <!-- 单项回复 -->
-                            <article class="clearfix widget-answers__item accepted" id="replyArticle-${reply.id}">
-                                <!-- 单项回复-隐藏数据区 -->
-                                <input type="hidden" id="condition-replyStatus-${reply.id}" value="${reply.isBlock}"/>
-                                <c:if test="${reply.isBest eq 'true' }">
-                                    <input type="hidden" id="condition-isBestReply"/>
-                                </c:if>
-                                <!-- 单项回复-隐藏数据区结束 -->
-                                <!-- 回复-操作按钮 -->
-                                <div class="post-col">
-                                    <div class="widget-vote ">
-                                        <button class="like" id="like-${reply.id}"
-                                                onclick="likeReply('${reply.id}','${reply.uid}')"></button>
-                                        <span class="count">${reply.rateCount}</span>
-                                        <button class="hate" id="hate-${reply.id}"
-                                                onclick="hateReply('${reply.id}','${reply.uid}')"></button>
-                                    </div>
-                                    <!-- 回复-操作按钮结束 -->
-                                    <!-- 该答案被采纳 -->
-                                    <c:if test="${reply.isBest eq 'true' }">
-                                        <div class="text-center accepted-check cancel-cursor-pointer mt15"
-                                             style="white-space:nowrap">
-                                            <span style="color: #3e7ac2;font-weight: 800;font-size:13px">已采纳</span>
-                                        </div>
-                                    </c:if>
-                                </div>
-                                <!-- 回答-数据区 -->
-                                <div class="post-offset">
-                                    <input type="hidden" id="replyUid-${reply.id}" value="${reply.uid}"/>
-                                    <div class="answer fmt" id="replyContent-${reply.id}">
-                                            ${reply.content}
-                                    </div>
-                                    <div class="row answer__info--row">
-                                        <!-- 回复-数据区-底部按钮-->
-                                        <div class="post-opt col-md-8 col-sm-8 col-xs-10">
-                                            <ul class="list-inline mb0" id="replyUl-${reply.id}">
-                                                <li>
-                                                    <a id="reply-${reply.id}-time">
-                                                        <script type="text/javascript">
-                                                           $("#reply-" + ${reply.id} + "-time").append(formateTime('${reply.addTime}'));
-                                                        </script>
-                                                    </a>
-                                                </li>
-                                                    <%-- 删除按钮 --%>
-                                                <shiro:hasPermission name="reply:delete:${reply.id}">
-                                                    <li>
-                                                        <Button class="btn btn-danger"
-                                                                onclick="deleteReply('${reply.id}','${reply.uid}')">删除
-                                                        </Button>
-                                                    </li>
-                                                </shiro:hasPermission>
-                                                    <%-- 关闭按钮 --%>
-                                                <shiro:hasPermission name="reply:block:${reply.id}">
-                                                    <li>
-                                                        <Button class="btn btn-primary"
-                                                                id="blockReplyButton-${reply.id}"
-                                                                onclick="blockReply('${reply.id}','${reply.uid}')"
-                                                                disabled>关闭
-                                                        </Button>
-                                                    </li>
-                                                </shiro:hasPermission>
-                                                    <%-- 采纳按钮 --%>
-                                                <c:if test="${topic.hasBest eq false && topic.aid eq userid && topic.isBlock eq false }">
-                                                    <li>
-                                                        <Button class="btn btn-primary"
-                                                                onclick="adoptReply('${reply.id}','${reply.uid}')">采纳
-                                                        </Button>
-                                                    </li>
-                                                </c:if>
-                                            </ul>
-                                        </div>
-                                        <!-- 回复-数据区-底部按钮结束-->
-                                        <!-- 回复-数据区-右侧用户信息-->
-                                        <div class="col-md-2 col-sm-2 col-xs-2 answer__info--author-avatar">
-                                            <a class="mr10"
-                                               href="${pageContext.request.contextPath}/user/${reply.uid}/home"><img
-                                                    class="avatar-32" src="${reply.user.avatar}" alt="用户头像"></a>
-                                        </div>
-                                        <div class="col-md-2 col-sm-2 hidden-xs answer__info--author">
-                                            <div class=" answer__info--author-warp">
-                                                <a class="answer__info--author-name"
-                                                   href="${pageContext.request.contextPath}/user/${reply.uid}/home">${reply.user.name}</a>
-                                                <span class="answer__info--author-rank">${reply.user.prestige}声望</span>
-                                            </div>
-                                        </div>
-                                        <!-- 回复-数据区-右侧用户信息结束-->
-                                    </div>
-                                </div>
-                            </article>
-                            <!-- 单项回复结束 -->
-                        </c:forEach>
-                        <%-- 分页按钮 --%>
-                        <%--col-xs-12 col-md-9--%>
+                        <!-- 回复列表隐藏数据区 -->
+                        <input type="hidden" id="bestReplyId" value="${topic.hasBest}" />
+                        <shiro:hasPermission name="reply:like:${topic.id}">
+                            <input type="hidden" id="hasReplyLikePermission" value="true" />
+                        </shiro:hasPermission>
+                        <shiro:hasPermission name="reply:hate:${topic.id}">
+                            <input type="hidden" id="hasReplyHatePermission" value="true" />
+                        </shiro:hasPermission>
+                        <shiro:hasPermission name="reply:delete:${topic.id}">
+                            <input type="hidden" id="hasReplyDeletePermission" value="true" />
+                        </shiro:hasPermission>
+                        <shiro:hasPermission name="reply:block:${topic.id}">
+                            <input type="hidden" id="hasReplyBlockPermission" value="true" />
+                        </shiro:hasPermission>
+                        <c:if test="${topic.hasBest eq 0 && topic.aid eq userid && topic.isBlock eq false }">
+                            <input type="hidden" id="hasReplyAdoptPermission" value="true" />
+                        </c:if>
+                        <div id="replies"></div>
+                        <!-- 回复列表隐藏数据区结束 -->
+                        <!-- 显示最佳回复 -->
+                        <script type="text/javascript">
+                            $(document).ready(function () {
+                                initReplies(${replies},${topic.hasBest});
+                            });
+                        </script>
                         <nav><ul class="pagination" id="repliesPagination"></ul></nav>
                     </div>
                     <!-- 回复列表结束 -->

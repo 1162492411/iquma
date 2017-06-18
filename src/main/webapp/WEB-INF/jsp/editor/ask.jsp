@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <html>
 <head>
     <title>提问</title>
@@ -23,6 +24,7 @@
 </head>
 <body>
 <!-- 提问 -->
+<shiro:hasPermission name="question:create">
 <form class="form-group">
     <input type="hidden" name="_method" value="PUT"/>
     <div class="panel panel-default">
@@ -45,13 +47,6 @@
                 <select name="tid" id="tidSelection">
                 </select>
             </div>
-
-            <div class="form-group" id="tagPanel">
-                <label>选择标签</label>
-                <span id="tags-input" class="selectivity-input"></span>
-                <input id="subTags" type="button" value="测试提交标签" onclick="tagsSubmit()"/>
-            </div>
-
             <%--作者id --%>
             <input type="hidden" id="aid" value="${userid}"/>
             <%-- 内容--%>
@@ -68,5 +63,6 @@
     </div>
     </div>
 </form>
+</shiro:hasPermission>
 </body>
 </html>

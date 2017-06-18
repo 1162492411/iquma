@@ -14,7 +14,7 @@
         $(document).ready(function () {
             initListStatus();
             initTopics(${topics});
-            initPag(${currentPage},${totalPage},"topicsPagination",getTypesPath());
+            <%--initPag(${currentPage},${totalPage},"topicsPagination",getTypesPath());--%>
             initTags(${tags});
         });
     </script>

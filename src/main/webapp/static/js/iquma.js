@@ -25,6 +25,11 @@ function getTypesPath() {
     return getTagPath() + "/" + $("#type").val();
 }
 
+//公共函数--返回拼接后的收藏路径--用于用户主页的收藏页面
+function getCollectionsPath(uid) {
+    return rootPath + '/user/' + uid + '/collections';
+}
+
 //公共函数--格式化时间
 function formateTime(time) {
     if(time != null && time != "null" && time != " "){
@@ -80,24 +85,18 @@ function editorSubmit(type) {
     var editor = new wangEditor('contentDiv');
     editor.create();
     $("#subBtn").click(function () {
+        var d = {
+            "title" : $("#title").val(),
+            "tid" : parseInt($("#tidSelection").val()),
+            "aid" : $("#aid").val(),
+            "addTime" : new Date(),
+            "reTime" : new Date(),
+            "content" : filterEnter(filterXSS(editor.$txt.html()))
+        };
         if(type == 'upload' && $("#attid").val() != " ")
-            var d = {
-                "title" : $("#title").val(),
-                "tid" : parseInt($("#tidSelection").val()),
-                "aid" : $("#aid").val(),
-                "addTime" : new Date(),
-                "content" : filterEnter(filterXSS(editor.$txt.html())),
-                "attid" : parseInt($("#attid").val())
-            };
-        else
-            var d = {
-                "title" : $("#title").val(),
-                "tid" : parseInt($("#tidSelection").val()),
-                "aid" : $("#aid").val(),
-                "addTime" : new Date(),
-                "content" : filterEnter(filterXSS(editor.$txt.html()))
-            };
-        if(d.title == "" || d.tid == 0 || d.aid == "" || d.content == "<p><br></p>"){
+            d.attid = parseInt($("#attid").val());
+        console.log("此时attid的长度为" + $("#attid").length + "，值是" + $("#attid").val());
+        if(d.title == "" || d.tid == 0 || d.aid == "" || d.content == "<p><br></p>" || ($("#attid").length > 0 && $("#attid").val() == "")){
             alert("存在未填写字段，请填写后再提交！");
             return;
         }
@@ -160,6 +159,7 @@ function initListStatus() {
 }
 
 //初始化分页
+//TODO：需考虑总页数过多时仅显示部分分页数
 function initPag(currentPage,totalPage,id,path){
     var c = parseInt(currentPage);
     var t = parseInt(totalPage);
@@ -256,29 +256,30 @@ function initTags(tags) {
 //查询投票信息
 function initRateInfo(id) {
     var d = {"opid" : id};
-    if ($('#condition_uid').val() != "")
-    $.ajax({
-        type: 'POST',
-        url: '/api/getRateInfo',
-        contentType: 'application/json',
-        data: JSON.stringify(d),
-        success: function (data) {
-            console.log("查询到用户对该贴的投票信息是" + data);
-            if ("like" == data) {
-                $("#like-0").css("background-color","#A4D3EE");
-                $("#like-0").attr("disabled","disabled");
-                $("#hate-0").attr("disabled","disabled");
+    if ($('#condition_uid').val() != "") {
+        $.ajax({
+            type: 'POST',
+            url: '/api/getTopicRateInfo',
+            contentType: 'application/json',
+            data: JSON.stringify(d),
+            success: function (data) {
+                console.log("查询到用户对该贴的投票信息是" + data);
+                if ("like" == data) {
+                    $("#like-0").css("background-color", "#A4D3EE");
+                    $("#like-0").attr("disabled", "disabled");
+                    $("#hate-0").attr("disabled", "disabled");
+                }
+                else if ("hate" == data) {
+                    $("#hate-0").css("background-color", "#A4D3EE");
+                    $("#hate-0").attr("disabled", "disabled");
+                    $("#hate-0").attr("disabled", "disabled");
+                }
+            },
+            error: function () {
+                alert('发送请求失败！');
             }
-            else if("hate" == data){
-                $("#hate-0").css("background-color","#A4D3EE");
-                $("#hate-0").attr("disabled","disabled");
-                $("#hate-0").attr("disabled","disabled");
-            }
-        },
-        error: function () {
-            alert('发送请求失败！');
-        }
-    });
+        });
+    }
 }
 
 //加载主题信息--批量处理信息
@@ -317,7 +318,7 @@ function initTopic(topic) {
 //赞同主贴
 function likeTopic(topicType,id) {
     if($('#condition_uid').val() != ""){
-        var da = {"id" : parseInt(id),"aid" : $("#condition_aid").val(), "section": {"name" : topicType}};
+        var da = {"id" : parseInt(id),"aid" : $("#condition_aid").val(), "sec": topicType};
         $.ajax({
             type: 'POST',
             url: '/' + topicType + '/' + id + '/like',
@@ -342,7 +343,7 @@ function likeTopic(topicType,id) {
 //反对主贴
 function hateTopic(topicType,id) {
     if($('#condition_uid').val() != ""){
-        var da = {"id" : parseInt(id),"aid" : $("#condition_aid").val(),"section": {"name" : topicType}};
+        var da = {"id" : parseInt(id),"aid" : $("#condition_aid").val(),"sec": topicType};
         $.ajax({
             type: 'POST',
             url: '/' + topicType + '/' + id + '/hate',
@@ -394,30 +395,35 @@ function deleteTopic(topicType) {
 
 //更新教程
 function updateTopic(topicType) {
-    var d = {
-        "id": parseInt($("#id").val()),
-        "aid": $("#aid").val(),
-        "title": $("#title").val(),
-        "content": $("#content").val(),
-        "sec": $("#sectionname").val()
-    };
-    $.ajax({
-        type: 'PUT',
-        url: '/' + topicType + '/' + $("#condition_tid").val() + '/update',
-        data: JSON.stringify(d),
-        contentType: 'application/json',
-        success: function (data) {
-            if (data == true) {
-                alert("成功修改该贴");
+    var editor = new wangEditor('contentDiv');
+    editor.create();
+    $("#updateButton").click(function(){
+        var d = {
+            "id": parseInt($("#id").val()),
+            "aid": $("#aid").val(),
+            "title": $("#title").val(),
+            "content": filterEnter(filterXSS(editor.$txt.html())),
+            "sec": $("#sectionname").val()
+        };
+        $.ajax({
+            type: 'PUT',
+            url: '/' + topicType + '/' + $("#condition_tid").val() + '/update',
+            data: JSON.stringify(d),
+            contentType: 'application/json',
+            success: function (data) {
+                if (data == true) {
+                    alert("成功修改该贴");
+                }
+                else {
+                    alert("未能修改该贴");
+                }
+            },
+            error: function () {
+                alert("发送更新主贴请求失败！");
             }
-            else {
-                alert("未能修改该贴");
-            }
-        },
-        error: function () {
-            alert("发送更新主贴请求失败！");
-        }
+        });
     });
+
 }
 
 //收藏主贴
@@ -478,6 +484,63 @@ function blockTopic(resultType) {
 
 //---------------------- 回复部分 -----------------------------------------//
 
+//加载最佳回复
+function initBestReply(reply,bestId) {
+    if(reply.id == bestId) {
+        var temp = "<article class='clearfix widget-answers__item accepted' id='replyArticle-" + reply.id + "'><div class='post-col'><div class='widget-vote'>";
+        if ($("#hasReplyLikePermission").val() == 'true')
+            temp += "<button class='like' id='like-" + reply.id + "' onclick='likeReply('" + reply.id + "','" + reply.uid + "')'></button>";
+        temp += "<span class='count'>" + reply.rateCount + "</span>";
+        if ($("#hasReplyHatePermission").val() == 'true')
+            temp += "<button class='hate' id='hate-" + reply.id + "' onclick='hateReply('" + reply.id + "','" + reply.uid + "')'></button>";
+        temp += "</div><div class='text-center accepted-check cancel-cursor-pointer mt15' style='white-space:nowrap'> <span style='color: #3e7ac2;font-weight: 800;font-size:13px'>已采纳</span></div></div><div class='post-offset'><div class='answer fmt' id='replyContent-" + reply.id + "'>" + reply.content + "</div><div class='row answer__info--row'><div class='post-opt col-md-8 col-sm-8 col-xs-10'><ul class='list-inline mb0' id='replyUl-" + reply.id + "'><li><a id='reply-" + reply.id + "-time'>" + formateTime(reply.addTime) + "</a></li>";
+        if ($("#hasReplyDeletePermission").val() == 'true')
+            temp += "<li><Button class='btn btn-danger' onclick='deleteReply('" + reply.id + "','" + reply.uid + "')'>删除</Button></li>";
+        if ($("#hasReplyBlockPermission").val() == 'true')
+            temp += "<li><Button class='btn btn-primary' id='blockReplyButton-" + reply.id + "' onclick='blockReply('" + reply.id + "','" + reply.uid + "')' disabled>关闭</Button></li>";
+        if ($("#hasReplyAdoptPermission").val() == 'true')
+            temp += "<li><Button class='btn btn-primary' onclick='adoptReply('" + reply.id + "','" + reply.uid + "')'>采纳</Button></li>";
+        temp += "</ul></div>";
+        //右侧用户信息
+        temp += "<div class='col-md-2 col-sm-2 col-xs-2 answer__info--author-avatar'><a class='mr10' href='" + rootPath + "/user/" + reply.uid + "/home'><img class='avatar-32' src='" + reply.user.avatar + "' alt='用户头像'></a></div>" + "<div class='col-md-2 col-sm-2 hidden-xs answer__info--author'><div class='answer__info--author-warp'><a class='answer__info--author-name' href='" + rootPath + "/user/" + reply.uid + "/home'>" + reply.user.name + "</a><span class='answer__info--author-rank'>" + reply.user.prestige + "声望</span></div></div>";
+        temp += "</div></div></article>";
+        $("#replies").append(temp);
+    }
+    else initSingleReply(reply);
+}
+
+//批量加载回复
+function initReplies(replies,bestId) {
+    if(replies.length > 0){
+        initBestReply(replies[0],bestId);
+        for(var i = 1; i < replies.length;i ++)
+            initSingleReply(replies[i]);
+    }
+}
+
+//批量加载回复之普通回复
+function initSingleReply(reply) {
+    var temp = "<article class='clearfix widget-answers__item' id='replyArticle-" + reply.id + "'><div class='post-col'><div class='widget-vote'>";
+    if ($("#hasReplyLikePermission").val() == 'true')
+        temp += "<button class='like' id='like-" + reply.id + "' onclick='likeReply('" + reply.id + "','" + reply.uid + "')'></button>";
+    temp += "<span class='count'>" + reply.rateCount + "</span>";
+    if ($("#hasReplyHatePermission").val() == 'true')
+        temp += "<button class='hate' id='hate-" + reply.id + "' onclick='hateReply('" + reply.id + "','" + reply.uid + "')'></button>";
+    temp += "</div><div class='text-center accepted-check cancel-cursor-pointer mt15' style='white-space:nowrap'></div></div><div class='post-offset'><div class='answer fmt' id='replyContent-" + reply.id + "'>" + reply.content + "</div><div class='row answer__info--row'><div class='post-opt col-md-8 col-sm-8 col-xs-10'><ul class='list-inline mb0' id='replyUl-" + reply.id + "'><li><a id='reply-" + reply.id + "-time'>" + formateTime(reply.addTime) + "</a></li>";
+    if ($("#hasReplyDeletePermission").val() == 'true')
+        temp += "<li><Button class='btn btn-danger' onclick='deleteReply('" + reply.id + "','" + reply.uid + "')'>删除</Button></li>";
+    if ($("#hasReplyBlockPermission").val() == 'true')
+        temp += "<li><Button class='btn btn-primary' id='blockReplyButton-" + reply.id + "' onclick='blockReply('" + reply.id + "','" + reply.uid + "')' disabled>关闭</Button></li>";
+    if ($("#hasReplyAdoptPermission").val() == 'true')
+        temp += "<li><Button class='btn btn-primary' onclick='adoptReply('" + reply.id + "','" + reply.uid + "')'>采纳</Button></li>";
+    temp += "</ul></div>";
+    //右侧用户信息
+    temp += "<div class='col-md-2 col-sm-2 col-xs-2 answer__info--author-avatar'><a class='mr10' href='" + rootPath + "/user/" + reply.uid + "/home'><img class='avatar-32' src='" + reply.user.avatar + "' alt='用户头像'></a></div>" + "<div class='col-md-2 col-sm-2 hidden-xs answer__info--author'><div class='answer__info--author-warp'><a class='answer__info--author-name' href='" + rootPath + "/user/" + reply.uid + "/home'>" + reply.user.name + "</a><span class='answer__info--author-rank'>" + reply.user.prestige + "声望</span></div></div>";
+    temp += "</div></div></article>";
+    console.log("完成bestReply的拼接");
+    $("#replies").append(temp);
+}
+
 //发表回复
 function addReply() {
     var d = {
@@ -487,7 +550,6 @@ function addReply() {
         "content": $('#replyContent').val(),
         "addTime": new Date()
     };
-    alert(JSON.stringify(d));
     $.ajax({
         type: 'POST',
         url: '/reply',
@@ -594,72 +656,102 @@ function adoptReply(id, uid) {
 
 //赞同回复
 function likeReply(id,uid) {
-    var da = {"id" : parseInt(id), "uid" : uid};
-    var d = {"opid"  :id};
-    $.ajax({
-        type: 'POST',
-        url: '/api/getRateInfo',
-        contentType: 'application/json',
-        data: JSON.stringify(d),
-        success: function (data) {
-            if(data == "err" && $('#condition_uid').val() != ""){
-                $.ajax({
-                    type: 'POST',
-                    url: '/reply/like',
-                    data : JSON.stringify(da),
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if (data == false) {
-                            alert('投票失败，请稍后重试！');
+    if ($('#condition_uid').val() != ""){
+        var da = {"id" : parseInt(id), "uid" : uid};
+        var d = {"opid"  :id};
+        $.ajax({
+            type: 'POST',
+            url: '/api/getReplyRateInfo',
+            contentType: 'application/json',
+            data: JSON.stringify(d),
+            success: function (data) {
+                if(data != 'like' && data != 'hate'){
+                    $.ajax({
+                        type: 'POST',
+                        url: '/reply/like',
+                        data : JSON.stringify(da),
+                        contentType: 'application/json',
+                        success: function (data) {
+                            if(data == true){
+                                $("#like-" + id).css("background-color", "#A4D3EE");
+                                $("#like-" + id).attr("disabled","disabled");
+                                $("#hate-" + id).attr("disabled","disabled");
+                            }
+                            else
+                                alert('投票失败，请稍后重试！');
+                        },
+                        error: function () {
+                            alert('发送请求失败！');
                         }
-                    },
-                    error: function () {
-                        alert('发送请求失败！');
-                    }
-                });
-            }
-            else
+                    });
+                }
+                else if(data == 'like'){
+                    $("#like-" + id).attr("disabled","disabled");
+                    $("#hate-" + id).attr("disabled","disabled");
+                    $("#like-" + id).css("background-color", "#A4D3EE");
+                }
+                else if(data == 'hate'){
+                    $("#like-" + id).attr("disabled","disabled");
+                    $("#hate-" + id).attr("disabled","disabled");
+                    $("#hate-" + id).css("background-color", "#A4D3EE");
+                }
                 alert("已投票，请勿重复投票");
-        },
-        error: function () {
-            alert('发送请求失败！');
-        }
-    });
+            },
+            error: function () {
+                alert('发送请求失败！');
+            }
+        });
+    }
 }
 
 //反对回复
 function hateReply(id,uid) {
-    var da = {"id" : parseInt(id), "uid" : uid};
-    var d = {"opid"  :id};
-    $.ajax({
-        type: 'POST',
-        url: '/api/getRateInfo',
-        contentType: 'application/json',
-        data: JSON.stringify(d),
-        success: function (data) {
-            if(data == "err" && $('#condition_uid').val() != ""){
-                $.ajax({
-                    type: 'POST',
-                    url: '/reply/hate',
-                    data : JSON.stringify(da),
-                    contentType: 'application/json',
-                    success: function (data) {
-                        if (data == false) {
-                            alert('投票失败，请稍后重试！');
+    if ($('#condition_uid').val() != "") {
+        var da = {"id": parseInt(id), "uid": uid, "tid": parseInt($("#condition_id").val())};
+        var d = {"opid": id};
+        $.ajax({
+            type: 'POST',
+            url: '/api/getReplyRateInfo',
+            contentType: 'application/json',
+            data: JSON.stringify(d),
+            success: function (data) {
+                if (data != 'like' && data != 'hate') {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/reply/hate',
+                        data: JSON.stringify(da),
+                        contentType: 'application/json',
+                        success: function (data) {
+                            if(data == true){
+                                $("#hate-" + id).attr("disabled","disabled");
+                                $("#like-" + id).attr("disabled","disabled");
+                                $("#hate-" + id).css("background-color", "#A4D3EE");
+                            }
+                            else
+                                alert('投票失败，请稍后重试！');
+                        },
+                        error: function () {
+                            alert('发送请求失败！');
                         }
-                    },
-                    error: function () {
-                        alert('发送请求失败！');
-                    }
-                });
-            }
-            else
+                    });
+                }
+                else if(data == 'like'){
+                    $("#like-" + id).attr("disabled","disabled");
+                    $("#hate-" + id).attr("disabled","disabled");
+                    $("#like-" + id).css("background-color", "#A4D3EE");
+                }
+                else if(data == 'hate'){
+                    $("#hate-" + id).attr("disabled","disabled");
+                    $("#like-" + id).attr("disabled","disabled");
+                    $("#hate-" + id).css("background-color", "#A4D3EE");
+                }
                 alert("已投票，请勿重复投票");
-        },
-        error: function () {
-            alert('发送请求失败！');
-        }
-    });
+            },
+            error: function () {
+                alert('发送请求失败！');
+            }
+        });
+    }
 }
 
 //--------------------- 用户主页  -------------------------//
@@ -871,8 +963,7 @@ function uploadFile() {
             else {
                 $("#uploadBtn").attr("class","btn btn-success");
                 $("#uploadBtn").attr("value","上传成功");
-                $("#attachmentDiv").append("<input type='hidden' name='attid' id='attid' value='" + data + "'>");
-
+                $("#attid").attr("value",data);
             }
         },
         error: function () {

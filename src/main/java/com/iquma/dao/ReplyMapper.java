@@ -1,6 +1,8 @@
 package com.iquma.dao;
 
 import com.iquma.pojo.Reply;
+import com.iquma.pojo.Topic;
+import org.apache.ibatis.annotations.Param;
 
 
 import java.util.List;
@@ -20,6 +22,8 @@ public interface ReplyMapper {
     Reply selectByPrimaryKey(Integer id);//根据id查找回复
 
     List selectByCondition(Reply record);//查找符合条件的所有回复
+
+    List selectByConditionAndPage(@Param("start")int start, @Param("end")int end, @Param("rep")Reply record);//按分页查找符合条件的所有回复
 
     List selectByConditionSortByTime(Reply record);//查找符合条件的所有回复并按时间排序
 

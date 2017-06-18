@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <html>
 <head>
     <title>经验分享</title>
@@ -21,7 +22,7 @@
     </script>
 </head>
 <body>
-<!-- 提问 -->
+<shiro:hasPermission name="article:create">
 <form class="form-group">
     <div class="panel panel-default">
         <div class="panel-heading">经验</div>
@@ -59,8 +60,6 @@
     </div>
     </div>
 </form>
-<script type="text/javascript">
-
-</script>
+</shiro:hasPermission>
 </body>
 </html>

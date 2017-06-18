@@ -51,17 +51,6 @@ public class APIController {
         return tagService.selectAll();
     }
 
-//    //接收标签--测试用
-//    @RequestMapping("tagsSubmit")
-//    public @ResponseBody Boolean tagsSubmit(@RequestBody String tags){
-////        JSONArray tag = JSONArray.parseArray(tags);
-////        for (int i = 0; i < tag.size(); i++) {
-////            System.out.println("分离出标签:" + tag.get(i));
-////        }
-//        System.out.println("测试接收标签时收到参数:" + tags);
-//        return false;
-//    }
-
     //检测主贴是否被用户收藏
     @RequestMapping(value = "getIsFavorite" , method = RequestMethod.POST)
     public @ResponseBody Boolean checkIsFavorite(@RequestBody Favorite con){
@@ -70,11 +59,19 @@ public class APIController {
         return null != this.favoriteService.selectByCondition(con);
     }
 
-    //查询投票信息
-    @RequestMapping(value = "getRateInfo", method = RequestMethod.POST)
-    public @ResponseBody String getRateInfo(@RequestBody Operation condition){
+    //查询用户对主贴的投票信息
+    @RequestMapping(value = "getTopicRateInfo", method = RequestMethod.POST)
+    public @ResponseBody String getTopicRateInfo(@RequestBody Operation condition){
         condition.setUid(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
-        String action = operationService.selectsRateInfo(condition);
+        String action = operationService.selectsTopicRateInfo(condition);
+        return action == null? "null" : action.substring(action.length()-4);
+    }
+
+    //查询用户对回复的投票信息
+    @RequestMapping(value = "getReplyRateInfo", method = RequestMethod.POST)
+    public @ResponseBody String getReplyRateInfo(@RequestBody Operation condition){
+        condition.setUid(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
+        String action = operationService.selectsReplyRateInfo(condition);
         return action == null? "null" : action.substring(action.length()-4);
     }
 

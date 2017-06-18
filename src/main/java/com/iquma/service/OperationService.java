@@ -13,8 +13,9 @@ public interface OperationService {
 
     List selectsByCondition(Operation condition);//获取符合条件的操作记录集合
 
-   // Operation selectByCondition(Operation condition);//获取符合条件的操作记录
+    String selectsTopicRateInfo(Operation condition);//获取用户对主贴的投票信息
 
-    String selectsRateInfo(Operation condition);
+    String selectsReplyRateInfo(Operation condition);//获取用户对回复的投票信息
+
 
 }

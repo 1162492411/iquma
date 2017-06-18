@@ -5,10 +5,11 @@ import com.iquma.exception.NoSuchTopicException;
 import com.iquma.pojo.*;
 import com.iquma.service.*;
 import com.iquma.utils.BinomialUtil;
-import com.iquma.utils.CASTS;
 import com.iquma.utils.ENUMS;
-import com.iquma.utils.UserHelper;
+import java.util.Date;
+import java.util.List;
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.ShiroException;
 import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.authz.annotation.RequiresUser;
@@ -16,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.*;
 
 /**
  * Created by Mo on 2016/10/30.
@@ -52,20 +51,32 @@ public class TopicController {
      * @param sec 版块
      */
     private String toTopicsByCondition(String tname, String type,Integer page, Tag ta, Topic topic, Model model,String sec){
+        long time1 = System.currentTimeMillis();
         List tags = handleTname(tname,ta,topic);
+        long time2 = System.currentTimeMillis();
+        System.out.println("handleTname耗时" +(time2 - time1));
         handleType(type,topic);
+        long time3 = System.currentTimeMillis();
+        System.out.println("handleType耗时" + (time3 - time2));
         topic.setSec(sec);
-        List<Topic> results = topicService.selectsSimpleByConditionAndPage(page,topic);
+        int totalPage = getTotalPage(topic,tname,type);
+        long time4 = System.currentTimeMillis();
+        System.out.println("getTotalPage耗时" + (time4 - time3));
+        List<Topic> results = topicService.selectsSimpleByConditionAndPage(page < 0 ? 0 : page > totalPage? totalPage - 1 : page - 1,topic);
+        long time5 = System.currentTimeMillis();
+        System.out.println("后台查询topic耗时" + (time5-time4));
         //绑定结果到model中
         model.addAttribute("sec",sec);
         model.addAttribute("tag",tname == null? "null" : tname);
         model.addAttribute("tags",tags);
         model.addAttribute("type", type);
-        model.addAttribute("topics", CASTS.translateToSB(results));
-        int totalPage = getTotalPage(topic,tname,type);
+        model.addAttribute("topics", results);
         model.addAttribute("totalPage",totalPage);
         model.addAttribute("currentPage",page >= totalPage?totalPage : page <= 0? 1 : page);
+
         oldTname = (tname == null ? "-2" : tname); oldType = (type == null? "-2" : type);
+        long time6 = System.currentTimeMillis();
+        System.out.println("绑定结果耗时" + (time6-time5));
         return "topics/topics";
     }
 
@@ -90,7 +101,7 @@ public class TopicController {
 
     //获取符合条件的主贴的总页数
     private int getTotalPage(Topic condition,String tname,String type){
-        if(!oldTname.equals(tname) || !oldType.equals(type))  oldTopicCount = topicService.selectsSimpleByCondition(condition).size();//若除页数外的搜索条件没有变化，则使用旧的总主贴数;否则重新查询
+        if(!oldTname.equals(tname) || !oldType.equals(type))  oldTopicCount = topicService.selectsSimpleByCondition(condition);//若除页数外的搜索条件没有变化，则使用旧的总主贴数;否则重新查询
         return oldTopicCount % 10 == 0 ? oldTopicCount / 10 : oldTopicCount / 10 + 1;
     }
 
@@ -212,7 +223,6 @@ public class TopicController {
      * @param sort 回复的排序方式--默认/时间
      * @param page 页数
      */
-
     private String toTopics(Integer tid, String sort,Integer page, Reply reply, Model model) throws NoSuchTopicException {
         Topic topic = oldTopicId == tid ? oldTopic : (oldTopic = topicService.selectById(tid));//查询主贴是否存在
         if(topic == null) throw new NoSuchTopicException();//主贴不存在则跳转空查询页面
@@ -240,11 +250,11 @@ public class TopicController {
     //处理主题的回复排序方式
     private String handleReply(String sort, Integer page, Reply reply, Model model){
         if("time".equals(sort)){//如果回复按时间排序
-            model.addAttribute("replies",replyService.selectByConditionSortByTime(page == 0 ? 1 : page, reply));
+            model.addAttribute("replies",replyService.selectByConditionSortByTime(page == 0 ? 0 : page - 1, reply));
             return "topics/topic_time";
         }
         else{//如果主贴回复按默认排序
-            model.addAttribute("replies",replyService.selectByConditionAndPage(page == 0? 1 : page ,reply));
+            model.addAttribute("replies",replyService.selectByConditionAndPage(page == 0? 0 : page - 1 ,reply));
             return "topics/topic_default";
         }
     }
@@ -281,27 +291,36 @@ public class TopicController {
     public String toUpdateTopic(@PathVariable Integer id, Model model) throws NoSuchTopicException {
         Topic topic = topicService.selectById(id);
         if(topic == null) throw new NoSuchTopicException();//主贴不存在则跳转空查询页面
-        model.addAttribute("topic",topic);
-        return "topics/update";
+        if(SecurityUtils.getSubject().isPermitted(topic.getSec() + ":update:" + topic.getId())){
+            model.addAttribute("topic",topic);
+            return "topics/update";
+        }
+        else throw new ShiroException();
     }
 
     //更新主贴验证
-    @RequestMapping(value = {"tutorial/{id}/update","question/{id}/update","article/{id}/update","code/{id}/update"}, method = RequestMethod.PUT)
+    @RequestMapping(value = {"tutorial/{idd}/update","question/{idd}/update","article/{idd}/update","code/{idd}/update"}, method = RequestMethod.PUT)
     public @ResponseBody Boolean update(@RequestBody Topic record){
-         return topicService.update(record);
+        if(SecurityUtils.getSubject().isPermitted(record.getSec() + ":update:" + record.getId()))
+        {System.out.println("传递信息时收到的信息是" + record);   return topicService.update(record);}
+        else
+           return false;
     }
 
     //关闭主贴
-    @RequiresPermissions(value = {"tutorial:block","question:block","article:block","code:block"},logical = Logical.OR)
     @RequestMapping( value = {"tutorial/{id}/block","question/{id}/block","article/{id}/block","code/{id}/block"}, method = RequestMethod.POST )
     public @ResponseBody Boolean block(@RequestBody Topic record){
+        if(SecurityUtils.getSubject().isPermitted(record.getSec() + ":block:" + record.getId()))
         return topicService.changeStatus(record.getId());
+        else throw new ShiroException();
     }
 
     //删除主贴
     @RequestMapping(value = {"tutorial/{id}","question/{id}","article/{id}","code/{id}"}, method = RequestMethod.DELETE)
     public @ResponseBody Boolean delete(@RequestBody Topic record) {
+        if(SecurityUtils.getSubject().isPermitted(record.getSec() + ":block:" + record.getId()))
         return topicService.deleteById(record.getId());
+        else throw new ShiroException();
     }
 
     //收藏主贴
@@ -312,6 +331,7 @@ public class TopicController {
     }
 
     //赞同主贴
+    @RequiresPermissions(value = {"tutorial:like","question:like","article:like","code:like"},logical=Logical.OR)
     @RequestMapping(value = {"tutorial/{id}/like","question/{id}/like","article/{id}/like","code/{id}/like"}, method = RequestMethod.POST)
     public @ResponseBody Boolean like(@RequestBody Topic record){
         record = topicService.selectById(record.getId());
@@ -323,10 +343,13 @@ public class TopicController {
     //反对主贴
     @RequestMapping(value = {"tutorial/{id}/hate","question/{id}/hate","article/{id}/hate","code/{id}/hate"}, method = RequestMethod.POST)
     public @ResponseBody Boolean hate(@RequestBody Topic record){
-        record = topicService.selectById(record.getId());
-        double likeCount = record.getLikeCount();
-        double hateCount = binomialUtil.getHateCount(record.getHateCount());
-        return topicService.rate(new Topic(record.getId(),likeCount,hateCount,binomialUtil.getRateCount(likeCount,hateCount)));
+        if(SecurityUtils.getSubject().isPermitted(record.getSec() + ":hate:" + record.getId())){
+            record = topicService.selectById(record.getId());
+            double likeCount = record.getLikeCount();
+            double hateCount = binomialUtil.getHateCount(record.getHateCount());
+            return topicService.rate(new Topic(record.getId(),likeCount,hateCount,binomialUtil.getRateCount(likeCount,hateCount)));
+        }
+        else throw new ShiroException();
     }
 
 }

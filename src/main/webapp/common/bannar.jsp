@@ -41,9 +41,18 @@
                     <li class="opts__item dropdown hoverDropdown write-btns">
                         <a class="dropdownBtn" data-toggle="dropdown" href="${pageContext.request.contextPath}/user/ask"><img src="${pageContext.request.contextPath}/static/image/add.png"><span class="caret"></span></a>
                         <ul class="dropdown-menu dropdown-menu-right">
-                            <li><a href="${pageContext.request.contextPath}/user/ask">提问题</a></li>
-                            <li><a href="${pageContext.request.contextPath}/user/write">写文章</a></li>
-                            <li><a href="${pageContext.request.contextPath}/user/upload">传代码</a></li>
+                            <shiro:hasPermission name="question:create">
+                                <li><a href="${pageContext.request.contextPath}/user/ask">提问题</a></li>
+                            </shiro:hasPermission>
+                            <shiro:hasPermission name="article:create">
+                                <li><a href="${pageContext.request.contextPath}/user/write">写文章</a></li>
+                            </shiro:hasPermission>
+                            <shiro:hasPermission name="code:create">
+                                <li><a href="${pageContext.request.contextPath}/user/upload">传代码</a></li>
+                            </shiro:hasPermission>
+                            <shiro:hasPermission name="tutorial:create">
+                                <li><a href="${pageContext.request.contextPath}/user/teach">发教程</a></li>
+                            </shiro:hasPermission>
                         </ul>
                     </li>
                     <!-- 导航-右侧-发布结束 -->

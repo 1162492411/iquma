@@ -26,12 +26,17 @@ public class FavoriteServiceImpl implements FavoriteService {
     }
 
     @Override
-    public List selectsByCondition(Favorite condition) {
-        return this.favoriteMapper.selectsByCondition(condition);
+    public List selectsByConditionAndPage(int page,Favorite condition) {
+        return this.favoriteMapper.selectsByConditionAndPage(page * 10,page*10+10,condition);
     }
 
     @Override
     public Favorite selectByCondition(Favorite condition) {
         return this.favoriteMapper.selectByCondition(condition);
+    }
+
+    @Override
+    public int selectCountByCondition(Favorite condition) {
+        return this.favoriteMapper.selectCountByCondition(condition);
     }
 }

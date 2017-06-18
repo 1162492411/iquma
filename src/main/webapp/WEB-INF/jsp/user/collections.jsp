@@ -14,6 +14,7 @@
     <script type="text/javascript">
         $(document).ready(function () {
             initProHeaders(${user.id},'collection');
+            initPag(${currentPage},${totalPage},"collectionsPagination",getCollectionsPath(${uid}));
             initCollections(${collections});
             hljs.initHighlightingOnLoad();
         });
@@ -30,8 +31,11 @@
             <div class="Profile-mainColumn" style="width: 1000px;">
                 <div class="Card ProfileMain" id="ProfileMain">
                     <!-- 用户动态详细数据区 -->
-                    <div class="List" id="Profile-collections">
-                    </div><!-- 用户动态详细数据区结束 -->
+                    <div class="List" id="Profile-collections"></div>
+                    <!-- 用户动态详细数据区结束 -->
+                    <%-- 分页按钮 --%>
+                    <nav><ul class="pagination" id="collectionsPagination"></ul></nav>
+                    <%-- 分页按钮结束 --%>
                 </div><!-- 用户动态数据区左侧结束 -->
             </div><!-- 用户动态数据区结束 -->
         </div>

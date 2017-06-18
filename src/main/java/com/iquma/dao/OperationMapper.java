@@ -10,6 +10,7 @@ public interface OperationMapper {
 
     List selectsByCondition(Operation condition);
 
-    String selectsRateInfo(Operation condition);//选取用户的投票行为
+    String selectsTopicRateInfo(Operation condition);//选取用户对主贴的投票行为
 
+    String selectsReplyRateInfo(Operation condition);//选取用户对回复的投票行为
 }

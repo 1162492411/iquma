@@ -38,20 +38,18 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public List selectsByConditionAndPage(int page, Topic condition) {
-        PageHelper.startPage(page,10);
-        return this.topicMapper.selectsByCondition(condition);
+    public List selectsRevelant(String id) {
+        return this.topicMapper.selectsRevelant(id);
     }
 
     @Override
-    public List<Topic> selectsSimpleByCondition(Topic condition) {
+    public Integer selectsSimpleByCondition(Topic condition) {
         return this.topicMapper.selectsSimpleByCondition(condition);
     }
 
     @Override
     public List<Topic> selectsSimpleByConditionAndPage(int page, Topic condition) {
-        PageHelper.startPage(page,10);
-        return this.topicMapper.selectsSimpleByCondition(condition);
+        return this.topicMapper.selectsSimpleByConditionAndPage(page*10,condition);
     }
 
     @Override

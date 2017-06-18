@@ -87,6 +87,16 @@
     </filter-mapping>
 
 
+    <!-- 自定义临时Servlet，用于批量添加测试数据 -->
+    <!--<servlet>-->
+        <!--<servlet-name>tt</servlet-name>-->
+        <!--<servlet-class>com.iquma.utils.tempHelper</servlet-class>-->
+        <!--<load-on-startup>1</load-on-startup>-->
+    <!--</servlet>-->
+    <!--<servlet-mapping>-->
+        <!--<servlet-name>tt</servlet-name>-->
+        <!--<url-pattern>/*</url-pattern>-->
+    <!--</servlet-mapping>-->
 
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>

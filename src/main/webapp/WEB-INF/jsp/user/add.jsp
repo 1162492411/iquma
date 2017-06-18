@@ -12,10 +12,6 @@
 
 <body>
 <!-- 添加账户 -->
-<!-- 若权限不足，则显示空白~ -->
-<shiro:lacksPermission name="suer:create">
-
-</shiro:lacksPermission>
 <!-- 若用户具有足够权限,则显示添加账户页面 -->
 <shiro:hasPermission name="suser:create">
 <form>
