@@ -21,10 +21,10 @@ public interface ReplyMapper {
 
     Reply selectByPrimaryKey(Integer id);//根据id查找回复
 
-    List selectByCondition(Reply record);//查找符合条件的所有回复
+    int selectsCount(Reply record);//查找符合条件的所有回复的总数
 
-    List selectByConditionAndPage(@Param("start")int start, @Param("end")int end, @Param("rep")Reply record);//按分页查找符合条件的所有回复
+    List selectsByPage(@Param("start")int start,@Param("rep")Reply record);//按分页查找符合条件的所有回复
 
-    List selectByConditionSortByTime(Reply record);//查找符合条件的所有回复并按时间排序
+    List selectsByPageSorted(@Param("start")int start,@Param("rep")Reply record);//查找符合条件的所有回复并按时间排序
 
 }

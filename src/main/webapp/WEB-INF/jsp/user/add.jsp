@@ -3,13 +3,8 @@
 <html>
 <head>
     <title>添加用户</title>
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
-    <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/iquma.js"></script>
+    <jsp:include page="/common/base.jsp" />
 </head>
-
 <body>
 <!-- 添加账户 -->
 <!-- 若用户具有足够权限,则显示添加账户页面 -->

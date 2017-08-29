@@ -18,73 +18,8 @@
     where id = #{id,jdbcType=TINYINT}
   </select>
 
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Byte">
-    delete from common_tag
-    where id = #{id,jdbcType=TINYINT}
-  </delete>
-  <insert id="insert" parameterType="com.iquma.pojo.Tag">
-    insert into common_tag (id, pid, name
-      )
-    values (#{id,jdbcType=TINYINT}, #{pid,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.iquma.pojo.Tag">
-    insert into common_tag
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="pid != null">
-        pid,
-      </if>
-      <if test="name != null">
-        name,
-      </if>
-      <if test="path != null">
-        path
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=TINYINT},
-      </if>
-      <if test="pid != null">
-        #{pid,jdbcType=TINYINT},
-      </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="path != null">
-        #{path,jdbcType=VARCHAR}
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Tag">
-    update common_tag
-    <set>
-      <if test="pid != null">
-        pid = #{pid,jdbcType=TINYINT},
-      </if>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="path != null">
-        path = #{path,jdbcType=VARCHAR}
-      </if>
-    </set>
-    where id = #{id,jdbcType=TINYINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.iquma.pojo.Tag">
-    update common_tag
-    set pid = #{pid,jdbcType=TINYINT},
-      name = #{name,jdbcType=VARCHAR},
-      path = #{path,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=TINYINT}
-  </update>
-
-
   <select id="selectAll"  resultType="java.lang.String">
-    select concat("'",name,"'") from common_tag
+    select name from common_tag
   </select>
 
   <select id="selectByCondition" parameterType="com.iquma.pojo.Tag" resultMap="BaseResultMap">
@@ -92,19 +27,16 @@
     <include refid="Base_Column_List" />
     from common_tag
     <trim prefix="where" prefixOverrides="and">
-      <if test="id != null">
-        id = #{id,jdbcType=TINYINT}
-      </if>
-      <if test="pid != null">
-        and pid = #{pid,jdbcType=TINYINT}
-      </if>
       <if test="name != null">
-        and name = #{name,jdbcType=VARCHAR}
-      </if>
-      <if test="path != null">
-        and path = #{path,jdbcType=VARCHAR}
+        name = #{name,jdbcType=VARCHAR}
       </if>
     </trim>
+  </select>
+
+  <select id="selectsFirstTag" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from common_tag
+    where pid= 0
   </select>
 
   <select id="selectsByCondition" parameterType="com.iquma.pojo.Tag" resultMap="BaseResultMap">
@@ -112,8 +44,8 @@
     <include refid="Base_Column_List" />
     from common_tag
     <trim prefix="where" prefixOverrides="and">
-      <if test="id != null">
-        path like concat((select path from common_tag where id = #{id,jdbcType=TINYINT}), '%')
+      <if test="id != null" >
+        pid = #{id,jdbcType=TINYINT}
       </if>
       <if test="pid != null">
         and pid = #{pid,jdbcType=TINYINT}
@@ -123,8 +55,9 @@
       </if>
     </trim>
   </select>
+
   <select id="selectsRelevant" parameterType="java.lang.Byte" resultType="java.lang.String">
-    select concat("'",name,"'") from common_tag where find_in_set((select substring(path,2,1) from common_tag where id=#{id,jdbcType=TINYINT}),path)
+    select name from common_tag where find_in_set((select substring(path,2,1) from common_tag where id=#{id,jdbcType=TINYINT}),path)
   </select>
 
 </mapper>

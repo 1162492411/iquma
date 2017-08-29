@@ -1,5 +1,6 @@
 package com.iquma.utils;
 
+import com.iquma.exception.NoSuchTopicException;
 import com.iquma.pojo.*;
 import com.iquma.service.*;
 import org.apache.shiro.SecurityUtils;
@@ -7,7 +8,9 @@ import org.apache.shiro.subject.Subject;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,10 +42,10 @@ public class LogHelper {
     public void afterLogin(JoinPoint joinPoint){
         User u = (User)joinPoint.getArgs()[0];
         HttpServletRequest request = (HttpServletRequest)joinPoint.getArgs()[1];
-        suclogService.insert(new Suclog(u.getId(),new java.util.Date(),getIp(request)));
+        suclogService.insert(new Suclog(u.getId(),new Date(),getIp(request)));
     }
 
-    //获取真实ip--待测试
+    //获取真实ip
     private static String getIp(HttpServletRequest request){
         String ip = request.getHeader("x-forwarded-for");
         if(null == ip || ip.length() == 0 || "unknown".equalsIgnoreCase(ip))
@@ -59,7 +62,7 @@ public class LogHelper {
     }
 
     //用户提问、发表经验、上传代码后记录日志
-    @AfterReturning(value = "execution(* com.iquma.controller.UserController.ask(..)) || execution(* com.iquma.controller.UserController.write(..)) || execution(* com.iquma.controller.UserController.upload(..)) ", returning = "result")
+    @AfterReturning(value = "execution(* com.iquma.controller.UserController.ask(..)) || execution(* com.iquma.controller.UserController.write(..)) || execution(* com.iquma.controller.UserController.upload(..)) || execution(* com.iquma.controller.UserController.teach(..))", returning = "result")
     public  void afterAddTopic(JoinPoint joinPoint, Object result){
         if(Boolean.valueOf(String.valueOf(result))){//当方法返回结果是TRUE时
             //获取用户操作信息
@@ -68,7 +71,7 @@ public class LogHelper {
             String uid = UserHelper.getCurrentUserId();
             String opid = String.valueOf(record.getId());
             Byte pid = permissionService.selectByPermission(topicType + ":create").getId();
-            Date time = record.getaddTime();
+            Date time = record.getAddTime();
             //将用户操作信息存入记录
             operationService.insert(new Operation(uid,opid,pid,time));
             userHelper.updateUserPrestige(topicType,UserHelper.getCurrentUserId()); //更新用户威望
@@ -104,7 +107,7 @@ public class LogHelper {
 
     //用户发表评论后记录日志并通知相关用户并更新主贴信息
     @AfterReturning(value = "execution(* com.iquma.controller.ReplyController.insert(..))")
-    public void afterInsertReply(JoinPoint joinPoint){
+    public void afterInsertReply(JoinPoint joinPoint) throws NoSuchTopicException {
         Reply reply = (Reply)joinPoint.getArgs()[0];//获取用户操作信息
         String uid = UserHelper.getCurrentUserId();
         String opid = String.valueOf(reply.getTid());
@@ -142,7 +145,8 @@ public class LogHelper {
             //通知相关用户,用户评论自己的主贴除外，评论被赞同/反对除外
             String ntfuid = record.getUid();
             if(!uid.equals(ntfuid) && ! "like".equals(methodName) && ! "hate".equals(methodName)){
-                String ntfcontent = "你对<a>" + record.getTitle() + "</a>的回复被" + UserHelper.getCurrentUserName() + CASTS.castReply(methodName);
+//                String ntfcontent = "你对<a>" + record.getTitle() + "</a>的回复被" + UserHelper.getCurrentUserName() + CASTS.castReply(methodName);
+                String ntfcontent = "";//TODO:此处title需要处理
                 notificationService.insert(new Notification(ntfuid,ntfcontent,time,Boolean.TRUE));
             }
             userHelper.updateUserPrestige(methodName,ntfuid); //更新用户威望
@@ -150,7 +154,5 @@ public class LogHelper {
             userHelper.updateUserRid();
         }
     }
-
-
 
 }

@@ -13,8 +13,8 @@ public interface FavoriteMapper {
 
     Favorite selectByCondition(Favorite condition);//筛选符合条件的收藏信息
 
-    List selectsByConditionAndPage(@Param("start")int start,@Param("end")int end,@Param("fav")Favorite condition);//筛选符合条件的收藏信息集合
+    List selectsByPage(@Param("start")int start, @Param("fav")Favorite condition);//筛选符合条件的收藏信息集合
 
-    int selectCountByCondition(Favorite condition);//获取符合条件的收藏信息的总数
+    int selectsCount(Favorite condition);//获取符合条件的收藏信息的总数
 
 }

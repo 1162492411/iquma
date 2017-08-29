@@ -1,20 +1,18 @@
 package com.iquma.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.iquma.pojo.Favorite;
 import com.iquma.pojo.Operation;
-import com.iquma.pojo.Permission;
 import com.iquma.pojo.Tag;
 import com.iquma.service.*;
+import com.iquma.utils.GsonUtil;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+/**
+ * 公共API
+ */
 @Controller
 @RequestMapping("api")
 public class APIController {
@@ -22,44 +20,45 @@ public class APIController {
     @Autowired
     private TagService tagService;
     @Autowired
-    private RoleService roleService;
-    @Autowired
     private FavoriteService favoriteService;
     @Autowired
     private OperationService operationService;
 
-
-    //获取分类
+    /**
+     * 获取所有一级分类标签
+     * @return 所有一级分类的标签
+      */
     @RequestMapping("getFirstTags")
-    public @ResponseBody List getFirstTags(Tag tag){
-        tag.setPid(Byte.valueOf("0"));
-        return tagService.selectsByCondition(tag);
+    public @ResponseBody String getFirstTags(){
+        return GsonUtil.toJson(tagService.selectsFirstTag());
     }
 
-    //获取分类所属的所有标签
-    @RequestMapping("getTagsByPid/{id}")
-    public @ResponseBody List getTags(@PathVariable Byte id,Tag condition){
-//        condition.setPid(Byte.parseByte(pid));
-        condition.setId(id);
-        System.out.println("即将传递标签参数：" + condition);
-        return tagService.selectsByCondition(condition);
+    /**
+     * 获取分类所属的子标签及该分类
+     * @param id 分类的名称
+     * @return 分类所属的子标签及该分类
+     */
+    @RequestMapping("getChildrenTags/{id}")
+    public @ResponseBody String getTags(@PathVariable Byte id,Tag condition){
+        return GsonUtil.toJson(tagService.selectsChildren(condition));
     }
 
-    //获取所有标签
-    @RequestMapping("getAllTags")
-    public @ResponseBody List getAllTags(){
-        return tagService.selectAll();
-    }
-
-    //检测主贴是否被用户收藏
+    /**
+     * 检测主贴是否被用户收藏
+     * @param condition 包含主贴ID和用户ID的条件参数
+     * @return true/false
+     */
     @RequestMapping(value = "getIsFavorite" , method = RequestMethod.POST)
-    public @ResponseBody Boolean checkIsFavorite(@RequestBody Favorite con){
-        con.setUid(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
-        System.out.println("检测主贴是否被用户收藏时收到参数:" + con);
-        return null != this.favoriteService.selectByCondition(con);
+    public @ResponseBody Boolean checkIsFavorite(@RequestBody Favorite condition){
+        condition.setUid(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
+        return null != this.favoriteService.selectByCondition(condition);
     }
 
-    //查询用户对主贴的投票信息
+    /**
+     * 查询用户对主贴的投票信息
+     * @param condition 包含回复ID和用户ID的条件参数
+     * @return like/hate/null
+     */
     @RequestMapping(value = "getTopicRateInfo", method = RequestMethod.POST)
     public @ResponseBody String getTopicRateInfo(@RequestBody Operation condition){
         condition.setUid(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));
@@ -67,7 +66,11 @@ public class APIController {
         return action == null? "null" : action.substring(action.length()-4);
     }
 
-    //查询用户对回复的投票信息
+    /**
+     * 查询用户对回复的投票信息
+     * @param condition 包含回复ID和用户ID的条件参数
+     * @return like/hate/null
+     */
     @RequestMapping(value = "getReplyRateInfo", method = RequestMethod.POST)
     public @ResponseBody String getReplyRateInfo(@RequestBody Operation condition){
         condition.setUid(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid")));

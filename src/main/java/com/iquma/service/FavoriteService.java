@@ -1,7 +1,6 @@
 package com.iquma.service;
 
 import com.iquma.pojo.Favorite;
-
 import java.util.List;
 
 /**
@@ -13,10 +12,10 @@ public interface FavoriteService {
 
     boolean delete(Integer id);//删除收藏记录
 
-    List selectsByConditionAndPage(int page,Favorite condition);//筛选符合条件的收藏信息
-
     Favorite selectByCondition(Favorite condition);//查询符合条件的收藏信息
 
-    int selectCountByCondition(Favorite condition);//获取符合条件的收藏信息的总数
+    List selectsByPage(int page,Favorite condition);//筛选符合条件的收藏信息
+
+    int selectsCount(Favorite condition);//获取符合条件的收藏信息的总数
 
 }

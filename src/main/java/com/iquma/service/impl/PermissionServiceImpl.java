@@ -18,16 +18,6 @@ public class PermissionServiceImpl implements PermissionService {
     private PermissionMapper permissionMapper;
 
     @Override
-    public List selectAll() {
-        return permissionMapper.selectAll();
-    }
-
-    @Override
-    public Permission selectById(Byte id) {
-        return permissionMapper.selectByPrimaryKey(id);
-    }
-
-    @Override
     public Permission selectByPermission(String condition) {
         return permissionMapper.selectByPermission(condition);
     }

@@ -1,5 +1,6 @@
 package com.iquma.service;
 
+import com.iquma.exception.NoSuchTagException;
 import com.iquma.pojo.Tag;
 
 import java.util.List;
@@ -9,9 +10,11 @@ import java.util.List;
  */
 public interface TagService {
 
-    Tag selectByCondition(Tag condition);//获取符合条件的标签
+    Tag selectByCondition(Tag condition) throws NoSuchTagException;//获取符合条件的标签
 
-    List selectsByCondition(Tag condition);//获取符合条件的标签集合
+    List selectsFirstTag();//获取所有一级标签
+
+    List selectsChildren(Tag condition);//获取符合条件的标签集合
 
     List selectAll();//获取所有标签的名称
 

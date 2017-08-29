@@ -10,15 +10,13 @@ body {
 /*------------------------zhihu----------nav--------------------*/
 
 
-/*---------------------------------------------zhihu-------------------------------------*/
-
 .AppHeader {
     position: relative;
     /*min-width: 1032px;*/
     width: 100%;
     background: #fff;
-    border-bottom: 1px solid rgba(30, 35, 42, .06);
-    box-shadow: 0 1px 3px 0 rgba(0, 34, 77, .05);
+    /*border-bottom: 2px solid rgba(30, 35, 42, .06);*/
+    /*box-shadow: 0 1px 3px 0 rgba(0, 34, 77, .05);*/
     background-clip: content-box
 }
 
@@ -35,7 +33,6 @@ body {
     left: 5%;
     width: 80%;
     height: 60px;
-    padding: 0 16px;
     margin: 0 auto;
     -webkit-box-align: center;
     -ms-flex-align: center;
@@ -58,7 +55,7 @@ body {
     -webkit-box-pack: justify;
     -ms-flex-pack: justify;
     justify-content: space-between;
-    min-width: 420px;
+    min-width: 600px;
     height: 30px;
     margin-right: 27px;
     margin-left: 27px;
@@ -133,6 +130,117 @@ body {
 
 .AppHeader-login {
     margin-right: 16px
+}
+
+
+/*----搜索框 --*/
+.header-search {
+    right: 0;
+    transition: width 0.25s ease;
+    display: inline-block;
+    margin-left: 10px;
+    vertical-align: middle
+}
+
+.header-search .btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #999;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none
+}
+
+.header-search input:-moz-placeholder {
+    color: #999
+}
+
+.header-search input::-moz-placeholder {
+    color: #999
+}
+
+.header-search input:-ms-input-placeholder {
+    color: #999
+}
+
+.header-search input::-webkit-input-placeholder {
+    color: #999
+}
+
+/*----二级导航栏 --*/
+.sub-head {
+    border-top: 2px dashed #eee;
+    padding: 5px 17%;
+    line-height: 30px;
+    position: relative;
+    border-bottom: 2px solid rgba(30, 35, 42, .06);
+    box-shadow: 0 1px 3px 0 rgba(0, 34, 77, .05);
+}
+
+.sub-head .tag-nav__item {
+    height: 30px;
+    line-height: 30px
+}
+
+.sub-head .tag-nav__item a {
+    text-decoration: none
+}
+
+.sub-head .tag-nav__item .text-secondNav {
+    color: #9e9e9e
+}
+
+.sub-head .tag-nav__item .text-secondNav:hover, .sub-head .tag-nav__item .text-secondNav:active {
+    color: #757575
+}
+
+.sub-head .tag-nav__item .active {
+    font-weight: 500;
+    color: #757575
+}
+
+.sub-head .btn-all-tag.btn-all-tag {
+    float: right
+}
+
+.sub-head .gradient-block {
+    position: absolute;
+    background: linear-gradient(90deg, rgba(250, 250, 250, 0), #fafafa);
+    height: 30px;
+    width: 20px;
+    right: 0;
+    top: 5px;
+    margin-right: 76px
+}
+
+.sub-head .tag-container-outer {
+    position: relative;
+    overflow: hidden;
+    height: 30px;
+    width: 89%
+}
+
+@media (min-width: 992px) {
+    .sub-head .tag-container-outer {
+        width: 92%
+    }
+}
+
+@media (min-width: 1200px) {
+    .sub-head .tag-container-outer {
+        width: 93%
+    }
+}
+
+.sub-head .tag-container {
+    position: absolute;
+    overflow: scroll;
+    white-space: nowrap;
+    display: inline-block;
+    vertical-align: super;
+    width: 100%;
+    height: 50px
 }
 
 .Popover {
@@ -2584,11 +2692,15 @@ tbody.collapse.in {
     border-top-left-radius: 0
 }
 
+.nav-pagination{
+    text-align: center;
+}
+
 .pagination {
     display: inline-block;
     padding-left: 0;
     margin: 21px 0;
-    border-radius: 3px
+    border-radius: 3px;
 }
 
 .pagination>li {

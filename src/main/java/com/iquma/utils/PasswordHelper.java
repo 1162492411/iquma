@@ -21,20 +21,24 @@ public class PasswordHelper {
     private String algorithmName = "md5";
     private final int hashIterations = 2;
 
-    public void encryptPassword(User user) {
-
-        user.setSalt(randomNumberGenerator.nextBytes().toHex());
-
-        String newPassword = new SimpleHash(
+    /**
+     * 加密用户的密码
+     * @param user
+     */
+    public void encryptPassword(User user){
+        user.setPass(new SimpleHash(
                 algorithmName,
                 user.getPass(),
                 ByteSource.Util.bytes(user.getSalt()),
-                hashIterations).toHex();
-
-        user.setPass(newPassword);
+                hashIterations).toHex());
     }
 
-
-
+    /**
+     * 重新设置用户的salt
+     * @param user
+     */
+    public void resetSalt(User user){
+        user.setSalt(randomNumberGenerator.nextBytes().toHex());
+    }
 
 }

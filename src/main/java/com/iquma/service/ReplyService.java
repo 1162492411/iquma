@@ -24,10 +24,10 @@ public interface ReplyService {
 
     Reply selectById(Integer id);//查找指定id的回复
 
-    List selectByCondition(Reply condition);//查找主贴的所有回复
+    int selectsCount(Reply condition);//查找主贴的所有回复的总数
 
-    List selectByConditionSortByTime(int page,Reply condition);//查找主贴的所有回复并按时间排序
+    List selectsByPage(int page, Reply condition);//分页查找符合条件的回复
 
-    List selectByConditionAndPage(int page, Reply condition);//分页查找符合条件的回复
+    List selectsByPageSorted(int page,Reply condition);//查找主贴的所有回复并按时间排序
 
 }

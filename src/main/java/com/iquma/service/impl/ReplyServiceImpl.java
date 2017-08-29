@@ -1,9 +1,9 @@
 package com.iquma.service.impl;
 
-import com.github.pagehelper.PageHelper;
 import com.iquma.dao.ReplyMapper;
 import com.iquma.pojo.Reply;
 import com.iquma.service.ReplyService;
+import com.iquma.utils.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -14,24 +14,6 @@ public class ReplyServiceImpl implements ReplyService {
 
     @Autowired
     private ReplyMapper replyMapper;
-
-    @Override
-    public List selectByCondition(Reply condition) {
-        return this.replyMapper.selectByCondition(condition);
-    }
-
-    @Override
-    public List selectByConditionSortByTime(int page, Reply condition) {
-        PageHelper.startPage(page,3);
-        return this.replyMapper.selectByConditionSortByTime(condition);
-    }
-
-    @Override
-    public List selectByConditionAndPage(int start, Reply condition) {
-//        PageHelper.startPage(page,3);
-//        return this.replyMapper.selectByCondition(condition);
-        return this.replyMapper.selectByConditionAndPage(start * 3,start *3 + 3,condition);
-    }
 
     @Override
     public Boolean rate(Reply record) {
@@ -67,4 +49,20 @@ public class ReplyServiceImpl implements ReplyService {
     public Reply selectById(Integer id) {
         return this.replyMapper.selectByPrimaryKey(id);
     }
+
+    @Override
+    public int selectsCount(Reply condition) {
+        return this.replyMapper.selectsCount(condition);
+    }
+
+    @Override
+    public List selectsByPage(int page, Reply condition) {
+        return this.replyMapper.selectsByPage(PageUtil.getStart(page),condition);
+    }
+
+    @Override
+    public List selectsByPageSorted(int page, Reply condition) {
+        return this.replyMapper.selectsByPageSorted(PageUtil.getStart(page), condition);
+    }
+
 }

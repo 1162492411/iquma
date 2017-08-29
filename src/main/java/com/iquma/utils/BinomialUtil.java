@@ -31,7 +31,7 @@ public class BinomialUtil {
 
     //计算加权赞同分
     public Double getLikeCount(Double u){
-        return u + getWeight(userService.selectById(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid"))).getRid());
+        return u + getWeight(userService.selectSimpleUser(String.valueOf(SecurityUtils.getSubject().getSession().getAttribute("userid"))).getRid());
     }
 
     //计算加权反对分

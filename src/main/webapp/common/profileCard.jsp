@@ -4,6 +4,11 @@
 <html>
 <head>
     <title>个人资料卡</title>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            initProCard(${user.isBlock});
+        });
+    </script>
 </head>
 <body>
 <!-- 顶部个人资料卡 -->
@@ -70,7 +75,7 @@
                             <!-- 若账户具有关闭账户的权限则显示关闭按钮 -->
                             <shiro:hasPermission name="suser:block">
                                 <button class="Button Button--primary Button--blue"
-                                   role="button" onclick="blockUser(${user.id})">关闭</button>
+                                   role="button" id="blockUserButton" onclick="blockUser(${user.id})">封禁</button>
                             </shiro:hasPermission>
                             <!-- 若账户具有删除账户的权限则显示删除账户按钮 -->
                             <shiro:hasPermission name="suser:delete">

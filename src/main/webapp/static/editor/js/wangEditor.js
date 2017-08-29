@@ -5895,7 +5895,8 @@ _e(function (E, $) {
         }
 
         // 加载 highlightjs 代码
-        setTimeout(loadHljs, 0);
+        // TODO:此处为hljs疑问
+       // setTimeout(loadHljs, 0);
 
         var editor = this;
         var config = editor.config;

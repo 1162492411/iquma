@@ -3,25 +3,20 @@
 <html>
 <head>
     <title>主贴列表</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/iquma.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/obsidian.css">
-    <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/iquma.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/highlight.pack.js"></script>
+    <jsp:include page="/common/base.jsp" />
     <script type="text/javascript">
         $(document).ready(function () {
-            initListStatus();
-            initTopics(${topics});
-            <%--initPag(${currentPage},${totalPage},"topicsPagination",getTypesPath());--%>
+            initTagNav();
+            initType();
             initTags(${tags});
+            initPag(${currentPage},${totalPage},"topicsPagination",getTypesPath());
+            initTopics(${topics});
         });
     </script>
 </head>
 <body>
 <jsp:include page="/common/bannar.jsp"/>
-<main>
+<main id="main">
     <!-- 隐藏数据区 -->
     <input type="hidden" id="sec" value="${sec}" />
     <input type="hidden" id="tag" value="${tag}" />
@@ -60,7 +55,6 @@
         </div>
     </div>
 </main>
-
 <jsp:include page="/common/footer.jsp"/>
 </body>
 </html>

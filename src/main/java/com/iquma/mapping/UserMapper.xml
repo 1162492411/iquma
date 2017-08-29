@@ -14,15 +14,12 @@
         <result column="appCount" jdbcType="INTEGER" property="appCount"/>
         <result column="salt" jdbcType="VARCHAR" property="salt"/>
     </resultMap>
+    <sql id="Simple_Column_List">
+        id, rid, name, avatar, description, email, isBlock, prestige, appCount
+    </sql>
     <sql id="Base_Column_List">
         id, rid, name, pass, avatar, description, email, isBlock, prestige, appCount, salt
     </sql>
-    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from user_basinfo
-        where id = #{id,jdbcType=VARCHAR}
-    </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from user_basinfo
@@ -38,79 +35,7 @@
         #{pass,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{isBlock,jdbcType=BIT}, #{prestige,jdbcType=INTEGER}, #{appCount,jdbcType=INTEGER}, #{salt,jdbcType=VARCHAR}
         )
     </insert>
-    <insert id="insertSelective" parameterType="com.iquma.pojo.User">
-        insert into user_basinfo
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
-            <if test="rid != null">
-                rid,
-            </if>
-            <if test="name != null">
-                name,
-            </if>
-            <if test="pass != null">
-                pass,
-            </if>
-            <if test="avatar != null">
-                avatar,
-            </if>
-            <if test="description != null">
-                description,
-            </if>
-            <if test="email != null">
-                email,
-            </if>
-            <if test="isBlock != null">
-                isBlock,
-            </if>
-            <if test="prestige != null">
-                prestige,
-            </if>
-            <if test="appCount != null">
-                appCount,
-            </if>
-            <if test="salt != null">
-                salt,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=VARCHAR},
-            </if>
-            <if test="rid != null">
-                #{rid,jdbcType=TINYINT},
-            </if>
-            <if test="name != null">
-                #{name,jdbcType=VARCHAR},
-            </if>
-            <if test="pass != null">
-                #{pass,jdbcType=VARCHAR},
-            </if>
-            <if test="avatar != null">
-                #{avatar,jdbcType=VARCHAR},
-            </if>
-            <if test="description != null">
-                #{description,jdbcType=VARCHAR},
-            </if>
-            <if test="email != null">
-                #{email,jdbcType=VARCHAR},
-            </if>
-            <if test="isBlock != null">
-                #{isBlock,jdbcType=BIT},
-            </if>
-            <if test="prestige != null">
-                #{prestige,jdbcType=INTEGER},
-            </if>
-            <if test="appCount != null">
-                #{appCount,jdbcType=INTEGER},
-            </if>
-            <if test="salt != null">
-                #{salt,jdbcType=VARCHAR},
-            </if>
-        </trim>
-    </insert>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.User">
         update user_basinfo
         <set>
@@ -153,17 +78,6 @@
         set isBlock= ! isBlock where id = #{id,jdbcType=VARCHAR}
     </update>
 
-    <select id="selectAll" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from user_basinfo
-    </select>
-
-    <select id="selectByCondition" parameterType="com.iquma.pojo.User">
-
-
-    </select>
-
     <update id="updatePrestige">
         update user_basinfo
         set prestige = prestige + #{prestige,jdbcType=INTEGER}
@@ -175,4 +89,19 @@
         set rid = #{rid,jdbcType=TINYINT}
         where id = #{id,jdbcType=VARCHAR}
     </update>
+
+    <select id="selectSimpleByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Simple_Column_List"/>
+        from user_basinfo
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectDetailByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_basinfo
+        where id = #{id,jdbcType=VARCHAR}
+    </select>
+
 </mapper>

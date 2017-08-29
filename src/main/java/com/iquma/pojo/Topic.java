@@ -3,9 +3,9 @@ package com.iquma.pojo;
 import com.iquma.utils.ENUMS;
 
 import java.util.Date;
-import java.util.Objects;
 
 public class Topic {
+
     private Integer id;
 
     private User user;
@@ -96,11 +96,11 @@ public class Topic {
         this.attid = attid;
     }
 
-    public Date getaddTime() {
+    public Date getAddTime() {
         return addTime;
     }
 
-    public void setaddTime(Date addTime) {
+    public void setAddTime(Date addTime) {
         this.addTime = addTime;
     }
 
@@ -227,7 +227,6 @@ public class Topic {
                 "\"id\":" + id +
                 ", \"user\":" + user +
                 ", \"tag\":" + tag +
-                ", \"sec\":\"" + sec + "\"" +
                 ", \"attachment\":" + attachment +
                 ", \"title\":\"" + title + "\"" +
                 ", \"sec\":\"" + sec + "\"" +
@@ -243,6 +242,8 @@ public class Topic {
                 ", \"replyCount\":" + replyCount +
                 ", \"isBlock\":" + isBlock +
                 ", \"hasBest\":" + hasBest +
+                ", \"noReply\":" + noReply +
+                ", \"isHigh\":" + isHigh +
                 ", \"content\":\"" + content + "\"" +
                 "}";
     }
@@ -279,27 +280,42 @@ public class Topic {
         this.content = content;
     }
 
+    //初始化默认添加主贴
+    public void parseDefaultTopic(){
+        viewCount = ENUMS.TOPIC_DEFAULT_VIEWCOUNT;
+        likeCount = ENUMS.TOPIC_DEFAULT_LIKECOUNT;
+        hateCount = ENUMS.TOPIC_DEFAULT_HATECOUNT;
+        rateCount = ENUMS.TOPIC_DEFAULT_RATECOUNT;
+        replyCount = ENUMS.TOPIC_DEFAULT_REPLYCOUNT;
+        attid = ENUMS.TOPIC_DEFAULT_ATTID;
+        isBlock = ENUMS.TOPIC_DEFAULT_ISBLOCK;
+        hasBest = ENUMS.TOPIC_DEFAULT_HASBEST;
+        noReply = ENUMS.TOPIC_DEFAULT_NOREPLY;
+        isHigh = ENUMS.TOPIC_DEFAULT_ISHIGH;
+    }
+
     //初始化默认教程主贴
     public void parseDefaultTutorial(){
+        parseDefaultTopic();
         sec = ENUMS.SEC_TUTORIAL;
     }
 
     //初始化默认提问主贴
-    public void parseDefaultDiscuss(){
+    public void parseDefaultQuestion(){
+        parseDefaultTopic();
         sec = ENUMS.SEC_QUESTION;
-        addTime = new Date();
     }
 
     //初始化默认经验主贴
     public void parseDefaultArticle(){
+        parseDefaultTopic();
         sec = ENUMS.SEC_ARTICLE;
-        addTime = new Date();
     }
 
     //初始化默认代码主贴
     public void parseDefaultCode(){
+        parseDefaultTopic();
         sec = ENUMS.SEC_CODE;
-//        addTime = new Date();
     }
 
 

@@ -45,11 +45,11 @@ public class Notification {
         this.ntftime = ntftime;
     }
 
-    public Boolean getisnew() {
+    public Boolean getIsnew() {
         return isnew;
     }
 
-    public void setisnew(Boolean isnew) {
+    public void setIsnew(Boolean isnew) {
         this.isnew = isnew;
     }
 

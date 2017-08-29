@@ -15,6 +15,6 @@
         </environment>
     </environments>
     <mappers>
-        <mapper resource="com/iquma/mapping/TopicMapper.xml"/>
+        <mapper resource="com/iquma/testdata/TestMapper.xml"/>
     </mappers>
 </configuration>

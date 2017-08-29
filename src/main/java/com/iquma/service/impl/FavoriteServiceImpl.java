@@ -3,6 +3,7 @@ package com.iquma.service.impl;
 import com.iquma.dao.FavoriteMapper;
 import com.iquma.pojo.Favorite;
 import com.iquma.service.FavoriteService;
+import com.iquma.utils.PageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -26,17 +27,18 @@ public class FavoriteServiceImpl implements FavoriteService {
     }
 
     @Override
-    public List selectsByConditionAndPage(int page,Favorite condition) {
-        return this.favoriteMapper.selectsByConditionAndPage(page * 10,page*10+10,condition);
-    }
-
-    @Override
     public Favorite selectByCondition(Favorite condition) {
         return this.favoriteMapper.selectByCondition(condition);
     }
 
     @Override
-    public int selectCountByCondition(Favorite condition) {
-        return this.favoriteMapper.selectCountByCondition(condition);
+    public List selectsByPage(int page, Favorite condition) {
+        return this.favoriteMapper.selectsByPage(PageUtil.getStart(page), condition);
     }
+
+    @Override
+    public int selectsCount(Favorite condition) {
+        return this.favoriteMapper.selectsCount(condition);
+    }
+
 }

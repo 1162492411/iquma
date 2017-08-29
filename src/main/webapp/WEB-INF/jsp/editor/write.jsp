@@ -3,20 +3,11 @@
 <html>
 <head>
     <title>经验分享</title>
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/editor/css/wangEditor.min.css">
-    <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/static/editor/js/wangEditor.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/xss.min.js" ></script>
-    <script src="${pageContext.request.contextPath}/static/js/iquma.js"></script>
+    <jsp:include page="/common/base.jsp" />
+    <jsp:include page="/common/editor.jsp" />
     <script type="text/javascript">
         $(function () {
-            initTypeSelection();
-            $("#typeIdSelection").change(function () {
-                updateTagSelection($('#typeIdSelection option:selected').val());
-            });
+            initTagSelection();
             editorSubmit('write');
         });
     </script>
@@ -32,18 +23,12 @@
                 <label>经验标题</label>
                 <input type="text" class="form-control" id="title" placeholder="经验标题"/>
             </div>
-            <%--类别id --%>
-            <div class="form-group" id="typeIdPanel">
-                <label>类别</label>
-                <select id="typeIdSelection">
-                </select>
-            </div>
-            <%--标签id --%>
-            <div class="form-group" id="tidPanel">
-                <label>标签</label>
-                <select name="tid" id="tidSelection">
-                </select>
-            </div>
+             <%--标签id --%>
+             <div class="form-group" id="tagPanel">
+                 <label>标签</label>
+                 <input type="hidden" id="tid" value="" />
+                 <select id="firstLevel"></select>
+             </div>
             <%--作者id --%>
             <input type="hidden" id="aid" value="${userid}"/>
             <%-- 内容--%>

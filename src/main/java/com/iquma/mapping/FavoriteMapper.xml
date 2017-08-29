@@ -11,6 +11,7 @@
 
     <resultMap id="TopicResultMap" type="com.iquma.pojo.Topic">
         <id column="topicId" jdbcType="INTEGER" property="id" />
+        <result column="topicSec" jdbcType="VARCHAR" property="sec" />
         <result column="topicTitle" jdbcType="VARCHAR" property="title" />
         <result column="topicContent" jdbcType="LONGVARCHAR" property="content" />
     </resultMap>
@@ -18,10 +19,25 @@
     <sql id="Base_Column_List">
         id, uid, obid, favTime
     </sql>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete from user_favinfo
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <insert id="insertSelective" parameterType="com.iquma.pojo.Favorite">
+        insert into user_favinfo
+        (uid,obid,favTime)
+        values (#{uid,jdbcType=VARCHAR},#{obid,jdbcType=INTEGER},#{favTime,jdbcType=TIMESTAMP})
+    </insert>
+
     <select id="selectByCondition" parameterType="com.iquma.pojo.Favorite" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
         from user_favinfo
+        where id=(
+        select temp.id from (
+        select id from user_favinfo
         <trim prefix="where" prefixOverrides="and">
             <if test="id != null">
                 id = #{id,jdbcType=TINYINT}
@@ -36,67 +52,35 @@
                 and favTime = #{favTime,jdbcType=TIMESTAMP}
             </if>
         </trim>
+        limit 1) as temp )
     </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-        delete from user_favinfo
-        where id = #{id,jdbcType=INTEGER}
-    </delete>
 
-    <insert id="insertSelective" parameterType="com.iquma.pojo.Favorite">
-        insert into user_favinfo
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
-            <if test="uid != null">
-                uid,
-            </if>
-            <if test="obid != null">
-                obid,
-            </if>
-            <if test="favTime != null">
-                favTime,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=INTEGER},
-            </if>
-            <if test="uid != null">
-                #{uid,jdbcType=VARCHAR},
-            </if>
-            <if test="obid != null">
-                #{obid,jdbcType=INTEGER},
-            </if>
-            <if test="favTime != null">
-                #{favTime,jdbcType=TIMESTAMP},
-            </if>
-        </trim>
-    </insert>
-
-    <select id="selectsByConditionAndPage" resultMap="BaseResultMap">
+    <select id="selectsByPage" resultMap="BaseResultMap">
         select
-        f.id, f.uid, f.obid, f.favTime, t.id as topicId, t.title as topicTitle, t.content as topicContent
+        f.id, f.uid, f.obid, f.favTime, t.id as topicId, t.title as topicTitle, t.sec as topicSec, t.content as topicContent
         from user_favinfo f
         left join topic_topinfo t on f.obid = t.id
+        where f.id in(
+        select temp.id from (
+        select id from user_favinfo uf
         <trim prefix="where" prefixOverrides="and">
             <if test="fav.id != null">
-                id = #{fav.id}
+                uf.id = #{fav.id}
             </if>
             <if test="fav.uid != null">
-                and uid = #{fav.uid}
+                and uf.uid = #{fav.uid}
             </if>
             <if test="fav.obid != null">
-                and obid = #{fav.obid}
+                and uf.obid = #{fav.obid}
             </if>
             <if test="fav.favTime != null">
-                and favTime = #{fav.favTime}
+                and uf.favTime = #{fav.favTime}
             </if>   
         </trim>
-        limit ${start},${end}
+        limit ${start},10 ) as temp)
     </select>
 
-    <select id="selectCountByCondition" parameterType="com.iquma.pojo.Favorite" resultType="java.lang.Integer">
+    <select id="selectsCount" parameterType="com.iquma.pojo.Favorite" resultType="java.lang.Integer">
       select count(*) from user_favinfo
         <trim prefix="where" prefixOverrides="and">
             <if test="id != null">

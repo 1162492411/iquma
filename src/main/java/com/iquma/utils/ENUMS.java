@@ -23,7 +23,7 @@ public class ENUMS {
     public static final int PRESTIGE_RID_7 = 100;//7级账户--白银账户
     public static final int PRESTIGE_RID_6 = 300;//6级账户--黄金账户
     public static final int PRESTIGE_RID_5 = 800;//5级账户--白金账户
-    public static final int PRESTIGE_RID_4 = 2000;//4级账户--王者账户
+    public static final int PRESTIGE_RID_4 = 2000;//4级账户--钻石账户
 
     //各级角色的ID
     public static final int ROLE_SUPERADMIN = 1;//超级管理员账户
@@ -44,5 +44,16 @@ public class ENUMS {
     //高评分主贴标准
     public static final byte HIGH_RATE_COUNT = 8;
 
+    //主贴
+    public static final int TOPIC_DEFAULT_VIEWCOUNT = 0;//默认浏览量
+    public static final double TOPIC_DEFAULT_LIKECOUNT = 0;//默认权重赞同值
+    public static final double TOPIC_DEFAULT_HATECOUNT = 0;//默认权重反对值
+    public static final byte TOPIC_DEFAULT_RATECOUNT = 0;//默认权重主贴评分
+    public static final int TOPIC_DEFAULT_REPLYCOUNT = 0;//默认回复数
+    public static final int TOPIC_DEFAULT_ATTID = 0;//默认主贴附件ID
+    public static final boolean TOPIC_DEFAULT_ISBLOCK = false;//默认是否被关闭
+    public static final int TOPIC_DEFAULT_HASBEST = 0;//默认最佳回复ID
+    public static final boolean TOPIC_DEFAULT_NOREPLY = true;//默认是否存在回复
+    public static final boolean TOPIC_DEFAULT_ISHIGH = false;//默认是否是高评分主贴
     
 }

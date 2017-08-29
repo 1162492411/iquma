@@ -3,11 +3,7 @@
 <html>
 <head>
     <title>用户个人资料</title>
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
-    <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/iquma.js"></script>
+    <jsp:include page="/common/base.jsp" />
     <script>
         $(function () {
             $("#avatarFile").uploadPreview({ Img: "ImgPr", Width: 120, Height: 120 });
@@ -19,7 +15,7 @@
     <input type="hidden" name="_method" value="PUT" />
     <div class="panel panel-default" style="position:relative;left:25%;width:50%;top:20px">
         <div class="panel-heading">个人档案</div>
-        <input type="hidden" name="id" value="${ user.id }"/>
+        <input type="hidden" id="userid" value="${user.id}"/>
         <div class="panel-body" id="profileBody">
             <%-- 头像 --%>
                 <div class="form-group" id="avatarPanel">
@@ -55,7 +51,7 @@
             <%-- 按钮 --%>
             <div class="form-group">
                 <div class="col-md-offset-4 col-md-4">
-                    <button type="button" class="btn btn-primary" onclick="updateProfile(${userid})">保存</button>
+                    <button type="button" class="btn btn-primary" onclick="updateProfile()">保存</button>
                     <button type="reset" class="btn btn-default">取消</button>
                 </div>
             </div>

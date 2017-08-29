@@ -29,52 +29,8 @@
       SELECT LAST_INSERT_ID() AS id
     </selectKey>
     insert into topic_attinfo
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="uid != null">
-        uid,
-      </if>
-      <if test="addtime != null">
-        addTime,
-      </if>
-      <if test="name != null">
-        name,
-      </if>
-      <if test="size != null">
-        size,
-      </if>
-      <if test="path != null">
-        path,
-      </if>
-      <if test="price != null">
-        price,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
-      <if test="uid != null">
-        #{uid,jdbcType=VARCHAR},
-      </if>
-      <if test="addtime != null">
-        #{addtime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="size != null">
-        #{size,jdbcType=DOUBLE},
-      </if>
-      <if test="path != null">
-        #{path,jdbcType=VARCHAR},
-      </if>
-      <if test="price != null">
-        #{price,jdbcType=TINYINT},
-      </if>
-    </trim>
+    (id,uid,addTime,name,size,path,price)
+    values (#{id,jdbcType=INTEGER},#{uid,jdbcType=VARCHAR},#{addtime,jdbcType=TIMESTAMP},#{name,jdbcType=VARCHAR},#{size,jdbcType=DOUBLE}, #{path,jdbcType=VARCHAR},#{price,jdbcType=TINYINT})
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Attachment">
     update topic_attinfo

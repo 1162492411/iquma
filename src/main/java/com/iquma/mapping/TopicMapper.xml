@@ -37,7 +37,7 @@
   </resultMap>
 
   <resultMap id="AttachmentResultMap" type="com.iquma.pojo.Attachment">
-    <id column="atttid" jdbcType="INTEGER" property="id" />
+    <id column="attId" jdbcType="INTEGER" property="id" />
     <result column="attName" jdbcType="VARCHAR" property="name" />
     <result column="attSize" jdbcType="DOUBLE" property="size" />
     <result column="attPath" jdbcType="VARCHAR" property="path" />
@@ -47,16 +47,10 @@
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.iquma.pojo.Topic">
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
   </resultMap>
-  <sql id="Base_Column_List">
-    id, title, sec, tid, aid, addTime, reTime, viewCount, likeCount, hateCount, rateCount, replyCount, hasBest, isBlock, noReply, isHigh
-  </sql>
-  <sql id="Blob_Column_List">
-    content
-  </sql>
 
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
-    t.id as id, t.title, t.sec, t.aid, t.attid, u.name as username, q.name as tagname, t.addTime, t.reTime, t.content, t.viewCount, t.likeCount, t.hateCount, t.rateCount, t.replyCount, t.hasBest, t.isBlock, a.name as attName, a.size as attSize, a.path as attPath, a.price as attPrice
+    t.id as id, t.title, t.sec, t.aid, u.name as username, q.name as tagname, t.addTime, t.reTime, t.content, t.viewCount, t.likeCount, t.hateCount, t.rateCount, t.replyCount, t.hasBest, t.isBlock, t.isHigh, t.noReply, a.id as attId, a.name as attName, a.size as attSize, a.path as attPath, a.price as attPrice
     from topic_topinfo t
     left join user_basinfo u on t.aid = u.id
     left join common_tag q on t.tid = q.id
@@ -71,111 +65,11 @@
   <insert id="insert" parameterType="com.iquma.pojo.Topic">
     insert into topic_topinfo (title, sec, tid,
       aid, attid,addTime, reTime,
-      viewCount, likeCount, hateCount, rateCount, replyCount, hasBest, isBlock,
-      content)
-    values (#{title,jdbcType=VARCHAR}, #{sec,jdbcType=VARCHAR}, #{tid,jdbcType=TINYINT},#{aid,jdbcType=VARCHAR}, #{attid,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{reTime,jdbcType=TIMESTAMP},#{viewCount,jdbcType=INTEGER}, #{likeCount,jdbcType=DOUBLE}, #{hateCount,jdbcType=DOUBLE},#{rateCount,jdbcType=TINYINT}, #{replyCount,jdbcType=INTEGER}, #{hasBest,jdbcType=INTEGER}, #{isBlock,jdbcType=BIT},
+      viewCount, likeCount, hateCount, rateCount, replyCount, hasBest, isBlock, isHigh, noReply, content)
+    values (#{title,jdbcType=VARCHAR}, #{sec,jdbcType=VARCHAR}, #{tid,jdbcType=TINYINT},#{aid,jdbcType=VARCHAR}, #{attid,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{reTime,jdbcType=TIMESTAMP},#{viewCount,jdbcType=INTEGER}, #{likeCount,jdbcType=DOUBLE}, #{hateCount,jdbcType=DOUBLE},#{rateCount,jdbcType=TINYINT}, #{replyCount,jdbcType=INTEGER}, #{hasBest,jdbcType=INTEGER}, #{isBlock,jdbcType=BIT},#{isHigh,jdbcType=BIT},#{noReply,jdbcType=BIT},
       #{content,jdbcType=LONGVARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.iquma.pojo.Topic">
-    <selectKey resultType="int" keyProperty="id" order="AFTER" >
-      SELECT LAST_INSERT_ID() AS id
-    </selectKey>
-    insert into topic_topinfo
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="title != null">
-        title,
-      </if>
-      <if test="sec != null">
-        sec,
-      </if>
-      <if test="tid != null">
-        tid,
-      </if>
-      <if test="aid != null">
-        aid,
-      </if>
-      <if test="attid != null">
-        attid,
-      </if>
-      <if test="addTime != null">
-        addTime,
-      </if>
-      <if test="reTime != null">
-        reTime,
-      </if>
-      <if test="viewCount != null">
-        viewCount,
-      </if>
-      <if test="likeCount != null">
-        likeCount,
-      </if>
-      <if test="hateCount != null">
-        hateCount,
-      </if>
-      <if test="rateCount != null">
-        rateCount,
-      </if>
-      <if test="replyCount != null">
-        replyCount,
-      </if>
-      <if test="hasBest != null">
-        hasBest,
-      </if>
-      <if test="isBlock != null">
-        isBlock,
-      </if>
-      <if test="content != null">
-        content,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="title != null">
-        #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="sec != null">
-        #{sec,jdbcType=VARCHAR},
-      </if>
-      <if test="tid != null">
-        #{tid,jdbcType=TINYINT},
-      </if>
-      <if test="aid != null">
-        #{aid,jdbcType=VARCHAR},
-      </if>
-      <if test="attid != null">
-        #{attid,jdbcType=INTEGER},
-      </if>
-      <if test="addTime != null">
-        #{addTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="reTime != null">
-        #{reTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="viewCount != null">
-        #{viewCount,jdbcType=INTEGER},
-      </if>
-      <if test="likeCount != null">
-        #{likeCount,jdbcType=DOUBLE},
-      </if>
-      <if test="hateCount != null">
-        #{hateCount,jdbcType=DOUBLE},
-      </if>
-      <if test="rateCount != null">
-        #{rateCount,jdbcType=TINYINT},
-      </if>
-      <if test="replyCount != null">
-        #{replyCount,jdbcType=INTEGER},
-      </if>
-      <if test="hasBest != null">
-        #{hasBest,jdbcType=INTEGER},
-      </if>
-      <if test="isBlock != null">
-        #{isBlock,jdbcType=BIT},
-      </if>
-      <if test="content != null">
-        #{content,jdbcType=LONGVARCHAR},
-      </if>
-    </trim>
-  </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Topic">
     update topic_topinfo
     <set>
@@ -221,6 +115,12 @@
       <if test="isBlock != null">
         isBlock = #{isBlock,jdbcType=BIT},
       </if>
+      <if test="isHigh != null">
+        isHigh = #{isHigh,jdbcType=BIT},
+      </if>
+      <if test="noReply != null">
+        noReply = #{noReply,jdbcType=BIT},
+      </if>
       <if test="content != null">
         content = #{content,jdbcType=LONGVARCHAR},
       </if>
@@ -230,162 +130,34 @@
 
   <update id="increaseReply" parameterType="java.lang.Integer">
     update topic_topinfo
-    set
-    replyCount = replyCount + 1
+    set replyCount = replyCount + 1
     where id = #{id,jdbcType=INTEGER}
   </update>
 
   <update id="reduceReply" parameterType="java.lang.Integer">
     update topic_topinfo
-    set
-    replyCount = replyCount - 1
+    set replyCount = replyCount - 1
     where id = #{id,jdbcType=INTEGER}
   </update>
 
   <update id="increaseViewCount" parameterType="java.lang.Integer">
     update topic_topinfo
-    set
-    viewCount = viewCount + 1
+    set viewCount = viewCount + 1
     where id = #{id,jdbcType=INTEGER}
   </update>
 
   <update id="adopt" parameterType="java.lang.Integer">
     update topic_topinfo
-    set
-    hasBest = true
+    set hasBest = true
     where id = #{id,jdbcType=INTEGER}
   </update>
-
-  <select id="selectsByCondition" parameterType="com.iquma.pojo.Topic" resultMap="BaseResultMap">
-    select
-    t.id as id, t.title, t.sec, t.aid, t.attid, u.name as username, q.name as tagname, t.addTime, t.reTime,   t.content, t.viewCount, t.likeCount, t.hateCount, t.rateCount, t.replyCount, t.hasBest, t.isBlock, a.name as attName, a.size as attSize, a.path as attPath, a.price as attPrice
-    from topic_topinfo t
-    left join user_basinfo u on t.aid = u.id
-    left join common_tag q on t.tid = q.id
-    left join topic_attinfo a on t.attid = a.id
-    <where>
-      <if test="title != null">
-        title = #{title,jdbcType=VARCHAR}
-      </if>
-      <if test="sec != null">
-        and sec = #{sec,jdbcType=VARCHAR}
-      </if>
-      <if test="tid != null">
-        and tid in (select q.id from common_tag where find_in_set(#{tid,jdbcType=TINYINT},q.path))
-      </if>
-      <if test="aid != null">
-        and aid = #{aid,jdbcType=VARCHAR}
-      </if>
-      <if test="attid != null">
-        and attid = #{attid,jdbcType=INTEGER}
-      </if>
-      <if test="addTime != null">
-        and addTime = #{addTime,jdbcType=TIMESTAMP}
-      </if>
-      <if test="reTime != null">
-        and reTime = #{reTime,jdbcType=TIMESTAMP}
-      </if>
-      <if test="viewCount != null">
-        and viewCount >= #{viewCount,jdbcType=INTEGER}
-      </if>
-      <if test="likeCount != null">
-        and likeCount >= #{likeCount,jdbcType=DOUBLE}
-      </if>
-      <if test="hateCount != null">
-        and hateCount >= #{hateCount,jdbcType=DOUBLE}
-      </if>
-      <if test="rateCount != null">
-        and rateCount >= #{rateCount,jdbcType=TINYINT}
-      </if>
-      <if test="replyCount != null">
-        and replyCount = #{replyCount,jdbcType=INTEGER}
-      </if>
-      <if test="hasBest != null">
-        and hasBest = #{hasBest,jdbcType=INTEGER}
-      </if>
-      <if test="isBlock != null">
-        and isBlock = #{isBlock,jdbcType=BIT}
-      </if>
-      <if test="content != null">
-        and content = #{content,jdbcType=LONGVARCHAR}
-      </if>
-    </where>
-    order by t.addTime desc, t.rateCount desc
-  </select>
-
-  <select id="selectByCondition" parameterType="com.iquma.pojo.Topic" resultMap="BaseResultMap">
-    select
-    t.id as id, t.title, t.sec, t.aid,t.attid, u.name as username, q.name as tagname, t.addTime, t.reTime,t.content, t.viewCount, t.likeCount, t.hateCount, t.rateCount, t.replyCount, t.hasBest, t.isBlock, a.name as attName, a.size as attSize, a.path as attPath, a.price as attPrice
-    from topic_topinfo t
-    left join user_basinfo u on t.aid = u.id
-    left join common_tag q on t.tid = q.id
-    left join topic_attinfo a on t.attid = a.id
-    <where>
-      <if test="id != null">
-        t.id = #{id,jdbcType=INTEGER}
-      </if>
-      <if test="title != null">
-        t.title = #{title,jdbcType=VARCHAR}
-      </if>
-      <if test="sec != null">
-        and t.sec = #{sec,jdbcType=VARCHAR}
-      </if>
-      <if test="tid != null">
-        and t.tid = #{tid,jdbcType=TINYINT}
-      </if>
-      <if test="aid != null">
-        and t.aid = #{aid,jdbcType=VARCHAR}
-      </if>
-      <if test="attid != mull">
-        and t.attid = #{attid,jdbcType=INTEGER}
-      </if>
-      <if test="addTime != null">
-        and t.addTime = #{addTime,jdbcType=TIMESTAMP}
-      </if>
-      <if test="reTime != null">
-        and t.reTime = #{reTime,jdbcType=TIMESTAMP}
-      </if>
-      <if test="viewCount != null">
-        and t.viewCount >= #{viewCount,jdbcType=INTEGER}
-      </if>
-      <if test="likeCount != null">
-        and t.likeCount >= #{likeCount,jdbcType=DOUBLE}
-      </if>
-      <if test="hateCount != null">
-        and t.hateCount >= #{hateCount,jdbcType=DOUBLE}
-      </if>
-      <if test="rateCount != null">
-        and t.rateCount >= #{rateCount,jdbcType=TINYINT}
-      </if>
-      <if test="replyCount != null">
-        and t.replyCount = #{replyCount,jdbcType=INTEGER}
-      </if>
-      <if test="hasBest != null">
-        and t.hasBest = #{hasBest,jdbcType=INTEGER}
-      </if>
-      <if test="isBlock != null">
-        and t.isBlock = #{isBlock,jdbcType=BIT}
-      </if>
-      <if test="content != null">
-        and t.content = #{content,jdbcType=LONGVARCHAR}
-      </if>
-    </where>
-  </select>
 
   <update id="changeStatusByPrimaryKey" parameterType="java.lang.Integer">
     update topic_topinfo
     set isBlock = true where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="selectAll" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    ,
-    <include refid="Blob_Column_List" />
-    from topic_topinfo
-  </select>
-
-  <select id="selectsSimpleByCondition" resultType="java.lang.Integer">
+  <select id="selectsCount" resultType="java.lang.Integer">
     select count(id)
     from topic_topinfo
     <where>
@@ -407,16 +179,16 @@
     </where>
   </select>
 
-  <select id="selectsSimpleByConditionAndPage" resultMap="BaseResultMap">
+  <select id="selectsByPage" resultMap="BaseResultMap">
     select
-    t.id as id, t.title, t.sec, t.aid, u.name as username, q.name as tagname, t.reTime, t.viewCount,t.rateCount, t.replyCount, t.isBlock
+    t.id as id, t.title, t.sec, t.aid, u.name as username, q.name as tagname,t.content, t.reTime, t.viewCount,t.rateCount, t.replyCount, t.isBlock ,t.isHigh, t.noReply
     from topic_topinfo t
     left join user_basinfo u on t.aid = u.id
     left join common_tag q on t.tid = q.id
     where t.id in (select  temp.id from ( select id from topic_topinfo
     <where>
       <if test="top.sec != null">
-        and sec = #{top.sec}
+       sec = #{top.sec}
       </if>
       <if test="top.tid != null">
         and tid in (select id from common_tag  where find_in_set(#{top.tid},path))

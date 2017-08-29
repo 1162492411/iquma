@@ -1,7 +1,13 @@
 package com.iquma.pojo;
 
+import com.iquma.utils.ENUMS;
+
 public class User {
+    private static final byte defaultRid = ENUMS.ROLE_BRONZE;
+    private static final String defaultNamePrefix = "匿名用户";
+    private static final String defaultDescription = "这个人懒得这都不写~";
     private static final String defaultAvatar = "http://ocgfh1n3q.bkt.clouddn.com/default_avatar.png";
+    private static final String defaultEmailSuffix = "@zzuli.edu.cn";
     private static final Boolean defaultIsBlock = false;
     private static final Integer defaultPrestige = 0;
     private static final Integer defaultAppCount = 0;
@@ -118,11 +124,14 @@ public class User {
 
     //默认添加用户模板类
     public void parseDefaultAddUser(){
+        this.setRid(null == getRid() ? defaultRid : getRid());
+        this.setName(null == getName() ? defaultNamePrefix + getId() : getName());
+        this.setAvatar(null == getAvatar() ? defaultAvatar : getAvatar());
+        this.setDescription(null == getDescription() ? defaultDescription : getDescription());
+        this.setEmail(null == getEmail() ? getId() + defaultEmailSuffix : getEmail());
         this.setIsBlock(defaultIsBlock);
         this.setPrestige(defaultPrestige);
         this.setAppCount(defaultAppCount);
-        this.setDescription("这个人懒得这都不写~");
-        this.setAvatar(null == this.getAvatar() ? defaultAvatar : this.getAvatar());
         this.setPass(this.getId().substring(this.getId().length() - 6, this.getId().length()));
     }
 
@@ -134,6 +143,7 @@ public class User {
                 ", \"name\":\"" + name + "\"" +
                 ", \"pass\":\"" + pass + "\"" +
                 ", \"avatar\":\"" + avatar + "\"" +
+                ", \"description\":\"" + description + "\"" +
                 ", \"email\":\"" + email + "\"" +
                 ", \"isBlock\":" + isBlock +
                 ", \"prestige\":" + prestige +

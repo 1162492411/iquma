@@ -4,18 +4,11 @@
 <html>
 <head>
     <title>修改教程</title>
-    <link rel="stylesheet"
-          href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/static/editor/css/wangEditor.min.css">
-
-    <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/static/editor/js/wangEditor.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/xss.min.js" ></script>
-    <script src="${pageContext.request.contextPath}/static/js/iquma.js"></script>
+    <jsp:include page="/common/base.jsp" />
+    <jsp:include page="/common/editor.jsp" />
     <script type="text/javascript">
         $(function () {
-            updateTopic('${topic.sec}');
+            updateTopic();
         });
     </script>
 </head>
@@ -26,19 +19,19 @@
         <div class="panel panel-default">
             <div class="panel-heading">修改教程</div>
             <div class="panel-body" id="topicPanel">
-                <input type="hidden" name="id" id="id" value="${topic.id}"/>
-                <input type="hidden" name="aid" id="aid" value="${topic.aid}"/>
-                <input type="hidden" name="topic.sec" id="sectionname" value="${topic.sec}"/>
-                    <%--主贴标题 --%>
+                <input type="hidden" id="id" value="${topic.id}"/>
+                <input type="hidden" id="aid" value="${topic.aid}"/>
+                <input type="hidden" id="sec" value="${topic.sec}"/>
+                <%--主贴标题 --%>
                 <div class="form-group" id="titlePanel">
                     <label>主贴标题</label>
-                    <input type="text" class="form-control" name="title" id="title" value="${topic.title}"
+                    <input type="text" class="form-control" id="title" value="${topic.title}"
                            placeholder="话题标题"/>
                 </div>
-                    <%-- 内容--%>
+                <%-- 内容--%>
                 <div class="form-group" id="contentPanel">
                     <label>主贴内容</label>
-                    <div name="content" id="contentDiv">${topic.content}</div>
+                    <div id="contentDiv">${topic.content}</div>
                 </div>
                 <!-- 按钮 -->
                 <div class="form-group" id="buttonPanel">

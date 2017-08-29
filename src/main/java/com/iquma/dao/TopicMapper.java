@@ -8,9 +8,7 @@ import java.util.List;
 
 public interface TopicMapper {
 
-    int insert(Topic record);
-
-    int insertSelective(Topic record);//插入一条主贴
+    int insert(Topic record);//插入一条主贴
 
     int deleteByPrimaryKey(Integer id);//删除主贴
 
@@ -28,13 +26,9 @@ public interface TopicMapper {
 
     Topic selectByPrimaryKey(Integer id);//根据id选择主贴
 
-    Topic selectByCondition(Topic record);//获取符合条件的主贴
-
-    List selectsByCondition(Topic record);//获取符合条件的主贴列表
-
     List selectsRevelant(String id);//获取指定用户的所有主贴
 
-    Integer selectsSimpleByCondition(Topic record);//获取符合条件的主贴简略信息的数量--用于主贴列表
+    Integer selectsCount(Topic record);//获取符合条件的主贴简略信息的数量--用于主贴列表
 
-    List<Topic> selectsSimpleByConditionAndPage(@Param("start")int start, @Param("top")Topic record);//获取符合条件的主贴简略信息列表--用于主贴列表
+    List<Topic> selectsByPage(@Param("start")int start, @Param("top")Topic record);//获取符合条件的主贴简略信息列表--用于主贴列表
 }

@@ -1,40 +1,23 @@
 package com.iquma.service.impl;
 
-import java.util.List;
 import javax.annotation.Resource;
-
 import com.iquma.utils.PasswordHelper;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.iquma.dao.UserMapper;
 import com.iquma.pojo.User;
 import com.iquma.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
-
-
     @Resource
     private UserMapper userMapper;
-    @Autowired
-    private PasswordHelper passwordHelper;
     private static int SUPER_ADMIN_ID = 1;//最高权限的超级管理员的角色Id
     private static int SUPER_STUDENT_ID = 3;//最高级别的学生的角色Id
 
     //@Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED, readOnly = true, timeout = 3)
-    public User selectById(String id) {
-        return this.userMapper.selectByPrimaryKey(id);
-    }
-
-    @Override
-    public List selectAll() {
-        return this.userMapper.selectAll();
-    }
-
-
     public boolean insert(User user) {
-        passwordHelper.encryptPassword(user);
         return this.userMapper.insert(user) > 0;
     }
 
@@ -57,6 +40,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean changeStatus(String id) {
         return this.userMapper.changeStatusByPrimaryKey(id);
+    }
+
+    @Override
+    public User selectSimpleUser(String id) throws UnknownAccountException {
+        User result = this.userMapper.selectSimpleByPrimaryKey(id);
+        if(null == result) throw new UnknownAccountException();
+        else return result;
+    }
+
+    @Override
+    public User selectDetailUser(String id) throws UnknownAccountException {
+        User result = this.userMapper.selectDetailByPrimaryKey(id);
+        if(null == result) throw new UnknownAccountException();
+        else return result;
     }
 
     //更新用户信息

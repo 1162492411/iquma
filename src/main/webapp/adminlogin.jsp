@@ -2,12 +2,11 @@
          pageEncoding="UTF-8" %>
 <html>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>后台登录页面</title>
+    <title>管理员登录页面</title>
+    <link rel="stylesheet"
+          href="${pageContext.request.contextPath}/static/css/login.css">
     <link rel="stylesheet"
           href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
-    <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
 </head>
 <body>
 <!-- 登录框开始 -->

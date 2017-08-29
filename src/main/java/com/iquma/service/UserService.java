@@ -1,8 +1,7 @@
 package com.iquma.service;
 
-import java.util.List;
-
 import com.iquma.pojo.User;
+import org.apache.shiro.authc.UnknownAccountException;
 
 public interface UserService {
 
@@ -18,7 +17,8 @@ public interface UserService {
 
     boolean changeStatus(String id);//封禁用户
 
-    User selectById(String id);//根据id获取用户
+    User selectSimpleUser(String id) throws UnknownAccountException ;//根据id获取用户的简略信息
 
-    List selectAll();//获取所有用户
+    User selectDetailUser(String id) throws UnknownAccountException ;//根据id获取用户的详细信息
+
 }

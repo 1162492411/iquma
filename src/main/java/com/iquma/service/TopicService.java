@@ -1,5 +1,6 @@
 package com.iquma.service;
 
+import com.iquma.exception.NoSuchTopicException;
 import com.iquma.pojo.Topic;
 
 import java.util.List;
@@ -27,16 +28,12 @@ public interface TopicService {
 
     boolean adopt(Integer id);//主题采纳回复
 
-    Topic selectById(Integer id);//根据id获取主题
-
-    Topic selectByCondition(Topic condition);//根据条件获取主题
-
-    List selectsByCondition(Topic condition);//根据条件获取主题集合
+    Topic selectById(Integer id) throws NoSuchTopicException;//根据id获取主题
 
     List selectsRevelant(String id);//获取指定用户的所有主贴
 
-    Integer selectsSimpleByCondition(Topic condition);//根据条件和页码获取简略的主题集合
+    Integer selectsCount(Topic condition);//根据条件和页码获取简略的主题集合
 
-    List<Topic> selectsSimpleByConditionAndPage(int page, Topic condition);//根据条件和页码获取简略的主题集合--按页数
+    List<Topic> selectsByPage(int page, Topic condition);//根据条件和页码获取简略的主题集合--按页数
 
 }

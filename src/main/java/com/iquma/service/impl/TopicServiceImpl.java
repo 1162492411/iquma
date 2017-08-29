@@ -1,11 +1,11 @@
 package com.iquma.service.impl;
 
-import com.github.pagehelper.PageHelper;
 import com.iquma.dao.TopicMapper;
+import com.iquma.exception.NoSuchTopicException;
 import com.iquma.pojo.Topic;
 import com.iquma.service.TopicService;
+import com.iquma.utils.PageUtil;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -15,26 +15,14 @@ import java.util.List;
 @Service
 public class TopicServiceImpl implements TopicService {
 
-
     @Resource
     private TopicMapper topicMapper;
 
     @Override
-    public Topic selectById(Integer id) {
-        System.out.println("调用了topic的selectById方法，传入参数" + id);
-        return this.topicMapper.selectByPrimaryKey(id);
-    }
-
-    @Override
-    public Topic selectByCondition(Topic condition) {
-        return this.topicMapper.selectByCondition(condition);
-    }
-
-
-    @Override
-    public List selectsByCondition(Topic topic) {
-        List result = this.topicMapper.selectsByCondition(topic);
-        return  result;
+    public Topic selectById(Integer id) throws NoSuchTopicException {
+        Topic topic = this.topicMapper.selectByPrimaryKey(id);
+        if(topic == null) throw new NoSuchTopicException();
+        return topic;
     }
 
     @Override
@@ -43,13 +31,13 @@ public class TopicServiceImpl implements TopicService {
     }
 
     @Override
-    public Integer selectsSimpleByCondition(Topic condition) {
-        return this.topicMapper.selectsSimpleByCondition(condition);
+    public Integer selectsCount(Topic condition) {
+        return this.topicMapper.selectsCount(condition);
     }
 
     @Override
-    public List<Topic> selectsSimpleByConditionAndPage(int page, Topic condition) {
-        return this.topicMapper.selectsSimpleByConditionAndPage(page*10,condition);
+    public List<Topic> selectsByPage(int page, Topic condition) {
+        return this.topicMapper.selectsByPage(PageUtil.getStart(page),condition);
     }
 
     @Override
@@ -79,7 +67,7 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     public boolean insert(Topic topic) {
-        return this.topicMapper.insertSelective(topic) > 0;
+        return this.topicMapper.insert(topic) > 0;
     }
 
     @Override

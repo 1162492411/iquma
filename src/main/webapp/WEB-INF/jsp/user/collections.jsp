@@ -1,22 +1,14 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="shiro" uri="http://shiro.apache.org/tags" %>
 <html>
 <head>
     <title>用户主页</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/iquma.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/obsidian.css">
-    <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/highlight.pack.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/iquma.js"></script>
+    <jsp:include page="/common/base.jsp" />
     <script type="text/javascript">
         $(document).ready(function () {
-            initProHeaders(${user.id},'collection');
-            initPag(${currentPage},${totalPage},"collectionsPagination",getCollectionsPath(${uid}));
+            initProHeaders('${user.id}','collection');
             initCollections(${collections});
-            hljs.initHighlightingOnLoad();
+            initPag(${currentPage},${totalPage},'collectionsPagination',getCollectionsPath('${user.id}'));
         });
     </script>
 </head>

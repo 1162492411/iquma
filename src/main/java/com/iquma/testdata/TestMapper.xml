@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.iquma.testdata.TestMapper">
+
+    <resultMap id="UserMap" type="com.iquma.pojo.User">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="rid" jdbcType="TINYINT" property="rid"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="pass" jdbcType="VARCHAR" property="pass"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="isBlock" jdbcType="BIT" property="isBlock"/>
+        <result column="prestige" jdbcType="INTEGER" property="prestige"/>
+        <result column="appCount" jdbcType="INTEGER" property="appCount"/>
+        <result column="salt" jdbcType="VARCHAR" property="salt"/>
+    </resultMap>
+
+    <resultMap id="SucLogMap" type="com.iquma.pojo.Suclog">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uid" jdbcType="VARCHAR" property="uid"/>
+        <result column="logintime" jdbcType="TIMESTAMP" property="logintime"/>
+        <result column="loginip" jdbcType="VARCHAR" property="loginip"/>
+    </resultMap>
+
+    <resultMap id="AttachmentMap" type="com.iquma.pojo.Attachment">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="uid" jdbcType="VARCHAR" property="uid" />
+        <result column="addTime" jdbcType="TIMESTAMP" property="addtime" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="size" jdbcType="DOUBLE" property="size" />
+        <result column="path" jdbcType="VARCHAR" property="path" />
+        <result column="price" jdbcType="TINYINT" property="price" />
+    </resultMap>
+
+    <resultMap id="TopicMap" type="com.iquma.pojo.Topic">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="title" jdbcType="VARCHAR" property="title" />
+        <result column="sec" jdbcType="VARCHAR" property="sec" />
+        <result column="tid" jdbcType="TINYINT" property="tid" />
+        <result column="aid" jdbcType="VARCHAR" property="aid" />
+        <result column="attid" jdbcType="INTEGER" property="attid" />
+        <result column="addTime" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="reTime" jdbcType="TIMESTAMP" property="reTime" />
+        <result column="content" jdbcType="LONGVARCHAR" property="content" />
+        <result column="viewCount" jdbcType="INTEGER" property="viewCount" />
+        <result column="likeCount" jdbcType="DOUBLE" property="likeCount" />
+        <result column="hateCount" jdbcType="DOUBLE" property="hateCount" />
+        <result column="rateCount" jdbcType="TINYINT" property="rateCount" />
+        <result column="replyCount" jdbcType="INTEGER" property="replyCount" />
+        <result column="hasBest" jdbcType="INTEGER" property="hasBest" />
+        <result column="isBlock" jdbcType="BIT" property="isBlock" />
+        <result column="noReply" jdbcType="BIT" property="noReply" />
+        <result column="isHigh" jdbcType="BIT" property="isHigh" />
+    </resultMap>
+
+    <resultMap id="ReplyMap" type="com.iquma.pojo.Reply">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="tid" jdbcType="INTEGER" property="tid"/>
+        <result column="uid" jdbcType="VARCHAR" property="uid"/>
+        <result column="addTime" jdbcType="TIMESTAMP" property="addTime"/>
+        <result column="likeCount" jdbcType="DOUBLE" property="likeCount" />
+        <result column="hateCount" jdbcType="DOUBLE" property="hateCount" />
+        <result column="rateCount" jdbcType="TINYINT" property="rateCount" />
+        <result column="isBest" jdbcType="BIT" property="isBest"/>
+        <result column="isBlock" jdbcType="BIT" property="isBlock"/>
+        <result column="rateCount" jdbcType="INTEGER" property="rateCount"/>
+        <result column="content" jdbcType="LONGVARCHAR" property="content"/>
+    </resultMap>
+
+    <resultMap id="FavoriteMap" type="com.iquma.pojo.Favorite">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="uid" jdbcType="VARCHAR" property="uid"/>
+        <result column="obid" jdbcType="INTEGER" property="obid"/>
+        <result column="favTime" jdbcType="TIMESTAMP" property="favTime"/>
+    </resultMap>
+
+    <insert id="insertUser" parameterType="com.iquma.pojo.User" >
+        insert into user_basinfo
+        (id, rid, name,pass, avatar, description, email,isBlock, prestige, appCount, salt)
+        values (#{id,jdbcType=VARCHAR}, #{rid,jdbcType=TINYINT}, #{name,jdbcType=VARCHAR},
+        #{pass,jdbcType=VARCHAR}, #{avatar,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR},#{email,jdbcType=VARCHAR},#{isBlock,jdbcType=BIT}, #{prestige,jdbcType=INTEGER}, #{appCount,jdbcType=INTEGER}, #{salt,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <insert id="insertSucLog" parameterType="com.iquma.pojo.Suclog">
+        insert into user_sucloginfo
+        (uid,logintime,loginip)
+        values (#{uid,jdbcType=VARCHAR},#{logintime,jdbcType=TIMESTAMP},#{loginip,jdbcType=VARCHAR})
+    </insert>
+
+    <insert id="insertAttachment" parameterType="com.iquma.pojo.Attachment" >
+        insert into topic_attinfo
+    (uid,addTime,name,size,path,price)
+    values (#{uid,jdbcType=VARCHAR},#{addtime,jdbcType=TIMESTAMP},#{name,jdbcType=VARCHAR},#{size,jdbcType=DOUBLE}, #{path,jdbcType=VARCHAR},#{price,jdbcType=TINYINT})
+    </insert>
+
+    <insert id="insertTopic" parameterType="com.iquma.pojo.Topic">
+        insert into topic_topinfo (title, sec, tid,
+        aid, attid,addTime, reTime,
+        viewCount, likeCount, hateCount, rateCount, replyCount, hasBest, isBlock,
+        content,noReply,isHigh)
+        values (#{title,jdbcType=VARCHAR}, #{sec,jdbcType=VARCHAR}, #{tid,jdbcType=TINYINT},#{aid,jdbcType=VARCHAR}, #{attid,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{reTime,jdbcType=TIMESTAMP},#{viewCount,jdbcType=INTEGER}, #{likeCount,jdbcType=DOUBLE}, #{hateCount,jdbcType=DOUBLE},#{rateCount,jdbcType=TINYINT}, #{replyCount,jdbcType=INTEGER}, #{hasBest,jdbcType=INTEGER}, #{isBlock,jdbcType=BIT},
+        #{content,jdbcType=LONGVARCHAR},#{noReply,jdbcType=BIT},#{isHigh,jdbcType=BIT})
+    </insert>
+
+    <insert id="insertReply" parameterType="com.iquma.pojo.Reply">
+        insert into topic_repinfo
+        (tid,uid,addTime,likeCount,hateCount,rateCount,isBest,isBlock,content)
+        values (#{tid,jdbcType=INTEGER},#{uid,jdbcType=VARCHAR},#{addTime,jdbcType=TIMESTAMP},#{likeCount,jdbcType=DOUBLE},#{hateCount,jdbcType=DOUBLE},#{rateCount,jdbcType=TINYINT},#{isBest,jdbcType=BIT},#{isBlock,jdbcType=BIT},#{content,jdbcType=LONGVARCHAR})
+    </insert>
+
+    <insert id="insertFavorite" parameterType="com.iquma.pojo.Favorite">
+        insert into user_favinfo
+        (uid,obid,favTime)
+        values (#{uid,jdbcType=VARCHAR},#{obid,jdbcType=INTEGER},#{favTime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <update id="updateTopicReplyCount" parameterType="com.iquma.pojo.Topic">
+        update topic_topinfo
+        set replyCount =
+        (SELECT count(*) from topic_repinfo where tid=#{id,jdbcType=INTEGER})
+        where id=#{id,jdbcType=INTEGER}
+    </update>
+
+</mapper>   

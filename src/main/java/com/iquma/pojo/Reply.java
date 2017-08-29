@@ -7,8 +7,6 @@ public class Reply {
 
     private Integer tid;
 
-    private String title;
-
     private String uid;
 
     private Date addTime;
@@ -27,7 +25,6 @@ public class Reply {
 
     private User user;
 
-
     public Integer getId() {
         return id;
     }
@@ -42,14 +39,6 @@ public class Reply {
 
     public void setTid(Integer tid) {
         this.tid = tid;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getUid() {
@@ -129,7 +118,6 @@ public class Reply {
         return "{" +
                 "\"id\":" + id +
                 ", \"tid\":" + tid +
-                ", \"title\":\"" + title + "\"" +
                 ", \"uid\":\"" + uid + "\"" +
                 ", \"addTime\":\"" + addTime + "\"" +
                 ", \"likeCount\":" + likeCount +

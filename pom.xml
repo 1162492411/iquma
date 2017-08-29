@@ -1,3 +1,53 @@
+<!DOCTYPE project [
+        <!ELEMENT project (modelVersion|groupId|artifactId|version|packaging|properties|dependencies|build)*>
+        <!ATTLIST project
+                xmlns CDATA #REQUIRED
+                xmlns:xsi CDATA #REQUIRED
+                xsi:schemaLocation CDATA #REQUIRED>
+        <!ELEMENT modelVersion (#PCDATA)>
+        <!ELEMENT groupId (#PCDATA)>
+        <!ELEMENT artifactId (#PCDATA)>
+        <!ELEMENT version (#PCDATA)>
+        <!ELEMENT packaging (#PCDATA)>
+        <!ELEMENT properties (spring.version|mybatis.version|mybatis-spring.version|javaee.version|mysql.version|dbcp.version|fastjson.version|jstl.version|slf4j.version|log4j.version|aspectj.version|jackson.version|commons-fileupload.version|commons-io.version|commons-codec.version|commons-logging.version|cglib.version|aopalliance.version|json-simple.version|pagehelper.version|shiro.version|commons-collections.version)*>
+        <!ELEMENT spring.version (#PCDATA)>
+        <!ELEMENT mybatis.version (#PCDATA)>
+        <!ELEMENT mybatis-spring.version (#PCDATA)>
+        <!ELEMENT javaee.version (#PCDATA)>
+        <!ELEMENT mysql.version (#PCDATA)>
+        <!ELEMENT dbcp.version (#PCDATA)>
+        <!ELEMENT fastjson.version (#PCDATA)>
+        <!ELEMENT jstl.version (#PCDATA)>
+        <!ELEMENT slf4j.version (#PCDATA)>
+        <!ELEMENT log4j.version (#PCDATA)>
+        <!ELEMENT aspectj.version (#PCDATA)>
+        <!ELEMENT jackson.version (#PCDATA)>
+        <!ELEMENT commons-fileupload.version (#PCDATA)>
+        <!ELEMENT commons-io.version (#PCDATA)>
+        <!ELEMENT commons-codec.version (#PCDATA)>
+        <!ELEMENT commons-logging.version (#PCDATA)>
+        <!ELEMENT cglib.version (#PCDATA)>
+        <!ELEMENT aopalliance.version (#PCDATA)>
+        <!ELEMENT json-simple.version (#PCDATA)>
+        <!ELEMENT pagehelper.version (#PCDATA)>
+        <!ELEMENT shiro.version (#PCDATA)>
+        <!ELEMENT commons-collections.version (#PCDATA)>
+        <!ELEMENT dependencies (dependency)*>
+        <!ELEMENT dependency (groupId|artifactId|version|scope)*>
+        <!ELEMENT scope (#PCDATA)>
+        <!ELEMENT build (finalName|resources|plugins)*>
+        <!ELEMENT finalName (#PCDATA)>
+        <!ELEMENT resources (resource)*>
+        <!ELEMENT resource (directory|includes)*>
+        <!ELEMENT directory (#PCDATA)>
+        <!ELEMENT includes (include)*>
+        <!ELEMENT include (#PCDATA)>
+        <!ELEMENT plugins (plugin)*>
+        <!ELEMENT plugin (groupId|artifactId|configuration)*>
+        <!ELEMENT configuration (source|target)*>
+        <!ELEMENT source (#PCDATA)>
+        <!ELEMENT target (#PCDATA)>
+        ]>
 <project
         xmlns="http://maven.apache.org/POM/4.0.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -16,7 +66,7 @@
         <javaee.version>7.0</javaee.version>
         <mysql.version>5.1.39</mysql.version>
         <dbcp.version>1.4</dbcp.version>
-        <fastjson.version>1.2.16</fastjson.version>
+        <gson.version>2.8.0</gson.version>
         <jstl.version>1.2</jstl.version>
         <slf4j.version>1.7.21</slf4j.version>
         <log4j.version>1.2.17</log4j.version>
@@ -32,6 +82,12 @@
         <pagehelper.version>4.1.6</pagehelper.version>
         <shiro.version>1.2.6</shiro.version>
         <commons-collections.version>4.0</commons-collections.version>
+        <commons-lang.version>3.6</commons-lang.version>
+        <junit.version>4.12</junit.version>
+        <hamcrest.core.version>1.3</hamcrest.core.version>
+        <mockito.core.version>1.9.5</mockito.core.version>
+        <servlet.version>3.1.0</servlet.version>
+        <jsonpath.version>2.2</jsonpath.version>
     </properties>
 
     <dependencies>
@@ -155,12 +211,16 @@
 
 
         <!-- 格式化对象，方便输出日志 -->
+        <!--<dependency>-->
+            <!--<groupId>com.alibaba</groupId>-->
+            <!--<artifactId>fastjson</artifactId>-->
+            <!--<version>${fastjson.version}</version>-->
+        <!--</dependency>-->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>${fastjson.version}</version>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -270,6 +330,57 @@
             <version>${shiro.version}</version>
         </dependency>
         <!-- Spring 整合Shiro需要的依赖 -->
+
+        <!-- 小工具 -->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.commons</groupId>-->
+            <!--<artifactId>commons-lang3</artifactId>-->
+            <!--<version>${commons-lang.version}</version>-->
+        <!--</dependency>-->
+        <!-- 测试 -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+            <version>${hamcrest.core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.core.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>${jsonpath.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- 测试 -->
+
     </dependencies>
 
     <build>

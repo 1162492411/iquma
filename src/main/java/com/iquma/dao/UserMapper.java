@@ -21,10 +21,8 @@ public interface UserMapper {
 
     boolean changeStatusByPrimaryKey(String id);//改变账户状态
 
-    User selectByPrimaryKey(String id);//获取指定id的账户
+    User selectSimpleByPrimaryKey(@Param("id")String id);//获取指定id的账户的简略信息
 
-    List selectByCondition(User condition);//获取符合条件的账户列表
-
-    List selectAll();//获取所有用户
+    User selectDetailByPrimaryKey(@Param("id")String id);//获取指定id的账户的详细信息
 
 }

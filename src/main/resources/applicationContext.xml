@@ -22,10 +22,6 @@
     <!-- 配置静态资源 -->
     <mvc:resources mapping="/static/**" location="static/"/>
 
-    <bean id="transactionManager"
-          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
-    </bean>
 
     <context:property-placeholder location="classpath:jdbc.properties"/>
 
@@ -43,23 +39,23 @@
     </bean>
 
     <!-- 设置数据源 -->
-    <!--，添加MyBatis的分页插件PageHelper-->
+    <!--添加MyBatis的分页插件PageHelper-->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="dataSource" ref="dataSource"/>
         <property name="mapperLocations" value="classpath:com/iquma/mapping/*.xml"></property>
-        <property name="plugins">
-            <array>
-                <bean class="com.github.pagehelper.PageHelper">
-                    <property name="properties">
-                        <value>
-                            dialect = mysql
-                            reasonable = true
-                            returnPageInfo = none
-                        </value>
-                    </property>
-                </bean>
-            </array>
-        </property>
+        <!--<property name="plugins">-->
+            <!--<array>-->
+                <!--<bean class="com.github.pagehelper.PageHelper">-->
+                    <!--<property name="properties">-->
+                        <!--<value>-->
+                            <!--dialect = mysql-->
+                            <!--reasonable = true-->
+                            <!--returnPageInfo = none-->
+                        <!--</value>-->
+                    <!--</property>-->
+                <!--</bean>-->
+            <!--</array>-->
+        <!--</property>-->
     </bean>
 
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
@@ -67,6 +63,12 @@
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
     </bean>
 
+
+    <!-- 事务管理 -->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
 
 </beans>
 	

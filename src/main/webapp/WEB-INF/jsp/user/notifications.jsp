@@ -2,23 +2,15 @@
 <html>
 <head>
     <title>用户主页</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/bootstrap.min.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/iquma.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/static/css/obsidian.css">
-    <script src="${pageContext.request.contextPath}/static/js/jquery-3.1.0.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/bootstrap.min.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/iquma.js"></script>
-    <script src="${pageContext.request.contextPath}/static/js/highlight.pack.js"></script>
+    <jsp:include page="/common/base.jsp" />
     <script type="text/javascript">
         $(document).ready(function () {
-            initNtfs('${ntfs}',${userid});
-            hljs.initHighlightingOnLoad();
+            initNtfs(${ntfs},${userid});
+            initPag(${currentPage},${totalPage},'ntfsPagination',getUserSecPath(${userid},'ntf'));
         });
     </script>
-
 </head>
 <body class="Entry-body">
-
 <jsp:include page="/common/bannar.jsp" />
 <main role="main" class="App-main">
     <div>
@@ -37,6 +29,9 @@
                     <!-- 用户动态详细数据区 -->
                     <div class="List" id="Profile-ntfs">
                     </div><!-- 用户动态详细数据区结束 -->
+                    <%-- 分页按钮 --%>
+                    <nav class="nav-pagination"><ul class="pagination" id="ntfsPagination"></ul></nav>
+                    <%-- 分页按钮结束 --%>
                 </div><!-- 用户动态数据区左侧结束 -->
             </div><!-- 用户动态数据区结束 -->
         </div>

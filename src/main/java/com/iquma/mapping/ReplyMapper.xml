@@ -34,14 +34,6 @@
     content
   </sql>
 
-    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
-        select
-        r.id, r.tid, r.title, r.uid, u.name as usname, u.avatar as usavatar, r.addTime, r.addTime, r.likeCount, r.hateCount, r.rateCount, r.isBest,r.isBlock, r.rateCount, r.content, u.prestige as usprestige
-        from topic_repinfo r
-        left join user_basinfo u on r.uid = u.id
-        where r.id = #{id,jdbcType=INTEGER}
-    </select>
-
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from topic_repinfo
     where id = #{id,jdbcType=INTEGER}
@@ -49,78 +41,9 @@
 
     <insert id="insertSelective" parameterType="com.iquma.pojo.Reply">
         insert into topic_repinfo
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="tid != null">
-                tid,
-            </if>
-            <if test="title != null">
-                title,
-            </if>
-            <if test="uid != null">
-                uid,
-            </if>
-            <if test="addTime != null">
-                addTime,
-            </if>
-            <if test="likeCount != null">
-                likeCount,
-            </if>
-            <if test="hateCount != null">
-                hateCount,
-            </if>
-            <if test="rateCount != null">
-                rateCount,
-            </if>
-            <if test="isBest != null">
-                isBest,
-            </if>
-            <if test="isBlock != null">
-                isBlock,
-            </if>
-            <if test="rateCount != null">
-                rateCount,
-            </if>
-            <if test="content != null">
-                content,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="tid != null">
-                #{tid,jdbcType=INTEGER},
-            </if>
-            <if test="title != null">
-                #{title,jdbcType=VARCHAR},
-            </if>
-            <if test="uid != null">
-                #{uid,jdbcType=VARCHAR},
-            </if>
-            <if test="addTime != null">
-                #{addTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="likeCount != null">
-                #{likeCount,jdbcType=DOUBLE},
-            </if>
-            <if test="hateCount != null">
-                #{hateCount,jdbcType=DOUBLE},
-            </if>
-            <if test="rateCount != null">
-                #{rateCount,jdbcType=TINYINT},
-            </if>
-            <if test="isBest != null">
-                #{isBest,jdbcType=BIT},
-            </if>
-            <if test="isBlock != null">
-                #{isBlock,jdbcType=BIT},
-            </if>
-            <if test="rateCount != null">
-                #{rateCount,jdbcType=INTEGER},
-            </if>
-            <if test="content != null">
-                #{content,jdbcType=LONGVARCHAR},
-            </if>
-        </trim>
+        (tid,title,uid,addTime,likeCount,hateCount,rateCount,isBest,isBlock,rateCount,content)
+        values (#{tid,jdbcType=INTEGER},#{title,jdbcType=VARCHAR},#{uid,jdbcType=VARCHAR},#{addTime,jdbcType=TIMESTAMP},#{likeCount,jdbcType=DOUBLE},#{hateCount,jdbcType=DOUBLE},#{rateCount,jdbcType=TINYINT},#{isBest,jdbcType=BIT},#{isBlock,jdbcType=BIT},#{rateCount,jdbcType=INTEGER},#{content,jdbcType=LONGVARCHAR})
     </insert>
-
 
     <update id="updateByPrimaryKeySelective" parameterType="com.iquma.pojo.Reply">
         update topic_repinfo
@@ -172,9 +95,16 @@
         set isBest = ! isBest where id = #{id,jdbcType=INTEGER}
     </update>
 
-    <select id="selectByCondition" parameterType="com.iquma.pojo.Reply" resultMap="ResultMapWithBLOBs">
+    <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
         select
-        r.id, r.tid, r.title, r.uid, u.name as usname, u.avatar as usavatar, r.addTime, r.likeCount, r.hateCount, r.rateCount, r.isBest,r.isBlock, r.rateCount, r.content, u.prestige as usprestige
+        r.id, r.tid, r.title, r.uid, u.name as usname, u.avatar as usavatar, r.addTime, r.addTime, r.likeCount, r.hateCount, r.rateCount, r.isBest,r.isBlock, r.rateCount, r.content, u.prestige as usprestige
+        from topic_repinfo r
+        left join user_basinfo u on r.uid = u.id
+        where r.id = #{id,jdbcType=INTEGER}
+    </select>
+
+    <select id="selectsCount" parameterType="com.iquma.pojo.Reply" resultType="java.lang.Integer" >
+        select count(r.id)
         from topic_repinfo r
         left join user_basinfo u on r.uid = u.id
         <trim prefix="where" prefixOverrides="and">
@@ -184,130 +114,59 @@
             <if test="tid != null">
                and tid = #{tid,jdbcType=INTEGER}
             </if>
-            <if test="title != null">
-                and title = #{title,jdbcType=VARCHAR}
-            </if>
             <if test="uid != null">
                and uid = #{uid,jdbcType=VARCHAR}
             </if>
-            <if test="addTime != null">
-               and addTime = #{addTime,jdbcType=TIMESTAMP}
-            </if>
-            <if test="likeCount != null">
-                and likeCount >= #{likeCount,jdbcType=DOUBLE}
-            </if>
-            <if test="hateCount != null">
-                and hateCount >= #{hateCount,jdbcType=DOUBLE}
-            </if>
-            <if test="rateCount != null">
-                and rateCount >= #{rateCount,jdbcType=TINYINT}
-            </if>
-            <if test="isBest != null">
-               and isBest = #{isBest,jdbcType=BIT}
-            </if>
-            <if test="isBlock != null">
-               and isBlock = #{isBlock,jdbcType=BIT}
-            </if>
-            <if test="rateCount != null">
-               and rateCount = #{rateCount,jdbcType=INTEGER}
-            </if>
-            <if test="content != null">
-               and content = #{content,jdbcType=LONGVARCHAR}
-            </if>
         </trim>
-        ORDER BY r.rateCount desc
     </select>
 
-    <select id="selectByConditionAndPage" resultMap="ResultMapWithBLOBs">
+    <select id="selectsByPage" resultMap="ResultMapWithBLOBs">
         select
         r.id, r.tid, r.title, r.uid, u.name as usname, u.avatar as usavatar, r.addTime, r.likeCount, r.hateCount, r.rateCount, r.isBest,r.isBlock, r.rateCount, r.content, u.prestige as usprestige
         from topic_repinfo r
         left join user_basinfo u on r.uid = u.id
+        where r.id in (
+        select temp.id from (
+        select id from topic_repinfo tr
         <trim prefix="where" prefixOverrides="and">
             <if test="rep.id != null">
-                id = #{rep.id}
+                tr.id = #{rep.id}
             </if>
             <if test="rep.tid != null">
-                and tid = #{rep.tid}
-            </if>
-            <if test="rep.title != null">
-                and title = #{rep.title}
+                and tr.tid = #{rep.tid}
             </if>
             <if test="rep.uid != null">
-                and uid = #{rep.uid}
-            </if>
-            <if test="rep.addTime != null">
-                and addTime = #{rep.addTime}
-            </if>
-            <if test="rep.likeCount != null">
-                and likeCount >= #{rep.likeCount}
-            </if>
-            <if test="rep.hateCount != null">
-                and hateCount >= #{rep.hateCount}
-            </if>
-            <if test="rep.rateCount != null">
-                and rateCount >= #{rep.rateCount}
-            </if>
-            <if test="rep.isBest != null">
-                and isBest = #{rep.isBest}
-            </if>
-            <if test="rep.isBlock != null">
-                and isBlock = #{rep.isBlock}
-            </if>
-            <if test="rep.rateCount != null">
-                and rateCount = #{rep.rateCount}
-            </if>
-            <if test="rep.content != null">
-                and content = #{rep.content}
+                and tr.uid = #{rep.uid}
             </if>
         </trim>
+        ORDER BY tr.isBest desc,tr.rateCount desc
+        limit ${start},10) as temp
+        )
         ORDER BY r.isBest desc,r.rateCount desc
-        limit ${start},${end}
     </select>
 
-    <select id="selectByConditionSortByTime" parameterType="com.iquma.pojo.Reply" resultMap="ResultMapWithBLOBs">
+    <select id="selectsByPageSorted" resultMap="ResultMapWithBLOBs" >
         select
         r.id, r.tid, r.title, r.uid, u.name as usname, u.avatar as usavatar, r.addTime, r.addTime, r.likeCount, r.hateCount, r.rateCount, r.isBest,r.isBlock, r.rateCount, r.content, u.prestige as usprestige
         from topic_repinfo r
         left join user_basinfo u on r.uid = u.id
+        where r.id in (
+        select temp.id from (
+        select id from topic_repinfo tr
         <trim prefix="where" prefixOverrides="and">
-            <if test="id != null">
-                id = #{id,jdbcType=INTEGER}
+            <if test="rep.id != null">
+                tr.id = #{rep.id}
             </if>
-            <if test="tid != null">
-                and tid = #{tid,jdbcType=INTEGER}
+            <if test="rep.tid != null">
+                and tr.tid = #{rep.tid}
             </if>
-            <if test="title != null">
-                and title = #{title,jdbcType=VARCHAR}
-            </if>
-            <if test="uid != null">
-                and uid = #{uid,jdbcType=VARCHAR}
-            </if>
-            <if test="addTime != null">
-                and addTime = #{addTime,jdbcType=TIMESTAMP}
-            </if>
-            <if test="likeCount != null">
-                and likeCount >= #{likeCount,jdbcType=DOUBLE}
-            </if>
-            <if test="hateCount != null">
-                and hateCount >= #{hateCount,jdbcType=DOUBLE}
-            </if>
-            <if test="rateCount != null">
-                and rateCount >= #{rateCount,jdbcType=TINYINT}
-            </if>
-            <if test="isBest != null">
-                and isBest = #{isBest,jdbcType=BIT}
-            </if>
-            <if test="isBlock != null">
-                and isBlock = #{isBlock,jdbcType=BIT}
-            </if>
-            <if test="rateCount != null">
-                and rateCount = #{rateCount,jdbcType=INTEGER}
-            </if>
-            <if test="content != null">
-                and content = #{content,jdbcType=LONGVARCHAR}
+            <if test="rep.uid != null">
+                and tr.uid = #{rep.uid}
             </if>
         </trim>
+        ORDER BY tr.addTime desc
+        limit ${start},10) as temp
+        )
         ORDER BY r.addTime desc
     </select>
 </mapper>

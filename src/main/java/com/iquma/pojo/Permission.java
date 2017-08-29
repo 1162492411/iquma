@@ -9,7 +9,6 @@ public class Permission {
 
     private Boolean isAvailable;
 
-
     public Permission(){
 
     }
@@ -82,5 +81,7 @@ public class Permission {
                 ", isAvailable=" + isAvailable +
                 '}';
     }
+
+
 
 }
